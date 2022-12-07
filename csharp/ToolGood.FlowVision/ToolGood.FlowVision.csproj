@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Version>1.0.0.0</Version>
+    <Title>ToolGood.FlowVision</Title>
+    <Authors>ToolGood</Authors>
+    <Company>ToolGood</Company>
+    <Description>FlowVision可视化规则引擎</Description>
+    <Copyright>Copyright 2017-2022 ToolGood</Copyright>
+    <PackageProjectUrl>https://github.com/toolgood/ToolGood.FlowVision</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/toolgood/ToolGood.FlowVision.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
+    <PackageReference Include="Jint" Version="3.0.0-beta-2044" />
+  </ItemGroup>
+
+</Project>
