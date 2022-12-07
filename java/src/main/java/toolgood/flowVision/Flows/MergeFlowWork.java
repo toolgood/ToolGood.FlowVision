@@ -1,4 +1,4 @@
 package toolgood.flowVision.Flows;
 
-public class MergeFlowWork {
+public class MergeFlowWork extends  NodeWork{
 }

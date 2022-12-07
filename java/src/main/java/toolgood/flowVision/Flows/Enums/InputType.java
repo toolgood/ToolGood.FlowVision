@@ -1,6 +1,6 @@
 package toolgood.flowVision.Flows.Enums;
 
-public enum InputType {
+public enum InputType  {
     Number,
     String,
     Bool,

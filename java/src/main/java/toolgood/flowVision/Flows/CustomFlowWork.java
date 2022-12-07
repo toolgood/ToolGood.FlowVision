@@ -1,4 +1,4 @@
 package toolgood.flowVision.Flows;
 
-public class CustomFlowWork {
+public class CustomFlowWork extends  NodeWork{
 }

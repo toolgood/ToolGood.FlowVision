@@ -1,4 +1,4 @@
 package toolgood.flowVision.Flows;
 
-public class ErrorFlowWork {
+public class ErrorFlowWork extends  NodeWork{
 }

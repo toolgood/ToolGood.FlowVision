@@ -1,4 +1,4 @@
 package toolgood.flowVision.Flows;
 
-public class StatusFlowWork {
+public class StatusFlowWork extends  NodeWork{
 }

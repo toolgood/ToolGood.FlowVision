@@ -1,4 +1,4 @@
 package toolgood.flowVision.Flows;
 
-public class ProcedureFlowMachineInfo {
+public class ProcedureFlowMachineInfo extends  NodeWork{
 }

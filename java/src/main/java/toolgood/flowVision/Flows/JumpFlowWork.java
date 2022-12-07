@@ -1,4 +1,4 @@
 package toolgood.flowVision.Flows;
 
-public class JumpFlowWork {
+public class JumpFlowWork extends  NodeWork{
 }
