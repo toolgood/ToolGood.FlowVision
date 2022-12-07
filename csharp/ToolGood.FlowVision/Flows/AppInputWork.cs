@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using ToolGood.FlowWork.Applications.Engines;
+using ToolGood.FlowVision.Engines;
 using UnitConversion;
 
-namespace ToolGood.FlowWork.Flows
+namespace ToolGood.FlowVision.Flows
 {
     public sealed class AppInputWork
     {

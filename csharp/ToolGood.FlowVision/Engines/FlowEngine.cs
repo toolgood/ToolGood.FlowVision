@@ -6,13 +6,13 @@ using ToolGood.Algorithm;
 using ToolGood.Algorithm.Enums;
 using ToolGood.Algorithm.Internals;
 using ToolGood.Algorithm.LitJson;
-using ToolGood.FlowWork.Applications.Engines.OutDatas;
-using ToolGood.FlowWork.Applications.Engines.Parameters;
-using ToolGood.FlowWork.Flows;
+using ToolGood.FlowVision.Engines.OutDatas;
+using ToolGood.FlowVision.Engines.Parameters;
+using ToolGood.FlowVision.Flows;
 using UnitConversion;
 using static ToolGood.Algorithm.mathParser;
 
-namespace ToolGood.FlowWork.Applications.Engines
+namespace ToolGood.FlowVision.Engines
 {
     public class FlowEngine : IDisposable
     {
@@ -253,7 +253,16 @@ namespace ToolGood.FlowWork.Applications.Engines
         internal HashSet<string> _tempNames;
         internal Dictionary<string, int> _tempdictCount;//用于删除临时变量
 
-        public List<string> BuildTreeNode(string appCode, string factoryCode, string json, string previous)
+        /// <summary>
+        /// 返回的是状态码
+        /// </summary>
+        /// <param name="appCode"></param>
+        /// <param name="factoryCode"></param>
+        /// <param name="json"></param>
+        /// <param name="previous"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public List<string> BuildTreeNode(string appCode, string factoryCode, string json, string previous=null)
         {
             var app = BindingJson(appCode, factoryCode, json);
             BindingPreviousJson(previous);
@@ -504,10 +513,13 @@ namespace ToolGood.FlowWork.Applications.Engines
                 }
             }
         }
-        #endregion
+		#endregion
 
-        #region EvaluateInputNum 计算入量
-        public void EvaluateInputNum()
+		#region EvaluateInputNum 计算入量
+		/// <summary>
+		/// 计算入量
+		/// </summary>
+		public void EvaluateInputNum()
         {
             var keys = _inputNumDict.Keys.ToList();
 
@@ -554,6 +566,12 @@ namespace ToolGood.FlowWork.Applications.Engines
         #endregion
 
         #region Parse Evaluate
+        /// <summary>
+        /// 计算公式
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <param name="def"></param>
+        /// <returns></returns>
         public double TryEvaluate(string exp, double def)
         {
             try {
@@ -567,7 +585,13 @@ namespace ToolGood.FlowWork.Applications.Engines
             }
             return def;
         }
-        public bool TryEvaluate(string exp, bool def)
+		/// <summary>
+		/// 计算公式
+		/// </summary>
+		/// <param name="exp"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public bool TryEvaluate(string exp, bool def)
         {
             try {
                 var obj = Evaluate(exp);
@@ -580,7 +604,13 @@ namespace ToolGood.FlowWork.Applications.Engines
             }
             return def;
         }
-        public DateTime TryEvaluate(string exp, DateTime def)
+		/// <summary>
+		/// 计算公式
+		/// </summary>
+		/// <param name="exp"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public DateTime TryEvaluate(string exp, DateTime def)
         {
             try {
                 var obj = Evaluate(exp);
@@ -593,7 +623,13 @@ namespace ToolGood.FlowWork.Applications.Engines
             }
             return def;
         }
-        public string TryEvaluate(string exp, string def)
+		/// <summary>
+		/// 计算公式
+		/// </summary>
+		/// <param name="exp"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public string TryEvaluate(string exp, string def)
         {
             try {
                 var obj = Evaluate(exp);

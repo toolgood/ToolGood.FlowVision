@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace ToolGood.FlowWork.Commons
+namespace ToolGood.FlowVision.Commons
 {
     /// <summary>
     /// RSA 加解密

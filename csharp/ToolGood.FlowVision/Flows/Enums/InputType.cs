@@ -1,4 +1,4 @@
-﻿namespace ToolGood.FlowWork.Flows
+﻿namespace ToolGood.FlowVision.Flows
 {
     public enum InputType : int
     {

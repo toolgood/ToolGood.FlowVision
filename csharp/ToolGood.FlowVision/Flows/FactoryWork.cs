@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ToolGood.FlowWork.Flows
+namespace ToolGood.FlowVision.Flows
 {
     public sealed class FactoryWork
     {

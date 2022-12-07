@@ -1,7 +1,7 @@
 ﻿using System;
-using ToolGood.FlowWork.Flows;
+using ToolGood.FlowVision.Flows;
 
-namespace ToolGood.FlowWork.Applications.Engines.OutDatas
+namespace ToolGood.FlowVision.Engines.OutDatas
 {
     public sealed class TreeNode
     {

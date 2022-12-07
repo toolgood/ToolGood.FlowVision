@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using ToolGood.FlowWork.Applications.Engines;
+using ToolGood.FlowVision.Engines;
 
-namespace ToolGood.FlowWork.Flows
+namespace ToolGood.FlowVision.Flows
 {
     [JsonConverter(typeof(NodeWorkConverter))]
     public abstract class NodeWork

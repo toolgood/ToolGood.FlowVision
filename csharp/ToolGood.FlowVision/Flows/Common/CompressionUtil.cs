@@ -1,6 +1,6 @@
 ﻿using System.IO.Compression;
 
-namespace ToolGood.FlowWork.Applications.Flows.Common
+namespace ToolGood.FlowVision.Flows.Common
 {
     /// <summary>
     /// 压缩

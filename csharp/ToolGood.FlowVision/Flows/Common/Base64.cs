@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ToolGood.FlowWork.Commons
+namespace ToolGood.FlowVision.Commons
 {
     /// <summary>
     /// Modified Base64 for URL applications ('base64url' encoding)

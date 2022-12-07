@@ -1,4 +1,4 @@
-﻿namespace ToolGood.FlowWork.Applications.Engines.Parameters
+﻿namespace ToolGood.FlowVision.Engines.Parameters
 {
     public class Setting_Machine
     {
