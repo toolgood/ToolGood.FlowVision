@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+      <TargetFrameworks>netstandard2.1;net6.0;net7.0</TargetFrameworks>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Version>1.0.0.0</Version>
@@ -20,5 +19,11 @@
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2044" />
   </ItemGroup>
+
+
+    <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+        <PackageReference Include="System.Text.Json" Version="7.0.0" />
+    </ItemGroup>
+
 
 </Project>

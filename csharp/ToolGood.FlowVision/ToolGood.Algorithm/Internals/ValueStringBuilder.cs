@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -241,16 +242,16 @@ namespace ToolGood.Algorithm.Internals
 		}
 
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void AppendSpanFormattable<T>(T value, string format = null, IFormatProvider provider = null)
-			where T : ISpanFormattable
-		{
-			if (value.TryFormat(_chars.Slice(_pos), out int charsWritten, format, provider)) {
-				_pos += charsWritten;
-			} else {
-				Append(value.ToString(format, provider));
-			}
-		}
+		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		//public void AppendSpanFormattable<T>(T value, string format = null, IFormatProvider provider = null)
+		//	where T : ISpanFormattable
+		//{
+		//	if (value.TryFormat(_chars.Slice(_pos), out int charsWritten, format, provider)) {
+		//		_pos += charsWritten;
+		//	} else {
+		//		Append(value.ToString(format, provider));
+		//	}
+		//}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Span<char> AppendSpan(int length)

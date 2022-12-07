@@ -21,6 +21,8 @@
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using System;
+using System.IO;
 using DFA = Antlr4.Runtime.Dfa.DFA;
 namespace ToolGood.Algorithm
 {

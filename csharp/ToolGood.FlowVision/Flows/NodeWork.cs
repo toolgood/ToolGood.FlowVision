@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using ToolGood.FlowVision.Engines;
 
@@ -328,7 +331,8 @@ namespace ToolGood.FlowVision.Flows
     {
         public override CellType NodeType => CellType.Merge;
         public List<SettingFormulaWork> SettingFormula { get; set; }
-        internal override void Init(ProjectWork work, AppWork app)
+
+		internal override void Init(ProjectWork work, AppWork app)
         {
             base.Init(work, app);
             for (int i = 0; i < SettingFormula.Count; i++) {

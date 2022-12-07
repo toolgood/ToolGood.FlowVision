@@ -1,4 +1,6 @@
-﻿namespace ToolGood.FlowVision.Flows
+﻿using System.Collections.Generic;
+
+namespace ToolGood.FlowVision.Flows
 {
     public interface ISettingFormulaNodeWork
     {

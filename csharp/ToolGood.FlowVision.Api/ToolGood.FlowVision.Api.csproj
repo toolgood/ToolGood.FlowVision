@@ -1,9 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+      <TargetFramework>net7.0</TargetFramework>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>disable</Nullable>
+      <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+      <Version>1.0.0.0</Version>
+      <Title>ToolGood.FlowVision</Title>
+      <Authors>ToolGood</Authors>
+      <Company>ToolGood</Company>
+      <Description>FlowVision可视化规则引擎</Description>
+      <Copyright>Copyright 2017-2022 ToolGood</Copyright>
+      <PackageProjectUrl>https://github.com/toolgood/ToolGood.FlowVision</PackageProjectUrl>
+      <RepositoryUrl>https://github.com/toolgood/ToolGood.FlowVision.git</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
+      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
