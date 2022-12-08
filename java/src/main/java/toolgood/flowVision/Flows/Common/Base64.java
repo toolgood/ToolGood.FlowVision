@@ -5,11 +5,11 @@ import java.util.regex.Pattern;
 
 public class Base64 {
     public static String ToBase64String(final byte[] input) {
-        return toolgood.algorithm.internals.Base64.Base64Util.encode(input);
+        return Base64Util.encode(input);
     }
 
     public static byte[] FromBase64String(final String base64) {
-        return toolgood.algorithm.internals.Base64.Base64Util.decode(base64);
+        return Base64Util.decode(base64);
     }
 
     public static String ToBase64ForUrlString(final byte[] input) {

@@ -1,34 +1,31 @@
 package toolgood.algorithm.internals;
 
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.text.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
 
+import toolgood.algorithm.Enums.*;
 import toolgood.algorithm.MyDate;
 import toolgood.algorithm.Operand;
-import toolgood.algorithm.OperandType;
 import toolgood.algorithm.litJson.JsonData;
 import toolgood.algorithm.litJson.JsonMapper;
 import toolgood.algorithm.math.mathVisitor;
 import toolgood.algorithm.math.mathParser.*;
 import toolgood.algorithm.mathNet.ExcelFunctions;
+
 
 public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements mathVisitor<Operand> {
     private static Pattern sumifRegex = Pattern.compile("(<|<=|>|>=|=|==|===|!=|!==|<>) *([-+]?\\d+(\\.(\\d+)?)?)");
@@ -40,6 +37,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Function<String, Operand> GetParameter;
     public Function<MyFunction, Operand> DiyFunction;
     public int excelIndex;
+    public DistanceUnitType DistanceUnit = DistanceUnitType.M;
+    public AreaUnitType AreaUnit = AreaUnitType.M2;
+    public VolumeUnitType VolumeUnit = VolumeUnitType.M3;
+    public MassUnitType MassUnit = MassUnitType.KG;
 
     public Operand visitProg(final ProgContext context) {
         return visit(context.expr());
@@ -343,7 +344,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             // r = String.Compare(firstValue.TextValue(), secondValue.TextValue(), true);
         } else if (firstValue.Type() == OperandType.TEXT || secondValue.Type() == OperandType.TEXT
                 || firstValue.Type() == OperandType.JSON || secondValue.Type() == OperandType.JSON
-                || firstValue.Type() == OperandType.ARRARY || secondValue.Type() == OperandType.ARRARY) {
+                || firstValue.Type() == OperandType.ARRARY || secondValue.Type() == OperandType.ARRARY
+                || firstValue.Type() == OperandType.ARRARYJSON || secondValue.Type() == OperandType.ARRARYJSON) {
             return Operand.Error("两个类型无法比较");
         } else {
             firstValue = firstValue.ToNumber("Function '" + type + "' parameter 1 is error!");
@@ -565,6 +567,21 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 b = false;
         }
         return b ? Operand.True : Operand.False;
+    }
+
+    @Override
+    public Operand visitArrayJson_fun(ArrayJson_funContext context) {
+        Operand.OperandKeyValueList result = new Operand.OperandKeyValueList(null, excelIndex);
+        List<ArrayJsonContext> js = context.arrayJson();
+        for (int i = 0; i < js.size(); i++) {
+            ArrayJsonContext item = js.get(i);
+            Operand aa = this.visit(item);
+            if (aa.IsError()) {
+                return aa;
+            }
+            result.AddValue(((Operand.OperandKeyValue) aa).Value);
+        }
+        return result;
     }
 
     public Operand visitOR_fun(final OR_funContext context) {
@@ -1047,331 +1064,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         // return Operand.Create(((Double)s).toString());
     }
 
-    public Operand visitBIN2OCT_fun(final BIN2OCT_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function BIN2OCT parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        if (bit_2.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function BIN2OCT parameter 1 is error!");
-        }
-        final String num = Integer.toOctalString(Integer.parseUnsignedInt(firstValue.TextValue(), 2));
-        // String num = Convert.toString(Convert.ToInt32(firstValue.TextValue(), 2), 8);
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function BIN2OCT parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function BIN2OCT parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitBIN2DEC_fun(final BIN2DEC_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function BIN2DEC parameter is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        if (bit_2.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function BIN2DEC parameter is error!");
-        }
-        final int num = Integer.parseUnsignedInt(firstValue.TextValue(), 2);
-        // String num = Convert.ToInt32(firstValue.TextValue(), 2);
-        return Operand.Create(num);
-    }
-
-    public Operand visitBIN2HEX_fun(final BIN2HEX_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function BIN2HEX parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        if (bit_2.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function BIN2HEX parameter 1 is error!");
-        }
-        final String num = Integer.toHexString(Integer.parseUnsignedInt(firstValue.TextValue(), 2)).toUpperCase();
-        // String num = Convert.toString(Convert.ToInt32(firstValue.TextValue(), 2),
-        // 16).ToUpper();
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function BIN2HEX parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function BIN2HEX parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitOCT2BIN_fun(final OCT2BIN_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function OCT2BIN parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        if (bit_8.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function OCT2BIN parameter 1 is error!");
-        }
-        final String num = Integer.toBinaryString(Integer.parseUnsignedInt(firstValue.TextValue(), 8));
-        // String num = Convert.toString(Convert.ToInt32(firstValue.TextValue(), 8), 2);
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function OCT2BIN parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function OCT2BIN parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitOCT2DEC_fun(final OCT2DEC_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function OCT2DEC parameter is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        if (bit_8.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function OCT2DEC parameter is error!");
-        }
-        final int num = Integer.parseUnsignedInt(firstValue.TextValue(), 8);
-        // String num = Convert.ToInt32(firstValue.TextValue(), 8);
-        return Operand.Create(num);
-    }
-
-    public Operand visitOCT2HEX_fun(final OCT2HEX_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function OCT2HEX parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        if (bit_8.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function OCT2HEX parameter 1 is error!");
-        }
-        final String num = Integer.toHexString(Integer.parseUnsignedInt(firstValue.TextValue(), 8)).toUpperCase();
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function OCT2HEX parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function OCT2HEX parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitDEC2BIN_fun(final DEC2BIN_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToNumber("Function DEC2BIN parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        final String num = Integer.toBinaryString(firstValue.IntValue());
-        // String num = System.Convert.toString(firstValue.IntValue(), 2);
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function DEC2BIN parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function DEC2BIN parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitDEC2OCT_fun(final DEC2OCT_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToNumber("Function DEC2OCT parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        final String num = Integer.toOctalString(firstValue.IntValue());
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function DEC2OCT parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function DEC2OCT parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitDEC2HEX_fun(final DEC2HEX_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToNumber("Function DEC2HEX parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        final String num = Integer.toHexString(firstValue.IntValue()).toUpperCase();
-        // String num = System.Convert.toString(firstValue.IntValue(), 16).ToUpper();
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function DEC2HEX parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function DEC2HEX parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitHEX2BIN_fun(final HEX2BIN_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function HEX2BIN parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        if (bit_16.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function HEX2BIN parameter 1 is error!");
-        }
-        final String num = Integer.toBinaryString(Integer.parseUnsignedInt(firstValue.TextValue(), 16));
-        // String num = Convert.toString(Convert.ToInt32(firstValue.TextValue(), 16),
-        // 2);
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function HEX2BIN parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function HEX2BIN parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitHEX2OCT_fun(final HEX2OCT_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function HEX2OCT parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        if (bit_16.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function HEX2OCT parameter 1 is error!");
-        }
-        final String num = Integer.toOctalString(Integer.parseUnsignedInt(firstValue.TextValue(), 16));
-        // String num = Convert.toString(Convert.ToInt32(firstValue.TextValue(), 16),
-        // 8);
-        if (args.size() == 2) {
-            final Operand secondValue = args.get(1).ToNumber("Function HEX2OCT parameter 2 is error!");
-            if (secondValue.IsError()) {
-                return secondValue;
-            }
-            if (num.length() > secondValue.IntValue()) {
-                return Operand.Create(padLeft(num, secondValue.IntValue(), '0'));
-            }
-            return Operand.Error("Function HEX2OCT parameter 2 is error!");
-        }
-        return Operand.Create(num);
-    }
-
-    public Operand visitHEX2DEC_fun(final HEX2DEC_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function HEX2DEC parameter is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        if (bit_16.matcher(firstValue.TextValue()).find() == false) {
-            return Operand.Error("Function HEX2DEC parameter is error!");
-        }
-        final int num = Integer.parseUnsignedInt(firstValue.TextValue(), 16);
-        // String num = Convert.ToInt32(firstValue.TextValue(), 16);
-        return Operand.Create(num);
-    }
-
     public Operand visitROUND_fun(final ROUND_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         int index = 1;
@@ -1529,6 +1221,24 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         z = z + 1;
         return Operand.Create(z);
+    }
+
+    @Override
+    public Operand visitHAS_fun(HAS_funContext context) {
+        List<ExprContext> exprs = context.expr();
+        Operand args1 = this.visit(exprs.get(0));
+        if (args1.IsError()) {
+            return args1;
+        }
+        Operand args2 = this.visit(exprs.get(1));
+        if (args2.IsError()) {
+            return args2;
+        }
+
+        if (((Operand.OperandKeyValueList) args1).ContainsValue(args2)) {
+            return Operand.True;
+        }
+        return Operand.False;
     }
 
     public Operand visitMROUND_fun(final MROUND_funContext context) {
@@ -3212,6 +2922,23 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Create(sum / count);
     }
 
+    @Override
+    public Operand visitPARAM_fun(PARAM_funContext context) {
+        var exprs = context.expr();
+        Operand args1 = this.visit(exprs.get(0));
+        if (args1.Type() != OperandType.TEXT) {
+            args1 = args1.ToText();
+            if (args1.IsError()) return args1;
+        }
+        Operand result = GetParameter.apply(args1.TextValue());
+        if (result.IsError()) {
+            if (exprs.size() == 2) {
+                return this.visit(exprs.get(1));
+            }
+        }
+        return result;
+    }
+
     public Operand visitGEOMEAN_fun(final GEOMEAN_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
@@ -4148,7 +3875,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         if (args.Type() == OperandType.NUMBER) {
             list.add(args.NumberValue());
-        } else if (args.Type() == OperandType.ARRARY) {
+        } else if (args.Type() == OperandType.ARRARY || args.Type() == OperandType.ARRARYJSON) {
             final boolean o = F_base_GetList_1(args.ArrayValue(), list);
             if (o == false) {
                 return false;
@@ -4176,7 +3903,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (args.IsError()) {
             return false;
         }
-        if (args.Type() == OperandType.ARRARY) {
+        if (args.Type() == OperandType.ARRARY || args.Type() == OperandType.ARRARYJSON) {
             final boolean o = F_base_GetList(args.ArrayValue(), list);
             if (o == false) {
                 return false;
@@ -4202,7 +3929,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     private boolean F_base_GetList(final List<Operand> args, final List<String> list) {
         for (final Operand item : args) {
-            if (item.Type() == OperandType.ARRARY) {
+            if (item.Type() == OperandType.ARRARY || item.Type() == OperandType.ARRARYJSON) {
                 final boolean o = F_base_GetList(item.ArrayValue(), list);
                 if (o == false) {
                     return false;
@@ -4225,175 +3952,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
         }
         return true;
-    }
-
-    @SuppressWarnings("deprecation")
-    public Operand visitURLENCODE_fun(final URLENCODE_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function URLENCODE parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        try {
-            return Operand.Create(URLEncoder.encode(firstValue.TextValue()));
-        } catch (Exception e) {
-        }
-        return Operand.Error("Function URLENCODE is error!");
-    }
-
-    @SuppressWarnings("deprecation")
-    public Operand visitURLDECODE_fun(final URLDECODE_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function URLDECODE parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        try {
-            return Operand.Create(URLDecoder.decode(firstValue.TextValue()));
-        } catch (Exception e) {
-        }
-        return Operand.Error("Function URLDECODE is error!");
-    }
-
-    public Operand visitHTMLENCODE_fun(final HTMLENCODE_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function HTMLENCODE parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        return Operand.Create(StringEscapeUtils.escapeHtml4(firstValue.TextValue()));
-    }
-
-    public Operand visitHTMLDECODE_fun(final HTMLDECODE_funContext context) {
-        final Operand firstValue = visit(context.expr()).ToText("Function HTMLDECODE parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-
-        return Operand.Create(StringEscapeUtils.unescapeHtml4(firstValue.TextValue()));
-    }
-
-    public Operand visitBASE64TOTEXT_fun(final BASE64TOTEXT_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function BASE64TOTEXT parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = new String(Base64.FromBase64String(args.get(0).TextValue()), encoding);
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function BASE64TOTEXT is error!");
-    }
-
-    public Operand visitBASE64URLTOTEXT_fun(final BASE64URLTOTEXT_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function BASE64URLTOTEXT parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = new String(Base64.FromBase64ForUrlString(args.get(0).TextValue()), encoding);
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function BASE64URLTOTEXT is error!");
-    }
-
-    public Operand visitTEXTTOBASE64_fun(final TEXTTOBASE64_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function TEXTTOBASE64 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Base64.ToBase64String(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function TEXTTOBASE64 is error!");
-    }
-
-    public Operand visitTEXTTOBASE64URL_fun(final TEXTTOBASE64URL_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function TEXTTOBASE64URL parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Base64.ToBase64ForUrlString(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function TEXTTOBASE64 is error!");
-    }
-
-    public Operand visitREGEX_fun(final REGEX_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToText("Function REGEX parameter 1 is error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        final Operand secondValue = args.get(1).ToText("Function REGEX parameter 2 is error!");
-        if (secondValue.IsError()) {
-            return secondValue;
-        }
-        Matcher b = Pattern.compile(secondValue.TextValue()).matcher(firstValue.TextValue());
-        if (b.find() == false) {
-            return Operand.Error("Function REGEX is error!");
-        }
-        return Operand.Create(b.group(0));
     }
 
     public Operand visitREGEXREPALCE_fun(final REGEXREPALCE_funContext context) {
@@ -4427,238 +3985,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final boolean b = Pattern.compile(args.get(1).TextValue()).matcher(args.get(0).TextValue()).find();
         return Operand.Create(b);
-    }
-
-    public Operand visitGUID_fun(final GUID_funContext context) {
-        return Operand.Create(UUID.randomUUID().toString().replaceAll("-", ""));
-    }
-
-    public Operand visitMD5_fun(final MD5_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function MD5 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Hash.GetMd5String(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function MD5 is error!");
-    }
-
-    public Operand visitSHA1_fun(final SHA1_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function SHA1 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Hash.GetSha1String(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function SHA1 is error!");
-    }
-
-    public Operand visitSHA256_fun(final SHA256_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function SHA256 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Hash.GetSha256String(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function SHA256 is error!");
-    }
-
-    public Operand visitSHA512_fun(final SHA512_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function SHA512 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Hash.GetSha512String(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function SHA512 is error!");
-    }
-
-    public Operand visitCRC32_fun(final CRC32_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function CRC32 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 1) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(1).TextValue();
-        }
-        try {
-            final String t = Hash.GetCrc32String(args.get(0).TextValue().getBytes(encoding));
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function CRC32 is error!");
-    }
-
-    public Operand visitHMACMD5_fun(final HMACMD5_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function HMACMD5 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 2) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(2).TextValue();
-        }
-        try {
-            final String t = Hash.GetHmacMd5String(args.get(0).TextValue().getBytes(encoding), args.get(1).TextValue());
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function HMACMD5 is error!");
-    }
-
-    public Operand visitHMACSHA1_fun(final HMACSHA1_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function HMACSHA1 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 2) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(2).TextValue();
-        }
-        try {
-            final String t = Hash.GetHmacSha1String(args.get(0).TextValue().getBytes(encoding),
-                    args.get(1).TextValue());
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function HMACSHA1 is error!");
-    }
-
-    public Operand visitHMACSHA256_fun(final HMACSHA256_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function HMACSHA256 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 2) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(2).TextValue();
-        }
-        try {
-            final String t = Hash.GetHmacSha256String(args.get(0).TextValue().getBytes(encoding),
-                    args.get(1).TextValue());
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function HMACSHA256 is error!");
-    }
-
-    public Operand visitHMACSHA512_fun(final HMACSHA512_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        int index = 1;
-        for (final ExprContext item : context.expr()) {
-            final Operand a = visit(item).ToText("Function HMACSHA512 parameter " + (index++) + " is error!");
-            if (a.IsError()) {
-                return a;
-            }
-            args.add(a);
-        }
-
-        String encoding;
-        if (args.size() == 2) {
-            encoding = "utf-8";
-        } else {
-            encoding = args.get(2).TextValue();
-        }
-        try {
-            final String t = Hash.GetHmacSha512String(args.get(0).TextValue().getBytes(encoding),
-                    args.get(1).TextValue());
-            return Operand.Create(t);
-        } catch (final Exception e) {
-        }
-        return Operand.Error("Function HMACSHA512 is error!");
     }
 
     public Operand visitTRIMSTART_fun(final TRIMSTART_funContext context) {
@@ -4703,6 +4029,19 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         text = Pattern.compile("\\s*$").matcher(text).replaceAll("");
         return Operand.Create(text);
+    }
+
+    @Override
+    public Operand visitERROR_fun(ERROR_funContext context) {
+        if (context.expr() == null) {
+            return Operand.Error("");
+        }
+        Operand args1 = this.visit(context.expr());
+        if (args1.Type() != OperandType.TEXT) {
+            args1 = args1.ToText();
+            if (args1.IsError()) return args1;
+        }
+        return Operand.Error(args1.TextValue());
     }
 
     public Operand visitINDEXOF_fun(final INDEXOF_funContext context) {
@@ -4802,6 +4141,50 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Create(array);
     }
 
+    @Override
+    public Operand visitNum(NumContext ctx) {
+        return null;
+    }
+
+    @Override
+    public Operand visitUnit(UnitContext ctx) {
+        return null;
+    }
+
+    @Override
+    public Operand visitArrayJson(ArrayJsonContext context) {
+        Operand.KeyValue keyValue = new Operand.KeyValue();
+        if (context.NUM() != null) {
+            keyValue.Index = Integer.parseInt(context.NUM().getText());
+        }
+        if (context.STRING() != null) {
+            var opd = context.STRING().getText();
+            StringBuilder sb = new StringBuilder(opd.length() - 2);
+            int index = 1;
+            while (index < opd.length() - 1) {
+                char c = opd.charAt(index++);
+                if (c == '\\') {
+                    char c2 = opd.charAt(index++);
+                    if (c2 == 'n') sb.append('\n');
+                    else if (c2 == 'r') sb.append('\r');
+                    else if (c2 == 't') sb.append('\t');
+                    else if (c2 == '0') sb.append('\0');
+                    else if (c2 == 'b') sb.append('\b');
+                    else if (c2 == 'f') sb.append('\f');
+                    else sb.append(opd.charAt(index++));
+                } else {
+                    sb.append(c);
+                }
+            }
+            keyValue.Key = sb.toString();
+        }
+        if (context.parameter2() != null) {
+            keyValue.Key = context.parameter2().getText();
+        }
+        keyValue.Value = visit(context.expr());
+        return new Operand.OperandKeyValue(keyValue);
+    }
+
     public Operand visitJOIN_fun(final JOIN_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
@@ -4819,7 +4202,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 firstValue = o;
             }
         }
-        if (firstValue.Type() == OperandType.ARRARY) {
+        if (firstValue.Type() == OperandType.ARRARY || firstValue.Type() == OperandType.ARRARYJSON) {
             final List<String> list = new ArrayList<String>();
             final boolean o = F_base_GetList(firstValue, list);
             if (o == false)
@@ -5063,106 +4446,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Error("Function JSON parameter is error!");
     }
 
-    public Operand visitVLOOKUP_fun(final VLOOKUP_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-
-        final Operand firstValue = args.get(0).ToArray("Function VLOOKUP parameter 1 error!");
-        if (firstValue.IsError()) {
-            return firstValue;
-        }
-        Operand secondValue = args.get(1);
-
-        final Operand thirdValue = args.get(2).ToNumber("Function VLOOKUP parameter 3 is error!");
-        if (thirdValue.IsError()) {
-            return thirdValue;
-        }
-
-        boolean vague = true;
-        if (args.size() == 4) {
-            final Operand fourthValue = args.get(2).ToBoolean("Function VLOOKUP parameter 4 is error!");
-            if (fourthValue.IsError()) {
-                return fourthValue;
-            }
-            vague = fourthValue.BooleanValue();
-        }
-        if (secondValue.Type() != OperandType.NULL) {
-            final Operand sv = secondValue.ToText("Function VLOOKUP parameter 2 is error!");
-            if (sv.IsError()) {
-                return sv;
-            }
-            secondValue = sv;
-        }
-        for (final Operand item : firstValue.ArrayValue()) {
-            final Operand o = item.ToArray("Function VLOOKUP parameter 1 error!");
-            if (o.IsError()) {
-                return o;
-            }
-            if (o.ArrayValue().size() > 0) {
-                final Operand o1 = o.ArrayValue().get(0);// [0];
-                int b = -1;
-                if (secondValue.Type() == OperandType.NUMBER) {
-                    final Operand o2 = o1.ToNumber(null);
-                    if (o2.IsError() == false) {
-                        b = Compare(o2.NumberValue(), secondValue.NumberValue());
-                    }
-                } else {
-                    final Operand o2 = o1.ToText(null);
-                    if (o2.IsError() == false) {
-                        b = o2.TextValue().compareTo(secondValue.TextValue());
-                        // b = String.CompareOrdinal(o2.TextValue(), secondValue.TextValue());
-                    }
-                }
-                if (b == 0) {
-                    final int index = thirdValue.IntValue() - excelIndex;
-                    if (index < o.ArrayValue().size()) {
-                        return o.ArrayValue().get(index);// [index];
-                    }
-                }
-            }
-        }
-
-        if (vague) // 进行模糊匹配
-        {
-            Operand last = null;
-            final int index = thirdValue.IntValue() - excelIndex;
-            for (final Operand item : firstValue.ArrayValue()) {
-                final Operand o = item.ToArray(null);
-                if (o.IsError()) {
-                    return o;
-                }
-                if (o.ArrayValue().size() > 0) {
-                    final Operand o1 = o.ArrayValue().get(0);// [0];
-                    int b = -1;
-                    if (secondValue.Type() == OperandType.NUMBER) {
-                        final Operand o2 = o1.ToNumber(null);
-                        if (o2.IsError() == false) {
-                            b = Compare(o2.NumberValue(), secondValue.NumberValue());
-                        }
-                    } else {
-                        final Operand o2 = o1.ToText(null);
-                        if (o2.IsError() == false) {
-                            b = o2.TextValue().compareTo(secondValue.TextValue());
-                            // b = String.CompareOrdinal(o2.TextValue(), secondValue.TextValue());
-                        }
-                    }
-                    if (b < 0 && index < o.ArrayValue().size()) {
-                        last = o;
-                    } else if (b > 0 && last != null) {
-                        return last.ArrayValue().get(index);// [index];
-                    }
-                }
-            }
-        }
-        return Operand.Error("Function VLOOKUP is not match !");
-    }
-
     public Operand visitLOOKUP_fun(final LOOKUP_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
@@ -5177,9 +4460,28 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        final Operand secondValue = args.get(1).ToText("Function LOOKUP parameter 2 is error!");
+        Operand secondValue = args.get(1).ToText("Function LOOKUP parameter 2 is error!");
         if (secondValue.IsError()) {
             return secondValue;
+        }
+        if (firstValue.Type() == OperandType.ARRARYJSON) {
+            secondValue = secondValue.ToNumber();
+            if (secondValue.IsError()) {
+                return secondValue;
+            }
+            var range = false;
+            if (args.size() == 3) {
+                var t = args.get(2).ToBoolean("Function LOOKUP parameter 3 is error!");
+                if (t.IsError()) {
+                    return t;
+                }
+                range = t.BooleanValue();
+            }
+            Operand operand = ((Operand.OperandKeyValueList) firstValue).TryGetValueFloor(secondValue.NumberValue(), range);
+            if (operand != null) {
+                return operand;
+            }
+            return Operand.Error("Function LOOKUP not find !");
         }
         final Operand thirdValue = args.get(2).ToText("Function LOOKUP parameter 3 is error!");
         if (thirdValue.IsError()) {
@@ -5228,32 +4530,23 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Error("Function LOOKUP not find!");
     }
 
-    public Operand visitArray_fun(final Array_funContext context) {
-        final List<Operand> args = new ArrayList<Operand>();
-        for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
-            if (aa.IsError()) {
-                return aa;
-            }
-            args.add(aa);
-        }
-        return Operand.Create(args);
-    }
-
     public Operand visitBracket_fun(final Bracket_funContext context) {
         return visit(context.expr());
     }
 
     public Operand visitNUM_fun(final NUM_funContext context) {
-        final String t = context.NUM().getText();
-        TerminalNode subNode = context.SUB();
-        if (subNode != null) {
-            final String sub = subNode.getText();
-            final Double d = Double.parseDouble(sub + t);
+        final String t = context.num().getText();
+        Double d = Double.parseDouble(t);
+        if (context.unit() == null) return Operand.Create(d);
+        String unit = context.unit().getText().toUpperCase();
+        Map<String, NumberUnitType> dict = NumberUnitTypeHelper.GetUnitTypedict();
+
+        try {
+            d = NumberUnitTypeHelper.TransformationUnit(d, dict.get(unit), DistanceUnit, AreaUnit, VolumeUnit, MassUnit);
             return Operand.Create(d);
+        } catch (Exception e) {
+            return Operand.Error(e.getMessage());
         }
-        final Double d2 = Double.parseDouble(t);
-        return Operand.Create(d2);
     }
 
     public Operand visitSTRING_fun(final STRING_funContext context) {
@@ -5285,6 +4578,31 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
         }
         return Operand.Create(sb.toString());
+    }
+
+    @Override
+    public Operand visitIN_fun(IN_funContext context) {
+        List<ExprContext> exprs = context.expr();
+        Operand args1 = this.visit(exprs.get(0));
+        if (args1.IsError()) {
+            return args1;
+        }
+        Operand args2 = this.visit(exprs.get(1));
+        if (args2.IsError()) {
+            return args2;
+        }
+
+        if (args1.Type() == OperandType.NUMBER) {
+            if (((Operand.OperandKeyValueList) args2).ContainsValue(args1.IntValue())) {
+                return Operand.True;
+            }
+        } else if (args1.Type() == OperandType.TEXT) {
+            if (((Operand.OperandKeyValueList) args2).ContainsValue(args1.TextValue())) {
+                return Operand.True;
+            }
+        }
+        return Operand.False;
+
     }
 
     public Operand visitNULL_fun(final NULL_funContext context) {
@@ -5349,6 +4667,19 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 return obj.ArrayValue().get(index);// [index];
             return Operand.Error("ARRARY index " + index + " greater than maximum length!");
         }
+        if (obj.Type() == OperandType.ARRARYJSON) {
+            if (op.Type() == OperandType.NUMBER) {
+                if (((Operand.OperandKeyValueList) obj).HasKey(op.IntValue())) {
+                    return ((Operand.OperandKeyValueList) obj).GetValue(op.IntValue());
+                }
+            } else if (op.Type() == OperandType.TEXT) {
+                if (((Operand.OperandKeyValueList) obj).HasKey(op.TextValue())) {
+                    return ((Operand.OperandKeyValueList) obj).GetValue(op.TextValue());
+                }
+                return Operand.Error("Parameter name `" + op.TextValue() + "` is missing!");
+            }
+            return Operand.Error("Parameter name is missing!");
+        }
         if (obj.Type() == OperandType.JSON) {
             final JsonData json = obj.JsonValue();
             if (json.IsArray()) {
@@ -5400,21 +4731,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Error(" Operator is error!");
     }
 
-    public Operand visitDiyFunction_fun(final DiyFunction_funContext context) {
-        if (DiyFunction != null) {
-            final String funName = context.PARAMETER().getText();
-            final List<Operand> args = new ArrayList<Operand>();
-            for (final ExprContext item : context.expr()) {
-                final Operand aa = visit(item);
-                args.add(aa);
-            }
-            final MyFunction myFunction = new MyFunction();
-            myFunction.Name = funName;
-            myFunction.OperandList = args;
-            return DiyFunction.apply(myFunction);
-        }
-        return Operand.Error("DiyFunction is error!");
-    }
 
     @SuppressWarnings("deprecation")
     private double round(final double value, final int p) {
@@ -5482,19 +4798,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return new String(charr);
     }
 
-    // private String padRight(final String src, final int len, final char ch) {
-    // final int diff = len - src.length();
-    // if (diff <= 0) {
-    // return src;
-    // }
-
-    // final char[] charr = new char[len];
-    // System.arraycopy(src.toCharArray(), 0, charr, diff, src.length());
-    // for (int i = 0; i < diff; i++) {
-    // charr[i] = ch;
-    // }
-    // return new String(charr);
-    // }
 
     private double log(final double value, final double base) {
         return Math.log(value) / Math.log(base);
