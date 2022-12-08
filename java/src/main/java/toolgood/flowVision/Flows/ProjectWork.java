@@ -55,4 +55,12 @@ public class ProjectWork {
         return false;
     }
 
+    public boolean HasFormula(String name) {
+        if (FormulaList.containsKey(name)) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

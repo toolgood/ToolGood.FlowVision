@@ -69,7 +69,6 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
             if (FactoryProcedure.Check(engine) == false) {
                 return false;
             }
-            private
         }
         if (InputFormula != null && InputFormula.size() > 0) {
             boolean check = false;
@@ -155,7 +154,7 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
     @Override
     public double EvaluateInputNum(FlowEngine engine) throws Exception {
         if (InputFormula == null || InputFormula.size() == 0) {
-            return engine.GetOutputNum().NumberValue;
+            return engine.GetOutputNum().NumberValue();
         }
         for (int i = 0; i < InputFormula.size(); i++) {
             SettingFormulaItemWork settingFormulaItem = InputFormula.get(i);
@@ -165,7 +164,6 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
             }
         }
         throw new Exception("入量公式错误！");
-        return 0;
     }
 
     @Override
