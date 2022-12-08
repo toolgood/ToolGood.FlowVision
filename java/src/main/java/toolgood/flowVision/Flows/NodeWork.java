@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class NodeWork {
-    protected ProjectWork Project;//{ get; set; }
-    public CellType NodeType;// { get; }
-    public String Id;// { get; set; }
-    public String Label;//{ get; set; }
-    public int Layer;//{ get; set; }
-    public String Comment;//{ get; set; }
+    protected ProjectWork Project;
+    public CellType NodeType;
+    public String Id;
+    public String Label;
+    public int Layer;
+    public String Comment;
 
-    public Map<String, List<NodeWork>> NextNodes;// { get; set; }
-    public Map<String, List<String>> NextNodeIds;//{ get; set; }
+    public Map<String, List<NodeWork>> NextNodes;
+    public Map<String, List<String>> NextNodeIds;
 
-    public boolean Check(FlowEngine engine, String factoryCode) {
+    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
         return true;
     }
 

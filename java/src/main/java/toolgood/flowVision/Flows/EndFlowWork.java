@@ -22,4 +22,9 @@ public class EndFlowWork extends NodeWork implements ISettingFormulaNodeWork {
             item.NodeWork = this;
         }
     }
+
+    @Override
+    public List<SettingFormulaWork> SettingFormula() {
+        return SettingFormula;
+    }
 }

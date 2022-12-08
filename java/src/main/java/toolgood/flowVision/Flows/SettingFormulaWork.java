@@ -10,13 +10,13 @@ import java.util.List;
 public class SettingFormulaWork {
     public ProjectWork Project;// { get; set; }
 
-    public NodeWork NodeWork ;
+    public NodeWork NodeWork;
 
-    public String Name ;
-    public InputType Type ;
-    public String DefaultFormula ;
+    public String Name;
+    public InputType Type;
+    public String DefaultFormula;
     public List<SettingFormulaItemWork> Conditions;
-    public String Comment ;
+    public String Comment;
 
     public Operand EvaluateFormula(FlowEngine engine) throws Exception {
         if (Conditions != null && Conditions.size() > 0) {
@@ -28,10 +28,10 @@ public class SettingFormulaWork {
             }
         }
         mathParser.ProgContext progContext = Project.CreateProgContext(DefaultFormula);
-        return engine.EvaluateFormula(progContext, (int)Type);
+        return engine.EvaluateFormula(progContext, Type);
     }
-    public void Init(ProjectWork work)
-    {
+
+    public void Init(ProjectWork work) {
         Project = work;
         if (Conditions != null && Conditions.size() > 0) {
             for (int i = 0; i < Conditions.size(); i++) {

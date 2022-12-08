@@ -8,8 +8,7 @@ public class FactoryWork {
     public String SimplifyName;
     public String LongAndLat;
 
-    public void Init(ProjectWork work)
-    {
+    public void Init(ProjectWork work) {
         Project = work;
     }
 }

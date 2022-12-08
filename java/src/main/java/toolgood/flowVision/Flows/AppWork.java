@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AppWork {
-    public ProjectWork Project;// { get; set; }
+    private ProjectWork Project;
     public String Code;
     public String Name;
     public List<AppInitValueWork> InitValueList;

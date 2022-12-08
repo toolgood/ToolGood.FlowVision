@@ -8,10 +8,10 @@ import java.util.List;
 
 public class StartFlowWork extends NodeWork implements ISettingFormulaNodeWork {
 
-    public List<SettingFormulaWork> SettingFormula;//{ get; set; }
+    public List<SettingFormulaWork> SettingFormula;
 
-    public StartFlowWork(){
-        NodeType= CellType.Start;
+    public StartFlowWork() {
+        NodeType = CellType.Start;
     }
 
     @Override
@@ -24,4 +24,8 @@ public class StartFlowWork extends NodeWork implements ISettingFormulaNodeWork {
         }
     }
 
+    @Override
+    public List<SettingFormulaWork> SettingFormula() {
+        return SettingFormula;
+    }
 }

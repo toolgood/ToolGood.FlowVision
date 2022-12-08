@@ -24,10 +24,12 @@ public class ProjectWork {
     private Map<String, mathParser.ProgContext> ProgList;
 
     public mathParser.ProgContext CreateProgContext(String exp) throws Exception {
-        if (ProgList.containsKey(exp)){
-            return  ProgList.get(exp);
+        if (ProgList.containsKey(exp)) {
+            return ProgList.get(exp);
         }
-        if (exp==null || exp.equals("")) { return null; }
+        if (exp == null || exp.equals("")) {
+            return null;
+        }
         AntlrCharStream stream = new AntlrCharStream(CharStreams.fromString(exp));
         mathLexer lexer = new mathLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -37,14 +39,16 @@ public class ProjectWork {
         parser.addErrorListener(antlrErrorListener);
 
         mathParser.ProgContext context = parser.prog();
-        if (antlrErrorListener.IsError) { throw new Exception(antlrErrorListener.ErrorMsg); }
-        ProgList.put(exp,context);
+        if (antlrErrorListener.IsError) {
+            throw new Exception(antlrErrorListener.ErrorMsg);
+        }
+        ProgList.put(exp, context);
         return context;
     }
 
-    public boolean TryGetFormula(String name,   mathParser.ProgContext context) throws Exception {
-        if (FormulaList.containsKey(name)){
-            context=CreateProgContext(FormulaList.get(name));
+    public boolean TryGetFormula(String name, mathParser.ProgContext context) throws Exception {
+        if (FormulaList.containsKey(name)) {
+            context = CreateProgContext(FormulaList.get(name));
             return true;
         }
         context = null;

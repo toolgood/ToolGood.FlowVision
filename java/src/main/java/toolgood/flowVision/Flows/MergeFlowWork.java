@@ -1,4 +1,30 @@
 package toolgood.flowVision.Flows;
 
-public class MergeFlowWork extends  NodeWork{
+import toolgood.flowVision.Flows.Enums.CellType;
+import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
+
+import java.util.List;
+
+public class MergeFlowWork extends NodeWork implements ISettingFormulaNodeWork {
+    public List<SettingFormulaWork> SettingFormula;
+
+    public MergeFlowWork() {
+        NodeType = CellType.Merge;
+    }
+
+
+    @Override
+    public void Init(ProjectWork work, AppWork app) {
+        super.Init(work, app);
+        for (int i = 0; i < SettingFormula.size(); i++) {
+            SettingFormulaWork item = SettingFormula.get(i);
+            item.Init(work);
+            item.NodeWork = this;
+        }
+    }
+
+    @Override
+    public List<SettingFormulaWork> SettingFormula() {
+        return SettingFormula;
+    }
 }
