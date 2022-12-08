@@ -1,14 +1,11 @@
 package toolgood.algorithm;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import toolgood.algorithm.internals.AntlrErrorListener;
-import toolgood.algorithm.internals.CharUtil;
-import toolgood.algorithm.internals.MathSimplifiedFormulaVisitor;
 import toolgood.algorithm.internals.AntlrCharStream;
 import toolgood.algorithm.internals.MathVisitor;
 import toolgood.algorithm.litJson.JsonData;
@@ -47,7 +44,7 @@ public class AlgorithmEngine {
     /// </summary>
     public AlgorithmEngine() {
         IgnoreCase = false;
-        _tempdict = new TreeMap<String, Operand>();
+        _tempdict = new TreeMap<>();
     }
 
     /// <summary>
@@ -57,9 +54,9 @@ public class AlgorithmEngine {
     public AlgorithmEngine(boolean ignoreCase) {
         IgnoreCase = ignoreCase;
         if (ignoreCase) {
-            _tempdict = new TreeMap<String, Operand>(String.CASE_INSENSITIVE_ORDER);
+            _tempdict = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         } else {
-            _tempdict = new TreeMap<String, Operand>();
+            _tempdict = new TreeMap<>();
         }
     }
 
@@ -76,10 +73,6 @@ public class AlgorithmEngine {
 
     protected Operand GetParameter(final String parameter) {
         return Operand.Error("Parameter [" + parameter + "] is missing.");
-    }
-
-    protected Operand ExecuteDiyFunction(final String funcName, final List<Operand> operands) {
-        return Operand.Error("DiyFunction [" + funcName + "] is missing.");
     }
 
     public void ClearParameters() {
@@ -223,14 +216,11 @@ public class AlgorithmEngine {
         visitor.GetParameter = f -> {
             try {
                 return GetDiyParameterInside(f);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             return null;
         };
         visitor.excelIndex = UseExcelIndex ? 1 : 0;
-        visitor.DiyFunction = f -> {
-            return ExecuteDiyFunction(f.Name, f.OperandList);
-        };
         return visitor.visit(_context);
     }
 
@@ -339,79 +329,6 @@ public class AlgorithmEngine {
         return defvalue;
     }
 
-    /**
-     * 获取简化公式
-     * 
-     * @param formula 公式
-     * 
-     */
-    public String GetSimplifiedFormula(final String formula) {
-        try {
-            if (Parse(formula)) {
-                final MathSimplifiedFormulaVisitor visitor = new MathSimplifiedFormulaVisitor();
-                visitor.GetParameter = f -> {
-                    try {
-                        return GetDiyParameterInside(f);
-                    } catch (Exception e) {
-                    }
-                    return null;
-                };
-                visitor.excelIndex = UseExcelIndex ? 1 : 0;
-                visitor.DiyFunction = f -> {
-                    return ExecuteDiyFunction(f.Name, f.OperandList);
-                };
-                Operand obj = visitor.visit(_context);
-                obj = obj.ToText("It can't be converted to String!");
-                if (obj.IsError()) {
-                    LastError = obj.ErrorMsg();
-                    return null;
-                }
-                return obj.TextValue();
-            }
-        } catch (final Exception ex) {
-            LastError = ex.getMessage();
-        }
-        return null;
-    }
 
-    /**
-     * 计算公式
-     * 
-     * @param formula   公式
-     * @param splitChar 分隔符
-     * @return
-     */
-    public String EvaluateFormula(String formula, Character splitChar) {
-        if (formula == null || formula.equals(""))
-            return "";
-        List<Character> splitChars = new ArrayList<>();
-        splitChars.add(splitChar);
-        return EvaluateFormula(formula, splitChars);
-    }
 
-    /**
-     * 计算公式
-     * 
-     * @param formula    公式
-     * @param splitChars 分隔符
-     * @return
-     */
-    public String EvaluateFormula(String formula, List<Character> splitChars) {
-        if (formula == null || formula.equals(""))
-            return "";
-        List<String> sp = CharUtil.SplitFormula(formula, splitChars);
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < sp.size(); i++) {
-            String s = sp.get(i);
-            if (s.length() == 1 && splitChars.contains(s.charAt(0))) {
-                stringBuilder.append(s);
-            } else {
-                // TODO 替换此处
-                String d = TryEvaluate(s, "");
-                stringBuilder.append(d);
-            }
-        }
-        return stringBuilder.toString();
-    }
 }

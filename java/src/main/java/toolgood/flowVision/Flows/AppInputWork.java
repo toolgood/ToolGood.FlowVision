@@ -11,7 +11,6 @@ public class AppInputWork {
     public String InputName;
     public String Unit;
     public toolgood.flowVision.Flows.Enums.InputType InputType;
-    public int InputTypeNum;
     public String CheckInput;
     public boolean IsRequired;
     public boolean UseDefaultValue;

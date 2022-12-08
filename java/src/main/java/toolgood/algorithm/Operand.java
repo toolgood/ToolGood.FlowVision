@@ -128,6 +128,14 @@ public abstract class Operand {
         return new OperandArray(obj);
     }
 
+    public static Operand Create(String[] obj) {
+        List<Operand> result = new ArrayList<>();
+        for (String key : obj) {
+            result.add(Operand.Create(key));
+        }
+        return new OperandArray(result);
+    }
+
     public static Operand Error(final String msg) {
         return new OperandError(msg);
     }
@@ -568,6 +576,7 @@ public abstract class Operand {
             }
             return null;
         }
+
         public boolean HasKey(String key) {
             for (var item : TextList) {
                 if (item.Key.equals("" + key)) {
@@ -576,9 +585,10 @@ public abstract class Operand {
             }
             return false;
         }
+
         public Operand GetValue(String key) {
             for (var item : TextList) {
-                if (item.Key.equals( key)) {
+                if (item.Key.equals(key)) {
                     return item.Value;
                 }
             }
@@ -626,7 +636,7 @@ public abstract class Operand {
             return false;
         }
 
-        public Operand TryGetValueFloor(double key, boolean range_lookup ) {
+        public Operand TryGetValueFloor(double key, boolean range_lookup) {
             Operand value = null;
             for (var item : TextList) {
                 try {
@@ -644,7 +654,7 @@ public abstract class Operand {
                 } catch (Exception ex) {
                 }
             }
-            return value  ;
+            return value;
         }
     }
 
