@@ -3,8 +3,8 @@
     /// <summary>
     /// 长度单位
     /// </summary>
-    public enum DistanceUnitType
-    {
+    public enum DistanceUnitType : byte
+	{
         /// <summary>
         /// 毫米
         /// </summary>

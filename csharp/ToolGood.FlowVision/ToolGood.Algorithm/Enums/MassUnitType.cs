@@ -7,8 +7,8 @@ namespace ToolGood.Algorithm.Enums
     /// <summary>
     /// 重量单位
     /// </summary>
-    public enum MassUnitType
-    {
+    public enum MassUnitType : byte
+	{
         /// <summary>
         /// 克
         /// </summary>

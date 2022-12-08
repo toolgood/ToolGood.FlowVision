@@ -3,7 +3,7 @@
 namespace ToolGood.Algorithm.Enums
 {
 
-    internal enum NumberUnitType : long
+    internal enum NumberUnitType 
     {
         MM = 1,
         CM = 2,

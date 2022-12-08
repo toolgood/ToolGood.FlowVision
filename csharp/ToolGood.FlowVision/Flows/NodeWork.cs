@@ -181,30 +181,6 @@ namespace ToolGood.FlowVision.Flows
             if (MachineRequired) { return false; }
             return true;
         }
-
-        internal bool CheckWithoutItems(FlowEngine engine, string factoryCode)
-        {
-            if (string.IsNullOrEmpty(CheckFormula) == false) {
-                var progContext = Project.CreateProgContext(CheckFormula);
-                var operand = engine.EvaluateFormula(progContext, (int)Flows.InputType.Bool);
-                if (operand.BooleanValue == false) { return false; }
-            }
-            if (CheckType == CheckType.Add) {
-                if (FactoryProcedure.Check(engine) == false) {
-                    return false;
-                }
-            }
-            if (InputFormula == null || InputFormula.Count == 0) {
-                return true;
-            }
-            bool check = false;
-            for (int i = 0; i < InputFormula.Count; i++) {
-                var inputFormula = InputFormula[i];
-                if (inputFormula.Check(engine)) { check = true; }
-            }
-            if (check == false) { return false; }
-            return FactoryProcedure.Items.ContainsKey(factoryCode);
-        }
         internal bool CheckWithoutFactory(FlowEngine engine)
         {
             if (string.IsNullOrEmpty(CheckFormula) == false) {

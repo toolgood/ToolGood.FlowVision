@@ -3,8 +3,8 @@
     /// <summary>
     /// 体积单位
     /// </summary>
-    public enum VolumeUnitType
-    {
+    public enum VolumeUnitType : byte
+	{
         /// <summary>
         /// 立方毫米
         /// </summary>

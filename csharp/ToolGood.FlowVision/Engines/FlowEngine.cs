@@ -17,7 +17,7 @@ using static ToolGood.Algorithm.mathParser;
 
 namespace ToolGood.FlowVision.Engines
 {
-    public class FlowEngine : IDisposable
+    public sealed class FlowEngine : IDisposable
     {
         internal ProjectWork Project;//{ get; private set; }
         internal Dictionary<string, Setting_Machine> MachineSetting;// { get; private set; }
