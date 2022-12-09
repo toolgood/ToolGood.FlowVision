@@ -66,13 +66,30 @@ public class ProjectWork implements IProjectWork {
         return false;
     }
 
-    public static ProjectWork LoadJson(String json) {
+    public static ProjectWork LoadJson(String json) throws Exception {
         JSONObject jsonObject = JSONObject.parseObject(json);
-        return ProjectWork.parse(jsonObject);
+        ProjectWork work = ProjectWork.parse(jsonObject);
+        for (FactoryWork item : work.FactoryList.values()) {
+            item.Init(work);
+        }
+        for (FactoryMachineWork item : work.FactoryMachineList.values()) {
+            item.Init(work);
+        }
+        for (FactoryProcedureWork item : work.FactoryProcedureList.values()) {
+            item.Init(work);
+        }
+        for (AppWork item : work.AppList.values()) {
+            item.Init(work);
+        }
+        return work;
     }
 
-    final static ProjectWork parse(JSONObject jsonObject) {
+    static ProjectWork parse(JSONObject jsonObject) throws Exception {
         ProjectWork projectWork = new ProjectWork();
+        projectWork.Name=jsonObject.getString("name");
+        projectWork.Code=jsonObject.getString("code");
+        projectWork.ExcelIndex=jsonObject.getIntValue("excelIndex");
+        projectWork.NumberRequired=jsonObject.getBooleanValue("numberRequired");
 
         projectWork.FormulaList = new HashMap<>();
         if (jsonObject.containsKey("formulaList")) {

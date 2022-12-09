@@ -9,7 +9,9 @@ import toolgood.flowVision.Flows.Interfaces.IInputNameNodeWork;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JumpFlowWork extends NodeWork implements ISettingFormulaNodeWork, IInputNameNodeWork {
     public String InputName;
@@ -56,6 +58,19 @@ public class JumpFlowWork extends NodeWork implements ISettingFormulaNodeWork, I
         result.Label = jsonObject.getString("label");
         result.Layer = jsonObject.getIntValue("layer");
         result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+        result.NextNodeIds=new HashMap<>();
+        if (jsonObject.containsKey("nextNodeIds")){
+            JSONObject nextNodeIds=   jsonObject.getJSONObject("nextNodeIds");
+            for (Map.Entry<String,Object> kv : nextNodeIds.entrySet()) {
+                if (kv.getValue() instanceof JSONArray array){
+                    List<String> list=new ArrayList<>();
+                    for (Object obj:                    array) {
+                        list.add(obj.toString());
+                    }
+                    result.NextNodeIds.put(kv.getKey(),list);
+                }
+            }
+        }
 
         result.InputName = jsonObject.getString("inputName");
         result.CheckFormula = jsonObject.getString("checkFormula");

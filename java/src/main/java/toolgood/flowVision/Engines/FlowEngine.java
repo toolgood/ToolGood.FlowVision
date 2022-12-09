@@ -277,6 +277,10 @@ public final class FlowEngine implements IFlowEngine {
         throw new Exception("输入项[" + name + "]单位不同，无法从[" + oldSrcUnit + "]转成[" + oldTarUnit + "]");
     }
 
+    public List<String> BuildTreeNode(String appCode, String factoryCode, String json) throws Exception {
+        return BuildTreeNode(appCode, factoryCode, json, null);
+    }
+
     public List<String> BuildTreeNode(String appCode, String factoryCode, String json, String previous) throws Exception {
         AppWork app = BindingJson(appCode, factoryCode, json);
         BindingPreviousJson(previous);
@@ -829,18 +833,19 @@ public final class FlowEngine implements IFlowEngine {
     }
 
     String js_error = null;
+
     private void EvaluateJs(String script) throws Exception {
         ScriptEngineManager engineManager = new ScriptEngineManager();
         ScriptEngine jsEngine = engineManager.getEngineByName("graal.js");
 
         Bindings bindings = jsEngine.getBindings(ScriptContext.ENGINE_SCOPE);
-        bindings.put("getDatas",  (Supplier<String>)this::js_getDatas);
+        bindings.put("getDatas", (Supplier<String>) this::js_getDatas);
         bindings.put("getValue", (Function<String, Object>) this::js_getValue);
         bindings.put("hasKey", (Function<String, Boolean>) this::js_hasKey);
         bindings.put("setValue", (BiConsumer<String, Object>) this::js_setValue);
         bindings.put("Error", (Consumer<String>) this::js_Error);
         jsEngine.eval(script);
-        if (js_error!=null) throw new Exception(js_error);
+        if (js_error != null) throw new Exception(js_error);
     }
 
     private void js_Error(String msg) {
@@ -878,7 +883,7 @@ public final class FlowEngine implements IFlowEngine {
         try {
             value = GetTempParameter(name);
         } catch (Exception e) {
-            js_error =e.getMessage();
+            js_error = e.getMessage();
             return null;
         }
         if (value.Type() == OperandType.BOOLEAN) {

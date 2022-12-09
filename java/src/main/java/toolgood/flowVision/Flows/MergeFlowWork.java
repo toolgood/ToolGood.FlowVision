@@ -6,7 +6,9 @@ import toolgood.flowVision.Flows.Enums.CellType;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MergeFlowWork extends NodeWork implements ISettingFormulaNodeWork {
     public List<SettingFormulaWork> SettingFormula;
@@ -37,6 +39,19 @@ public class MergeFlowWork extends NodeWork implements ISettingFormulaNodeWork {
         result.Label = jsonObject.getString("label");
         result.Layer = jsonObject.getIntValue("layer");
         result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+        result.NextNodeIds=new HashMap<>();
+        if (jsonObject.containsKey("nextNodeIds")){
+            JSONObject nextNodeIds=   jsonObject.getJSONObject("nextNodeIds");
+            for (Map.Entry<String,Object> kv : nextNodeIds.entrySet()) {
+                if (kv.getValue() instanceof JSONArray array){
+                    List<String> list=new ArrayList<>();
+                    for (Object obj:                    array) {
+                        list.add(obj.toString());
+                    }
+                    result.NextNodeIds.put(kv.getKey(),list);
+                }
+            }
+        }
 
         result.SettingFormula =new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("settingFormula");

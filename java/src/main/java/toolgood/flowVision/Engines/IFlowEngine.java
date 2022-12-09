@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 public interface IFlowEngine {
+    List<String> BuildTreeNode(String appCode, String factoryCode, String json ) throws Exception;
     List<String> BuildTreeNode(String appCode, String factoryCode, String json, String previous) throws Exception;
     void EvaluateInputNum() throws Exception;
     double TryEvaluate(String exp, double def);

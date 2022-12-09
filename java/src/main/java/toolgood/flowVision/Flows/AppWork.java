@@ -58,7 +58,7 @@ public class AppWork {
 
     }
 
-    final static AppWork parse(JSONObject jsonObject) {
+    final static AppWork parse(JSONObject jsonObject) throws Exception {
         AppWork result = new AppWork();
         result.Code = jsonObject.getString("code");
         result.Name = jsonObject.getString("name");
