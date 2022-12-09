@@ -28,7 +28,7 @@ public class AppTest {
         String json = getFileDataStr("dict/项目_20221207133837.json");
         ProjectWork project = ProjectWork.LoadJson(json);
         IFlowEngine flowEngine = new FlowEngine(project);
-        flowEngine.BuildTreeNode("Flow", "Project1", "{\"数量\":800}");
+        flowEngine.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
         flowEngine.EvaluateInputNum();
         var t = flowEngine.TryEvaluate("总价", 0);
 

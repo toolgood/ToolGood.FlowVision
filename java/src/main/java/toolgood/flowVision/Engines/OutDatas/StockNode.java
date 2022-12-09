@@ -18,10 +18,13 @@ public class StockNode {
         }
     }
 
-    public boolean TryPop(ChannelNode node) {
+    public boolean IsNotNull() {
+        return Nodes.size() != 0;
+    }
+
+    public ChannelNode Pop() {
         if (Nodes.size() == 0) {
-            node = null;
-            return false;
+            return null;
         }
 
         ChannelNode temp = Nodes.get(0);
@@ -35,13 +38,12 @@ public class StockNode {
                 temp = channelNode;
             }
         }
-        node = temp;
+        ChannelNode node = temp;
         if (temp != null) {
             Nodes.remove(temp);
             IdSet.remove(temp.Node.Id());
-            return true;
         }
-        return false;
+        return node;
     }
 
 }

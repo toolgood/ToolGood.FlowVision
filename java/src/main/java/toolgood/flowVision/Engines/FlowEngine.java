@@ -298,8 +298,8 @@ public final class FlowEngine implements IFlowEngine {
         Map<String, TreeNode> temp = new HashMap<String, TreeNode>();
         Stack<String> outStatus = new Stack<String>();
 
-        ChannelNode channelNode = null;
-        while (stock.TryPop(channelNode)) {
+        while (stock.IsNotNull()) {
+            ChannelNode channelNode = stock.Pop();
             TreeNode currTreeNode = channelNode.Node;
             NodeWork work = currTreeNode.CurrWork;
             String channel = channelNode.Channel;
