@@ -26,7 +26,9 @@ import toolgood.flowVision.ThirdParty.UnitConversion.DistanceConverter;
 import toolgood.flowVision.ThirdParty.UnitConversion.MassConverter;
 import toolgood.flowVision.ThirdParty.UnitConversion.VolumeConverter;
 
+import javax.script.*;
 import java.util.*;
+import java.util.function.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -452,8 +454,8 @@ public final class FlowEngine implements IFlowEngine {
         }
         List<String> result = new ArrayList<>(outStatus.size());
 
-        while (outStatus.empty()==false    ){
-            String status=outStatus.pop();
+        while (outStatus.empty() == false) {
+            String status = outStatus.pop();
             result.add(status);
         }
         return result;
@@ -559,7 +561,7 @@ public final class FlowEngine implements IFlowEngine {
         if (_tempdictCount.containsKey(node.CurrWork.Id)) {
             List<String> keys = _tempdict.keySet().stream().toList();
             while (keys.size() > _tempdictCount.get(node.CurrWork.Id)) {
-                String key = keys.get(keys.size()-1);
+                String key = keys.get(keys.size() - 1);
                 keys.remove(keys.size() - 1);
                 _tempdict.remove(key);
             }
@@ -826,29 +828,33 @@ public final class FlowEngine implements IFlowEngine {
         return Operand.Error(parameter + "的公式未找到！");
     }
 
-    private void EvaluateJs(String script) {
-//        var engine = new Engine()
-//                .SetValue("getDatas", new Func<object>(js_getDatas))
-//                .SetValue("hasKey", new Func<String, bool>(js_hasKey))
-//                .SetValue("setValue", new Action<String, object>(js_setValue))
-//                .SetValue("getValue", new Func<String, object>(js_getValue))
-//                .SetValue("error", new Action<String>(js_Error));
-//
-//        engine.Evaluate(script);
-////        engine.Dispose();
-//        engine = null;
+    String js_error = null;
+    private void EvaluateJs(String script) throws Exception {
+        ScriptEngineManager engineManager = new ScriptEngineManager();
+        ScriptEngine jsEngine = engineManager.getEngineByName("graal.js");
+
+        Bindings bindings = jsEngine.getBindings(ScriptContext.ENGINE_SCOPE);
+        bindings.put("getDatas",  (Supplier<String>)this::js_getDatas);
+        bindings.put("getValue", (Function<String, Object>) this::js_getValue);
+        bindings.put("hasKey", (Function<String, Boolean>) this::js_hasKey);
+        bindings.put("setValue", (BiConsumer<String, Object>) this::js_setValue);
+        bindings.put("Error", (Consumer<String>) this::js_Error);
+        jsEngine.eval(script);
+        if (js_error!=null) throw new Exception(js_error);
     }
 
-    private void js_Error(String msg) throws Exception {
-        throw new Exception(msg);
+    private void js_Error(String msg) {
+        if (js_error != null) return;
+        js_error = msg;
     }
 
     private String js_getDatas() {
         return AttachData;
     }
 
-    private void js_setValue(String name, Object value) throws Exception {
-        if (value == null) {
+    private void js_setValue(String name, Object value) {
+        if (js_error != null) {
+        } else if (value == null) {
             _tempdict.put(name, Operand.CreateNull());
         } else if (value instanceof Integer numInt) {
             _tempdict.put(name, Operand.Create(numInt));
@@ -861,12 +867,20 @@ public final class FlowEngine implements IFlowEngine {
         } else if (value instanceof DateTime date) {
             _tempdict.put(name, Operand.Create(date));
         } else {
-            throw new Exception("setValue is error!");
+            js_error = "setValue is error!";
         }
     }
 
-    private Object js_getValue(String name) throws Exception {
-        Operand value = GetTempParameter(name);
+    private Object js_getValue(String name) {
+        if (js_error != null) return null;
+
+        Operand value = null;
+        try {
+            value = GetTempParameter(name);
+        } catch (Exception e) {
+            js_error =e.getMessage();
+            return null;
+        }
         if (value.Type() == OperandType.BOOLEAN) {
             return value.BooleanValue();
         } else if (value.Type() == OperandType.TEXT) {
@@ -897,7 +911,8 @@ public final class FlowEngine implements IFlowEngine {
             }
             return list;
         }
-        throw new Exception("getValue is error!");
+        js_error = "getValue is error!";
+        return null;
     }
 
     private Boolean js_hasKey(String name) {
