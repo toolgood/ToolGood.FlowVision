@@ -1,7 +1,7 @@
 package toolgood.flowVision.Flows;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import toolgood.flowVision.Flows.Enums.CellType;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 

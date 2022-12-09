@@ -1,6 +1,6 @@
 package toolgood.flowVision.Flows;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
 

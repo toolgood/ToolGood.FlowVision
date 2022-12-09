@@ -1,6 +1,6 @@
 package toolgood.flowVision.Flows;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import toolgood.algorithm.Operand;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;

@@ -1,6 +1,6 @@
 package toolgood.flowVision.Flows;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import toolgood.algorithm.internals.AntlrCharStream;
