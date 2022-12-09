@@ -1,8 +1,10 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONObject;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FactoryProcedureWork {
@@ -25,5 +27,22 @@ public class FactoryProcedureWork {
         return engine.TryEvaluate(progContext, false);
     }
 
+    final static FactoryProcedureWork parse(JSONObject jsonObject) {
+        FactoryProcedureWork result = new FactoryProcedureWork();
+        result.Category = jsonObject.getString("category");
+        result.Code = jsonObject.getString("code");
+        result.Name = jsonObject.getString("name");
+        result.CheckFormula = jsonObject.getString("checkFormula");
 
+        result.Items=new HashMap<>();
+        JSONObject allNodeWork = jsonObject.getJSONObject("items");
+        for (Map.Entry<String, Object> item : allNodeWork.entrySet()) {
+            if (item.getValue() instanceof JSONObject jsonObject1) {
+                FactoryProcedureItemWork work = FactoryProcedureItemWork.parse(jsonObject1);
+                result.Items.put(item.getKey(), work);
+            }
+        }
+
+        return result;
+    }
 }

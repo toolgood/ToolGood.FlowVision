@@ -45,8 +45,6 @@ namespace ToolGood.FlowVision.Flows
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string ErrorMessage { get; set; } // 抛出错误信息
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string Comment { get; set; }
 
         internal bool Check(FlowEngine engine)
         {

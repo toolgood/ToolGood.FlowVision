@@ -1,15 +1,19 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONObject;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import toolgood.algorithm.internals.AntlrCharStream;
 import toolgood.algorithm.internals.AntlrErrorListener;
+import toolgood.algorithm.litJson.JsonData;
+import toolgood.algorithm.litJson.JsonMapper;
 import toolgood.algorithm.math.mathLexer;
 import toolgood.algorithm.math.mathParser;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectWork {
+public class ProjectWork implements IProjectWork {
     public String Name;
     public String Code;
 
@@ -21,7 +25,7 @@ public class ProjectWork {
     public Map<String, FactoryMachineWork> FactoryMachineList;
     public Map<String, FactoryProcedureWork> FactoryProcedureList;
     public Map<String, AppWork> AppList;
-    private Map<String, mathParser.ProgContext> ProgList;
+    private final Map<String, mathParser.ProgContext> ProgList = new HashMap<>();
 
     public mathParser.ProgContext CreateProgContext(String exp) throws Exception {
         if (ProgList.containsKey(exp)) {
@@ -60,6 +64,74 @@ public class ProjectWork {
             return true;
         }
         return false;
+    }
+
+    public static ProjectWork LoadJson(String json) {
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        return ProjectWork.parse(jsonObject);
+    }
+
+    final static ProjectWork parse(JSONObject jsonObject) {
+        ProjectWork projectWork = new ProjectWork();
+
+        projectWork.FormulaList = new HashMap<>();
+        if (jsonObject.containsKey("formulaList")) {
+            JSONObject formulaList = (JSONObject) jsonObject.get("formulaList");
+            for (Map.Entry<String, Object> item : formulaList.entrySet()) {
+                projectWork.FormulaList.put(item.getKey(), item.getValue().toString());
+            }
+        }
+
+        projectWork.FactoryList = new HashMap<>();
+        if (jsonObject.containsKey("factoryList")) {
+            JSONObject formulaList = (JSONObject) jsonObject.get("factoryList");
+            for (Map.Entry<String, Object> item : formulaList.entrySet()) {
+                if (item.getValue() instanceof JSONObject jsonObject1) {
+                    FactoryWork work = FactoryWork.parse(jsonObject1);
+                    if (work != null) {
+                        projectWork.FactoryList.put(item.getKey(), work);
+                    }
+                }
+            }
+        }
+        projectWork.FactoryMachineList = new HashMap<>();
+        if (jsonObject.containsKey("factoryMachineList")) {
+            JSONObject formulaList = (JSONObject) jsonObject.get("factoryMachineList");
+            for (Map.Entry<String, Object> item : formulaList.entrySet()) {
+                if (item.getValue() instanceof JSONObject jsonObject1) {
+                    FactoryMachineWork work = FactoryMachineWork.parse(jsonObject1);
+                    if (work != null) {
+                        projectWork.FactoryMachineList.put(item.getKey(), work);
+                    }
+                }
+            }
+        }
+        projectWork.FactoryProcedureList = new HashMap<>();
+        if (jsonObject.containsKey("factoryProcedureList")) {
+            JSONObject formulaList = (JSONObject) jsonObject.get("factoryProcedureList");
+            for (Map.Entry<String, Object> item : formulaList.entrySet()) {
+                if (item.getValue() instanceof JSONObject jsonObject1) {
+                    FactoryProcedureWork work = FactoryProcedureWork.parse(jsonObject1);
+                    if (work != null) {
+                        projectWork.FactoryProcedureList.put(item.getKey(), work);
+                    }
+                }
+            }
+        }
+
+        projectWork.AppList = new HashMap<>();
+        if (jsonObject.containsKey("appList")) {
+            JSONObject formulaList = (JSONObject) jsonObject.get("appList");
+            for (Map.Entry<String, Object> item : formulaList.entrySet()) {
+                if (item.getValue() instanceof JSONObject jsonObject1) {
+                    AppWork work = AppWork.parse(jsonObject1);
+                    if (work != null) {
+                        projectWork.AppList.put(item.getKey(), work);
+                    }
+                }
+            }
+        }
+        return  projectWork;
     }
 
 

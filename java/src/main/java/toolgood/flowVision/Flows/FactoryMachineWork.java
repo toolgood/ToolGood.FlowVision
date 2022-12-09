@@ -1,7 +1,12 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
+import toolgood.flowVision.Flows.Enums.CellType;
+
+import java.util.ArrayList;
 
 public class FactoryMachineWork {
     private ProjectWork Project;
@@ -23,5 +28,17 @@ public class FactoryMachineWork {
         }
         mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
         return engine.TryEvaluate(progContext, false);
+    }
+
+    final static FactoryMachineWork parse(JSONObject jsonObject) {
+        FactoryMachineWork result = new FactoryMachineWork();
+        result.Factory = jsonObject.getString("factory");
+        result.MachineCode = jsonObject.getString("machineCode");
+        result.MachineName = jsonObject.getString("machineName");
+        result.MachineCategoryCode = jsonObject.getString("machineCategoryCode");
+        result.MachineCategoryName = jsonObject.getString("machineCategoryName");
+        result.CheckFormula = jsonObject.getString("checkFormula");
+
+        return result;
     }
 }

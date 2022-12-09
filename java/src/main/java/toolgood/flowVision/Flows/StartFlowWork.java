@@ -1,9 +1,12 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StartFlowWork extends NodeWork implements ISettingFormulaNodeWork {
@@ -27,5 +30,25 @@ public class StartFlowWork extends NodeWork implements ISettingFormulaNodeWork {
     @Override
     public List<SettingFormulaWork> SettingFormula() {
         return SettingFormula;
+    }
+
+    final static StartFlowWork parse2(JSONObject jsonObject) {
+        StartFlowWork result = new StartFlowWork();
+        result.Id = jsonObject.getString("id");
+        result.Label = jsonObject.getString("label");
+        result.Layer = jsonObject.getIntValue("layer");
+        result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+
+        result.SettingFormula =new ArrayList<>();
+        JSONArray array = jsonObject.getJSONArray("settingFormula");
+        for (Object s : array) {
+            if (s instanceof JSONObject jsonObject1){
+                SettingFormulaWork work=SettingFormulaWork.parse(jsonObject1);
+                if (work!=null){
+                    result.SettingFormula.add(work);
+                }
+            }
+        }
+        return result;
     }
 }

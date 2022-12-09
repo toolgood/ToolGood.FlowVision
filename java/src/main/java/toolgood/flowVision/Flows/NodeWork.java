@@ -1,5 +1,6 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONObject;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
 
@@ -14,7 +15,6 @@ public abstract class NodeWork {
     public String Id;
     public String Label;
     public int Layer;
-    public String Comment;
 
     public Map<String, List<NodeWork>> NextNodes;
     public Map<String, List<String>> NextNodeIds;
@@ -49,5 +49,24 @@ public abstract class NodeWork {
         }
     }
 
-
+    final static NodeWork parse(JSONObject jsonObject) throws Exception {
+        CellType type = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+        if (type == CellType.Start)
+            return StartFlowWork.parse2(jsonObject);
+        if (type == CellType.End)
+            return EndFlowWork.parse2(jsonObject);
+        if (type == CellType.Error)
+            return ErrorFlowWork.parse2(jsonObject);
+        if (type == CellType.Procedure)
+            return ProcedureFlowWork.parse2(jsonObject);
+        if (type == CellType.Custom)
+            return CustomFlowWork.parse2(jsonObject);
+        if (type == CellType.Jump)
+            return JumpFlowWork.parse2(jsonObject);
+        if (type == CellType.Merge)
+            return MergeFlowWork.parse2(jsonObject);
+        if (type == CellType.Status)
+            return StatusFlowWork.parse2(jsonObject);
+        throw new Exception("NodeType类型出错了");
+    }
 }

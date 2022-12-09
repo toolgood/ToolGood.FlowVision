@@ -27,11 +27,7 @@ namespace ToolGood.FlowVision.Flows
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string SimplifyName { get; set; }
 
-        /// <summary>
-        /// 经纬度
-        /// </summary>
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string LongAndLat { get; set; }
+   
 
         internal void Init(ProjectWork work)
         {

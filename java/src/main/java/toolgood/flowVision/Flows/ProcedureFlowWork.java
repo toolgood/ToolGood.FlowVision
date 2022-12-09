@@ -1,5 +1,7 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import toolgood.algorithm.Operand;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
@@ -11,6 +13,7 @@ import toolgood.flowVision.Flows.Interfaces.IInputFormulaNodeWork;
 import toolgood.flowVision.Flows.Interfaces.IInputNameNodeWork;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -179,5 +182,43 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         return null;
     }
 
+    final static ProcedureFlowWork parse2(JSONObject jsonObject) {
+        ProcedureFlowWork result = new ProcedureFlowWork();
+        result.Id = jsonObject.getString("id");
+        result.Label = jsonObject.getString("label");
+        result.Layer = jsonObject.getIntValue("layer");
+        result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
 
+        result.Procedure = jsonObject.getString("procedure");
+        result.CheckFormula = jsonObject.getString("checkFormula");
+        result.CheckType = toolgood.flowVision.Flows.Enums.CheckType.intToEnum(jsonObject.getIntValue("checkType"));
+        result.InputName = jsonObject.getString("inputName");
+        result.NumberType =InputNumberType.intToEnum( jsonObject.getIntValue("numberType"));
+        result.IsSubsidiaryCount = jsonObject.getBooleanValue("isSubsidiaryCount");
+        result.MachineRequired = jsonObject.getBooleanValue("machineRequired");
+
+
+
+        result.SettingFormula =new ArrayList<>();
+        JSONArray array = jsonObject.getJSONArray("settingFormula");
+        for (Object s : array) {
+            if (s instanceof JSONObject jsonObject1){
+                SettingFormulaWork work=SettingFormulaWork.parse(jsonObject1);
+                if (work!=null){
+                    result.SettingFormula.add(work);
+                }
+            }
+        }
+        result.InputFormula=new ArrayList<>();
+        JSONArray array2 = jsonObject.getJSONArray("inputFormula");
+        for (Object s : array2) {
+            if (s instanceof JSONObject jsonObject1){
+                SettingFormulaItemWork work=SettingFormulaItemWork.parse(jsonObject1);
+                if (work!=null){
+                    result.InputFormula.add(work);
+                }
+            }
+        }
+        return result;
+    }
 }

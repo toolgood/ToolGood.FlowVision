@@ -1,0 +1,93 @@
+{
+  "name": "项目",
+  "code": "02048942-EACB-4B78-BCAE-0F39FDC72AE2",
+  "numberRequired": true,
+  "formulaList": {},
+  "factoryList": {
+    "Project1": {
+      "category": "项目一",
+      "code": "Project1",
+      "name": "项目一",
+      "simplifyName": "项目一",
+      "longAndLat": ""
+    }
+  },
+  "factoryMachineList": {},
+  "factoryProcedureList": {},
+  "appList": {
+    "Flow": {
+      "code": "Flow",
+      "name": "流程一",
+      "initValueList": [],
+      "inputList": [],
+      "allNodeWork": {
+        "862c4908-9667-4d84-b1ba-06bfd0295aff": {
+          "nodeType": 1,
+          "settingFormula": [],
+          "id": "862c4908-9667-4d84-b1ba-06bfd0295aff",
+          "label": "开始",
+          "comment": "",
+          "nextNodeIds": {
+            "1": [
+              "0a0dbca7-d8ba-44fd-8c52-50b3a7255813",
+              "19aedffd-dccb-4222-9070-719b819feeef"
+            ]
+          }
+        },
+        "0a0dbca7-d8ba-44fd-8c52-50b3a7255813": {
+          "nodeType": 6,
+          "inputName": "",
+          "checkFormula": "数量<100",
+          "settingFormula": [
+            {
+              "name": "总价",
+              "defaultFormula": "数量*10",
+              "conditions": [],
+              "comment": ""
+            }
+          ],
+          "id": "0a0dbca7-d8ba-44fd-8c52-50b3a7255813",
+          "label": "数量<100总价",
+          "layer": 1,
+          "comment": "",
+          "nextNodeIds": {
+            "1": [
+              "962ed357-8b98-4d8d-b58e-289c63dfbc00"
+            ]
+          }
+        },
+        "19aedffd-dccb-4222-9070-719b819feeef": {
+          "nodeType": 6,
+          "inputName": "",
+          "checkFormula": "数量>=100",
+          "settingFormula": [
+            {
+              "name": "总价",
+              "defaultFormula": "数量*8",
+              "conditions": [],
+              "comment": ""
+            }
+          ],
+          "id": "19aedffd-dccb-4222-9070-719b819feeef",
+          "label": "数量>=100总价",
+          "layer": 1,
+          "comment": "",
+          "nextNodeIds": {
+            "1": [
+              "962ed357-8b98-4d8d-b58e-289c63dfbc00"
+            ]
+          }
+        },
+        "962ed357-8b98-4d8d-b58e-289c63dfbc00": {
+          "nodeType": 2,
+          "settingFormula": [],
+          "id": "962ed357-8b98-4d8d-b58e-289c63dfbc00",
+          "label": "结束",
+          "layer": 2,
+          "comment": "",
+          "nextNodeIds": {}
+        }
+      }
+    }
+  }
+}

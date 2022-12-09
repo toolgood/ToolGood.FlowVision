@@ -20,8 +20,6 @@ namespace ToolGood.FlowVision.Flows
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public List<SettingFormulaItemWork> Conditions { get; set; }
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string Comment { get; set; }
 
         internal Operand EvaluateFormula(FlowEngine engine)
         {

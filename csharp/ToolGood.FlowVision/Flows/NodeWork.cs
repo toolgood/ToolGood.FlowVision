@@ -17,7 +17,6 @@ namespace ToolGood.FlowVision.Flows
         public string Id { get; set; }
         public string Label { get; set; }
         public int Layer { get; set; }
-        public string Comment { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         public Dictionary<string, List<NodeWork>> NextNodes;// { get; set; }

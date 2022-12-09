@@ -1,9 +1,12 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomFlowWork extends NodeWork {
@@ -29,4 +32,20 @@ public class CustomFlowWork extends NodeWork {
         return engine.TryEvaluate(progContext, false);
     }
 
+    final static CustomFlowWork parse2(JSONObject jsonObject) {
+        CustomFlowWork result = new CustomFlowWork();
+        result.Id = jsonObject.getString("id");
+        result.Label = jsonObject.getString("label");
+        result.Layer = jsonObject.getIntValue("layer");
+        result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+
+        result.CheckFormula = jsonObject.getString("checkFormula");
+        result.Script = jsonObject.getString("script");
+        result.Names = new ArrayList<>();
+        JSONArray array = jsonObject.getJSONArray("names");
+        for (Object s : array) {
+            result.Names.add(s.toString());
+        }
+        return result;
+    }
 }

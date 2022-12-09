@@ -1,5 +1,7 @@
 package toolgood.flowVision.Flows;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import toolgood.algorithm.Operand;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
@@ -7,6 +9,7 @@ import toolgood.flowVision.Flows.Enums.CellType;
 import toolgood.flowVision.Flows.Enums.InputType;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatusFlowWork extends NodeWork implements ISettingFormulaNodeWork {
@@ -52,5 +55,30 @@ public class StatusFlowWork extends NodeWork implements ISettingFormulaNodeWork 
     @Override
     public List<SettingFormulaWork> SettingFormula() {
         return SettingFormula;
+    }
+
+
+    final static StatusFlowWork parse2(JSONObject jsonObject) {
+        StatusFlowWork result = new StatusFlowWork();
+        result.Id = jsonObject.getString("id");
+        result.Label = jsonObject.getString("label");
+        result.Layer = jsonObject.getIntValue("layer");
+        result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+
+        result.CheckFormula = jsonObject.getString("checkFormula");
+        result.Status = jsonObject.getString("status");
+        result.StatusCheckFormula = jsonObject.getString("statusCheckFormula");
+
+        result.SettingFormula =new ArrayList<>();
+        JSONArray array = jsonObject.getJSONArray("settingFormula");
+        for (Object s : array) {
+            if (s instanceof JSONObject jsonObject1){
+                SettingFormulaWork work=SettingFormulaWork.parse(jsonObject1);
+                if (work!=null){
+                    result.SettingFormula.add(work);
+                }
+            }
+        }
+        return result;
     }
 }
