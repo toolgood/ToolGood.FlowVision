@@ -5,15 +5,19 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import toolgood.algorithm.internals.AntlrCharStream;
 import toolgood.algorithm.internals.AntlrErrorListener;
-import toolgood.algorithm.litJson.JsonData;
-import toolgood.algorithm.litJson.JsonMapper;
 import toolgood.algorithm.math.mathLexer;
 import toolgood.algorithm.math.mathParser;
+import toolgood.flowVision.Common.CompressionUtil;
+import toolgood.flowVision.Common.RCY;
+import toolgood.flowVision.Common.RsaUtil;
 
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectWork implements IProjectWork {
+public class ProjectWork {
     public String Name;
     public String Code;
 
@@ -66,7 +70,7 @@ public class ProjectWork implements IProjectWork {
         return false;
     }
 
-    public static ProjectWork LoadJson(String json) throws Exception {
+    public static ProjectWork ParseJson(String json) throws Exception {
         JSONObject jsonObject = JSONObject.parseObject(json);
         ProjectWork work = ProjectWork.parse(jsonObject);
         for (FactoryWork item : work.FactoryList.values()) {
@@ -86,10 +90,10 @@ public class ProjectWork implements IProjectWork {
 
     static ProjectWork parse(JSONObject jsonObject) throws Exception {
         ProjectWork projectWork = new ProjectWork();
-        projectWork.Name=jsonObject.getString("name");
-        projectWork.Code=jsonObject.getString("code");
-        projectWork.ExcelIndex=jsonObject.getIntValue("excelIndex");
-        projectWork.NumberRequired=jsonObject.getBooleanValue("numberRequired");
+        projectWork.Name = jsonObject.getString("name");
+        projectWork.Code = jsonObject.getString("code");
+        projectWork.ExcelIndex = jsonObject.getIntValue("excelIndex");
+        projectWork.NumberRequired = jsonObject.getBooleanValue("numberRequired");
 
         projectWork.FormulaList = new HashMap<>();
         if (jsonObject.containsKey("formulaList")) {
@@ -148,7 +152,76 @@ public class ProjectWork implements IProjectWork {
                 }
             }
         }
-        return  projectWork;
+        return projectWork;
+    }
+
+    public static ProjectWork LoadJson(String filename) throws Exception {
+        File file = new File(filename);
+
+        FileReader fileReader = new FileReader(file);
+        BufferedReader reader = new BufferedReader(fileReader);
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        reader.close();
+        String json = stringBuilder.toString();
+        return ParseJson(json);
+    }
+
+
+    public static ProjectWork LoadJsonUsedRsa(String filename) throws Exception {
+        String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu3W3xI6mH9tr3A+sNZVhyIbQWFhePbPWdFeTtM39yR7kO4Akp6Dsb1NYKpKxSGjIwDv1TC6/IUwOgOYYSVa0pgfIujHPrYFO/LlDk6kPAyHluLimKFkHkze5FsY7YAqd2mExqdJ4Zfb1pXgIrVFgOs4o69p9vyBV6kWS0FBOnyyUK92bRYxeqS1raRfM3GUlIEaQW5ZIuJxQtFrfwSnsfDVhkp8rvFVt7I5aqawWeoJZu+/HZqQO/gz+BJ7ntlUWoPgfe13/U3kIOHMTc/Deczb5x3DeBv9XrwJ5+DrzrJV8jTdhiYeNcBNBYaKoHGS15chxt6no4sIDZYsI2N4ciQIDAQAB";
+
+        FileChannel channel = null;
+        FileInputStream fs = null;
+        try {
+            File f = new File(filename);
+            fs = new FileInputStream(f);
+            channel = fs.getChannel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+            channel.read(byteBuffer);
+            int len = byteArrayToInt(byteBuffer);
+
+            byteBuffer = ByteBuffer.allocate(len);
+            for (int i = 0; i < len / 4; i++)
+                channel.read(byteBuffer);
+            byte[] bs = byteBuffer.array();
+            bs = RsaUtil.decryptData(bs, publicKey);
+
+            byteBuffer = ByteBuffer.allocate(4);
+            channel.read(byteBuffer);
+            len = byteArrayToInt(byteBuffer);
+
+            byteBuffer = ByteBuffer.allocate(len);
+            while (channel.read(byteBuffer) > 0) {
+            }
+            byte[] bs2 = byteBuffer.array();
+
+            bs2 = RCY.Encrypt(bs2, bs);
+            bs2 = CompressionUtil.BrDecompress(bs2);
+
+            String json = new String(bs2, "utf-8");
+            return ParseJson(json);
+        } finally {
+            try {
+                channel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fs.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static int byteArrayToInt(ByteBuffer byteBuffer) {
+        byte[] bytes = byteBuffer.array();
+        int res = ((bytes[3] & 0xff) << 24) + ((bytes[2] & 0xff) << 16) + ((bytes[1] & 0xff) << 8) + (bytes[0] & 0xff);
+        return res;
     }
 
 

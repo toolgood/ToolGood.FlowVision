@@ -75,7 +75,7 @@
 ``` cs
     // 使用的是快速上手 案例 生成导出的文件
     var text = File.ReadAllText("dict/项目_20221207133837.json");
-    var project = ProjectWork.LoadJson(text);
+    var project = ProjectWork.ParseJson(text);
     FlowEngine flowEngine = new FlowEngine(project);
     flowEngine.BuildTreeNode("Flow", "Project1", "{\"数量\":800}");
     flowEngine.EvaluateInputNum();
@@ -83,7 +83,7 @@
 
 
     var fileBytes = File.ReadAllBytes("dict/项目_20221207133841.data");
-    var project2 = ProjectWork.LoadJsonWithRsa(fileBytes);
+    var project2 = ProjectWork.ParseJsonWithRsa(fileBytes);
     FlowEngine flowEngine2 = new FlowEngine(project2);
     flowEngine2.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
     flowEngine2.EvaluateInputNum();
