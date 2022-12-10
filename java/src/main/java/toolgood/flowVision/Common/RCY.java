@@ -1,4 +1,4 @@
-package toolgood.rcxCrypto;
+package toolgood.flowVision.Common;
 
 public class RCY {
     private static final int keyLen = 256;

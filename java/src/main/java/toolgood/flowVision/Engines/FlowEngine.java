@@ -85,7 +85,7 @@ public final class FlowEngine implements IFlowEngine {
             throw new Exception("未找到编号[" + appCode + "]的厂区");
         }
         _inputDict.put("厂区编号", Operand.Create(factoryCode));
-        _inputDict.put("厂区", Operand.Create(Project.FactoryList.get(factoryCode).SimplifyName));
+        _inputDict.put("厂区", Operand.Create(Project.FactoryList.get(factoryCode).Name));
 
         JsonData jlist = AddParameterFromJson(json);
 

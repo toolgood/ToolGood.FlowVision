@@ -67,7 +67,7 @@ namespace ToolGood.FlowVision.Engines
                 throw new Exception($"未找到编号[{factoryCode}]的厂区");
             }
             _inputDict["厂区编号"] = Operand.Create(factoryCode);
-            _inputDict["厂区"] = Operand.Create(Project.FactoryList[factoryCode].SimplifyName);
+            _inputDict["厂区"] = Operand.Create(Project.FactoryList[factoryCode].Name);
             #endregion
 
             #region 数量

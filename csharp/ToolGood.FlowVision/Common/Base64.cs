@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ToolGood.FlowVision.Commons
+namespace ToolGood.FlowVision.Common
 {
     /// <summary>
     /// Modified Base64 for URL applications ('base64url' encoding)
@@ -58,17 +58,18 @@ namespace ToolGood.FlowVision.Commons
         /// <returns>Input base64ForUrl encoded string as the original byte array</returns>
         public static byte[] FromBase64ForUrlString(string base64ForUrlInput)
         {
-            StringBuilder sb = new StringBuilder(base64ForUrlInput.Length+3);
-            for (int i = 0; i < base64ForUrlInput.Length; i++) {
-                var c= base64ForUrlInput[i];
-                if ((int)c >= 128) continue;
+            StringBuilder sb = new StringBuilder(base64ForUrlInput.Length + 3);
+            for (int i = 0; i < base64ForUrlInput.Length; i++)
+            {
+                var c = base64ForUrlInput[i];
+                if (c >= 128) continue;
                 var k = base64[c];
                 if (k == '=') continue;
                 sb.Append(k);
             }
             var len = sb.Length;
-            int padChars = (len % 4) == 0 ? 0 : (4 - (len % 4));
-            if (padChars > 0) sb.Append(String.Empty.PadRight(padChars, '='));
+            int padChars = len % 4 == 0 ? 0 : 4 - len % 4;
+            if (padChars > 0) sb.Append(string.Empty.PadRight(padChars, '='));
             return Convert.FromBase64String(sb.ToString());
         }
     }

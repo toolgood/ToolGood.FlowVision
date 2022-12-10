@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 
-namespace ToolGood.FlowVision.Flows.Common
+namespace ToolGood.FlowVision.Common
 {
     /// <summary>
     /// 压缩
@@ -18,15 +18,20 @@ namespace ToolGood.FlowVision.Flows.Common
         {
             if (data == null || data.Length == 0)
                 return data;
-            try {
-                using (MemoryStream stream = new MemoryStream()) {
+            try
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
                     var level = fastest ? CompressionLevel.Fastest : CompressionLevel.Optimal;
-                    using (DeflateStream zStream = new DeflateStream(stream, level)) {
+                    using (DeflateStream zStream = new DeflateStream(stream, level))
+                    {
                         zStream.Write(data, 0, data.Length);
                     }
                     return stream.ToArray();
                 }
-            } catch {
+            }
+            catch
+            {
                 return data;
             }
         }
@@ -40,16 +45,22 @@ namespace ToolGood.FlowVision.Flows.Common
         {
             if (data == null || data.Length == 0)
                 return data;
-            try {
-                using (MemoryStream stream = new MemoryStream(data)) {
-                    using (DeflateStream zStream = new DeflateStream(stream, CompressionMode.Decompress)) {
-                        using (var resultStream = new MemoryStream()) {
+            try
+            {
+                using (MemoryStream stream = new MemoryStream(data))
+                {
+                    using (DeflateStream zStream = new DeflateStream(stream, CompressionMode.Decompress))
+                    {
+                        using (var resultStream = new MemoryStream())
+                        {
                             zStream.CopyTo(resultStream);
                             return resultStream.ToArray();
                         }
                     }
                 }
-            } catch {
+            }
+            catch
+            {
                 return data;
             }
         }
@@ -64,15 +75,20 @@ namespace ToolGood.FlowVision.Flows.Common
         {
             if (data == null || data.Length == 0)
                 return data;
-            try {
-                using (MemoryStream stream = new MemoryStream()) {
+            try
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
                     var level = fastest ? CompressionLevel.Fastest : CompressionLevel.Optimal;
-                    using (GZipStream zStream = new GZipStream(stream, level)) {
+                    using (GZipStream zStream = new GZipStream(stream, level))
+                    {
                         zStream.Write(data, 0, data.Length);
                     }
                     return stream.ToArray();
                 }
-            } catch {
+            }
+            catch
+            {
                 return data;
             }
         }
@@ -86,16 +102,22 @@ namespace ToolGood.FlowVision.Flows.Common
         {
             if (data == null || data.Length == 0)
                 return data;
-            try {
-                using (MemoryStream stream = new MemoryStream(data)) {
-                    using (GZipStream zStream = new GZipStream(stream, CompressionMode.Decompress)) {
-                        using (var resultStream = new MemoryStream()) {
+            try
+            {
+                using (MemoryStream stream = new MemoryStream(data))
+                {
+                    using (GZipStream zStream = new GZipStream(stream, CompressionMode.Decompress))
+                    {
+                        using (var resultStream = new MemoryStream())
+                        {
                             zStream.CopyTo(resultStream);
                             return resultStream.ToArray();
                         }
                     }
                 }
-            } catch {
+            }
+            catch
+            {
                 return data;
             }
         }
@@ -111,15 +133,20 @@ namespace ToolGood.FlowVision.Flows.Common
         {
             if (data == null || data.Length == 0)
                 return data;
-            try {
-                using (MemoryStream stream = new MemoryStream()) {
+            try
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
                     var level = fastest ? CompressionLevel.Fastest : CompressionLevel.Optimal;
-                    using (BrotliStream zStream = new BrotliStream(stream, level)) {
+                    using (BrotliStream zStream = new BrotliStream(stream, level))
+                    {
                         zStream.Write(data, 0, data.Length);
                     }
                     return stream.ToArray();
                 }
-            } catch {
+            }
+            catch
+            {
                 return data;
             }
         }
@@ -134,16 +161,22 @@ namespace ToolGood.FlowVision.Flows.Common
         {
             if (data == null || data.Length == 0)
                 return data;
-            try {
-                using (MemoryStream stream = new MemoryStream(data)) {
-                    using (BrotliStream zStream = new BrotliStream(stream, CompressionMode.Decompress)) {
-                        using (var resultStream = new MemoryStream()) {
+            try
+            {
+                using (MemoryStream stream = new MemoryStream(data))
+                {
+                    using (BrotliStream zStream = new BrotliStream(stream, CompressionMode.Decompress))
+                    {
+                        using (var resultStream = new MemoryStream())
+                        {
                             zStream.CopyTo(resultStream);
                             return resultStream.ToArray();
                         }
                     }
                 }
-            } catch {
+            }
+            catch
+            {
                 return data;
             }
         }

@@ -2,9 +2,7 @@
 using ToolGood.Algorithm.Internals;
 using ToolGood.Algorithm;
 using static ToolGood.Algorithm.mathParser;
-using ToolGood.FlowVision.Commons;
 using System.Text;
-using ToolGood.FlowVision.Flows.Common;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -12,6 +10,7 @@ using ToolGood.Algorithm.Enums;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using ToolGood.FlowVision.Common;
 
 namespace ToolGood.FlowVision.Flows
 {
@@ -83,7 +82,14 @@ namespace ToolGood.FlowVision.Flows
 
                     length = br.ReadInt32();
                     var bs2 = br.ReadBytes(length);
+
+/* 项目“ToolGood.FlowVision (netstandard2.1)”的未合并的更改
+在此之前:
                     bs2 = RcxCrypto.RCY.Encrypt(bs2, bs);
+在此之后:
+                    bs2 = RCY.Encrypt(bs2, bs);
+*/
+                    bs2 = Common.RCY.Encrypt(bs2, bs);
                     bs2 = CompressionUtil.BrDecompress(bs2);
                     var json = Encoding.UTF8.GetString(bs2);
 

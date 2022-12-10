@@ -7,9 +7,6 @@ namespace ToolGood.FlowVision.Flows
         [System.Text.Json.Serialization.JsonIgnore]
         public ProjectWork Project;// { get; set; }
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string Category { get; set; }
-
         /// <summary>
         /// 编号
         /// </summary>
@@ -17,17 +14,10 @@ namespace ToolGood.FlowVision.Flows
         public string Code { get; set; }
 
         /// <summary>
-        /// 名称
-        /// </summary>
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string Name { get; set; }
-        /// <summary>
         /// 简化名称
         /// </summary>
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string SimplifyName { get; set; }
-
-   
+        public string Name { get; set; }
 
         internal void Init(ProjectWork work)
         {

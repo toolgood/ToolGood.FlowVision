@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace ToolGood.FlowVision.Commons
+namespace ToolGood.FlowVision.Common
 {
     /// <summary>
     /// RSA 加解密
@@ -67,7 +67,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static string PublicEncrypt(string publicKey, string EncryptString)
         {
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider()) {
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+            {
                 LoadPublicKey(rsa, publicKey);
                 var bs = Encoding.UTF8.GetBytes(EncryptString);
                 return Convert.ToBase64String(publicEncrypt(rsa, bs));
@@ -82,7 +83,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static byte[] PublicEncrypt(string publicKey, byte[] bytes)
         {
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider()) {
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+            {
                 LoadPublicKey(rsa, publicKey);
                 return publicEncrypt(rsa, bytes);
             }
@@ -90,12 +92,15 @@ namespace ToolGood.FlowVision.Commons
         private static byte[] publicEncrypt(RSACryptoServiceProvider rsa, byte[] bytes)
         {
             var keySize = rsa.KeySize / 8 - 11;
-            if (bytes.Length <= keySize) {
+            if (bytes.Length <= keySize)
+            {
                 return rsa.Encrypt(bytes, false);
             }
-            using (MemoryStream ms = new MemoryStream()) {
+            using (MemoryStream ms = new MemoryStream())
+            {
                 var index = 0;
-                while (index < bytes.Length) {
+                while (index < bytes.Length)
+                {
                     var length = Math.Min(keySize, bytes.Length - index);
                     var bs = new byte[length];
                     Array.Copy(bytes, index, bs, 0, length);
@@ -116,7 +121,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static string PrivateDecrypt(string publicKey, string DecryptString)
         {
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider()) {
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+            {
                 LoadPrivateKey(rsa, publicKey);
 
                 var bytes = Base64.FromBase64ForUrlString(DecryptString);
@@ -133,7 +139,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static byte[] PrivateDecrypt(string privateKey, byte[] bytes)
         {
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider()) {
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+            {
                 LoadPrivateKey(rsa, privateKey);
                 return privateDecrypt(rsa, bytes);
             }
@@ -141,16 +148,21 @@ namespace ToolGood.FlowVision.Commons
         private static byte[] privateDecrypt(RSACryptoServiceProvider rsa, byte[] bytes)
         {
             var keySize = rsa.KeySize / 8;
-            if (bytes.Length < keySize) {//修复 js base64化bug
+            if (bytes.Length < keySize)
+            {//修复 js base64化bug
                 byte[] bs = new byte[keySize];
                 Array.Copy(bytes, 0, bs, keySize - bytes.Length, bytes.Length);
                 return rsa.Decrypt(bs, false);
-            } else if (bytes.Length == keySize) {
+            }
+            else if (bytes.Length == keySize)
+            {
                 return rsa.Decrypt(bytes, false);
             }
-            using (MemoryStream ms = new MemoryStream()) {
+            using (MemoryStream ms = new MemoryStream())
+            {
                 var index = 0;
-                while (index < bytes.Length) {
+                while (index < bytes.Length)
+                {
                     var length = Math.Min(keySize, bytes.Length - index);
                     var bs = new byte[length];
                     Array.Copy(bytes, index, bs, 0, length);
@@ -173,7 +185,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static string PrivateEncrypt(string privateKey, string EncryptString)
         {
-            using (RsaEncryption rsa = new RsaEncryption()) {
+            using (RsaEncryption rsa = new RsaEncryption())
+            {
                 rsa.LoadPrivateFromXml(privateKey);
                 var bs = Encoding.UTF8.GetBytes(EncryptString);
                 return Convert.ToBase64String(rsa.PrivateEncryption(bs));
@@ -187,7 +200,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static byte[] PrivateEncrypt(string privateKey, byte[] bytes)
         {
-            using (RsaEncryption rsa = new RsaEncryption()) {
+            using (RsaEncryption rsa = new RsaEncryption())
+            {
                 rsa.LoadPrivateFromXml(privateKey);
                 return rsa.PrivateEncryption(bytes);
             }
@@ -200,7 +214,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static string PublicDecrypt(string publicKey, string DecryptString)
         {
-            using (RsaEncryption rsa = new RsaEncryption()) {
+            using (RsaEncryption rsa = new RsaEncryption())
+            {
                 rsa.LoadPublicFromXml(publicKey);
                 var bs = rsa.PublicDecryption(Convert.FromBase64String(DecryptString));
                 return Encoding.UTF8.GetString(bs);
@@ -214,7 +229,8 @@ namespace ToolGood.FlowVision.Commons
         /// <returns></returns>
         public static byte[] PublicDecrypt(string publicKey, byte[] bytes)
         {
-            using (RsaEncryption rsa = new RsaEncryption()) {
+            using (RsaEncryption rsa = new RsaEncryption())
+            {
                 rsa.LoadPublicFromXml(publicKey);
                 return rsa.PublicDecryption(bytes);
             }
@@ -312,13 +328,19 @@ namespace ToolGood.FlowVision.Commons
         private static void LoadPrivateKey(RSA rsa, string key)
         {
             RSAParameters parameters;
-            if (key.StartsWith('<')) {
+            if (key.StartsWith('<'))
+            {
                 parameters = LoadXmlString(key);
-            } else {
-                try {
+            }
+            else
+            {
+                try
+                {
                     parameters = FromPem(key, out bool pk);
                     if (pk == false) { throw new Exception("It is not private key."); }
-                } catch {
+                }
+                catch
+                {
                     parameters = LoadCertPrivateKey(key);
                 }
             }
@@ -327,12 +349,18 @@ namespace ToolGood.FlowVision.Commons
         private static void LoadPublicKey(RSA rsa, string key)
         {
             RSAParameters parameters;
-            if (key.StartsWith('<')) {
+            if (key.StartsWith('<'))
+            {
                 parameters = LoadXmlString(key);
-            } else {
-                try {
+            }
+            else
+            {
+                try
+                {
                     parameters = FromPem(key, out bool _);
-                } catch {
+                }
+                catch
+                {
                     parameters = LoadCertPublicKey(key);
                 }
             }
@@ -344,9 +372,12 @@ namespace ToolGood.FlowVision.Commons
             RSAParameters parameters = new RSAParameters();
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
-            if (xmlDoc.DocumentElement.Name.Equals("RSAKeyValue")) {
-                foreach (XmlNode node in xmlDoc.DocumentElement.ChildNodes) {
-                    switch (node.Name) {
+            if (xmlDoc.DocumentElement.Name.Equals("RSAKeyValue"))
+            {
+                foreach (XmlNode node in xmlDoc.DocumentElement.ChildNodes)
+                {
+                    switch (node.Name)
+                    {
                         case "Modulus": parameters.Modulus = Convert.FromBase64String(node.InnerText); break;
                         case "Exponent": parameters.Exponent = Convert.FromBase64String(node.InnerText); break;
                         case "P": parameters.P = Convert.FromBase64String(node.InnerText); break;
@@ -357,14 +388,17 @@ namespace ToolGood.FlowVision.Commons
                         case "D": parameters.D = Convert.FromBase64String(node.InnerText); break;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 throw new Exception("Invalid XML RSA key.");
             }
             return parameters;
         }
         private static string SaveXmlString(RSAParameters parameters, bool includePrivateParameters)
         {
-            if (includePrivateParameters) {
+            if (includePrivateParameters)
+            {
                 return string.Format("<RSAKeyValue><Modulus>{0}</Modulus><Exponent>{1}</Exponent><P>{2}</P><Q>{3}</Q><DP>{4}</DP><DQ>{5}</DQ><InverseQ>{6}</InverseQ><D>{7}</D></RSAKeyValue>",
                     Convert.ToBase64String(parameters.Modulus),
                     Convert.ToBase64String(parameters.Exponent),
@@ -404,25 +438,34 @@ namespace ToolGood.FlowVision.Commons
             var idx = 0;
 
             //read  length
-            Func<byte, int> readLen = (first) => {
-                if (data[idx] == first) {
+            Func<byte, int> readLen = (first) =>
+            {
+                if (data[idx] == first)
+                {
                     idx++;
-                    if (data[idx] == 0x81) {
+                    if (data[idx] == 0x81)
+                    {
                         idx++;
                         return data[idx++];
-                    } else if (data[idx] == 0x82) {
+                    }
+                    else if (data[idx] == 0x82)
+                    {
                         idx++;
-                        return (((int)data[idx++]) << 8) + data[idx++];
-                    } else if (data[idx] < 0x80) {
+                        return (data[idx++] << 8) + data[idx++];
+                    }
+                    else if (data[idx] < 0x80)
+                    {
                         return data[idx++];
                     }
                 }
                 throw new Exception("Not found any content in pem file");
             };
             //read module length
-            Func<byte[]> readBlock = () => {
+            Func<byte[]> readBlock = () =>
+            {
                 var len = readLen(0x02);
-                if (data[idx] == 0x00) {
+                if (data[idx] == 0x00)
+                {
                     idx++;
                     len--;
                 }
@@ -431,15 +474,18 @@ namespace ToolGood.FlowVision.Commons
                 return val;
             };
 
-            Func<byte[], bool> eq = (byts) => {
-                for (var i = 0; i < byts.Length; i++, idx++) {
+            Func<byte[], bool> eq = (byts) =>
+            {
+                for (var i = 0; i < byts.Length; i++, idx++)
+                {
                     if (idx >= data.Length) { return false; }
                     if (byts[i] != data[idx]) { return false; }
                 }
                 return true;
             };
 
-            if (pem.Contains("PUBLIC KEY")) {
+            if (pem.Contains("PUBLIC KEY"))
+            {
                 readLen(0x30);
                 if (!eq(_SeqOID)) { throw new Exception("Unknown pem format"); }
 
@@ -448,17 +494,22 @@ namespace ToolGood.FlowVision.Commons
                 readLen(0x30);
                 param.Modulus = readBlock();
                 param.Exponent = readBlock();
-            } else if (pem.Contains("PRIVATE KEY")) {
+            }
+            else if (pem.Contains("PRIVATE KEY"))
+            {
                 readLen(0x30);
                 //Read version
                 if (!eq(_Ver)) { throw new Exception("Unknown pem version"); }
                 //Check PKCS8
                 var idx2 = idx;
-                if (eq(_SeqOID)) {
+                if (eq(_SeqOID))
+                {
                     readLen(0x04);
                     readLen(0x30);
                     if (!eq(_Ver)) { throw new Exception("Pem version invalid"); }
-                } else {
+                }
+                else
+                {
                     idx = idx2;
                 }
                 param.Modulus = readBlock();
@@ -470,7 +521,9 @@ namespace ToolGood.FlowVision.Commons
                 param.DQ = readBlock();
                 param.InverseQ = readBlock();
                 privateKey = true;
-            } else {
+            }
+            else
+            {
                 throw new Exception("pem need 'BEGIN' and  'END'");
             }
             return param;
@@ -502,21 +555,28 @@ namespace ToolGood.FlowVision.Commons
         {
             var ms = new MemoryStream();
 
-            Action<int> writeLenByte = (len) => {
-                if (len < 0x80) {
+            Action<int> writeLenByte = (len) =>
+            {
+                if (len < 0x80)
+                {
                     ms.WriteByte((byte)len);
-                } else if (len <= 0xff) {
+                }
+                else if (len <= 0xff)
+                {
                     ms.WriteByte(0x81);
                     ms.WriteByte((byte)len);
-                } else {
+                }
+                else
+                {
                     ms.WriteByte(0x82);
                     ms.WriteByte((byte)(len >> 8 & 0xff));
                     ms.WriteByte((byte)(len & 0xff));
                 }
             };
             //write moudle data
-            Action<byte[]> writeBlock = (byts) => {
-                var addZero = (byts[0] >> 4) >= 0x8;
+            Action<byte[]> writeBlock = (byts) =>
+            {
+                var addZero = byts[0] >> 4 >= 0x8;
                 ms.WriteByte(0x02);
                 var len = byts.Length + (addZero ? 1 : 0);
                 writeLenByte(len);
@@ -525,7 +585,8 @@ namespace ToolGood.FlowVision.Commons
                 ms.Write(byts, 0, byts.Length);
             };
 
-            Func<int, byte[], byte[]> writeLen = (index, byts) => {
+            Func<int, byte[], byte[]> writeLen = (index, byts) =>
+            {
                 var len = byts.Length - index;
                 ms.SetLength(0);
                 ms.Write(byts, 0, index);
@@ -535,7 +596,8 @@ namespace ToolGood.FlowVision.Commons
             };
 
 
-            if (!includePrivateParameters) {
+            if (!includePrivateParameters)
+            {
                 ms.WriteByte(0x30);
                 var index1 = (int)ms.Length;
 
@@ -565,7 +627,9 @@ namespace ToolGood.FlowVision.Commons
 
 
                 return "-----BEGIN PUBLIC KEY-----\n" + TextBreak(Convert.ToBase64String(bytes), 64) + "\n-----END PUBLIC KEY-----";
-            } else {
+            }
+            else
+            {
                 //Write total length
                 ms.WriteByte(0x30);
                 int index1 = (int)ms.Length;
@@ -575,7 +639,8 @@ namespace ToolGood.FlowVision.Commons
 
                 //PKCS8 
                 int index2 = -1, index3 = -1;
-                if (isPKCS8) {
+                if (isPKCS8)
+                {
                     WriteAll(ms, _SeqOID);
                     ms.WriteByte(0x04);
                     index2 = (int)ms.Length;
@@ -595,7 +660,8 @@ namespace ToolGood.FlowVision.Commons
 
                 var bytes = ms.ToArray();
 
-                if (index2 != -1) {
+                if (index2 != -1)
+                {
                     bytes = writeLen(index3, bytes);
                     bytes = writeLen(index2, bytes);
                 }
@@ -629,13 +695,18 @@ namespace ToolGood.FlowVision.Commons
             var idx = 0;
             var len = text.Length;
             var str = new StringBuilder();
-            while (idx < len) {
-                if (idx > 0) {
+            while (idx < len)
+            {
+                if (idx > 0)
+                {
                     str.Append('\n');
                 }
-                if (idx + line >= len) {
+                if (idx + line >= len)
+                {
                     str.Append(text.Substring(idx));
-                } else {
+                }
+                else
+                {
                     str.Append(text.Substring(idx, line));
                 }
                 idx += line;
@@ -684,21 +755,27 @@ namespace ToolGood.FlowVision.Commons
             {
                 if (!isPrivateKeyLoaded) throw new CryptographicException("Private Key must be loaded before using the Private Encryption method!");
 
-                int len = (rsa.KeySize / 8) - 11;
-                if (data.Length > len) {
-                    using (var ms = new MemoryStream()) {
+                int len = rsa.KeySize / 8 - 11;
+                if (data.Length > len)
+                {
+                    using (var ms = new MemoryStream())
+                    {
                         MemoryStream msInput = new MemoryStream(data);
                         byte[] buffer = new byte[len];
                         int readLen = msInput.Read(buffer, 0, len);
 
-                        while (readLen > 0) {
+                        while (readLen > 0)
+                        {
                             byte[] dataToEnc = new byte[readLen];
                             Array.Copy(buffer, 0, dataToEnc, 0, readLen);
 
                             var bytes = PrivareEncryption2(dataToEnc);
-                            if (bytes.Length == rsa.KeySize / 8 + 1) {
+                            if (bytes.Length == rsa.KeySize / 8 + 1)
+                            {
                                 ms.Write(bytes, 0, bytes.Length);
-                            } else {
+                            }
+                            else
+                            {
                                 ms.Write(bytes, 0, bytes.Length);
                                 var l = rsa.KeySize / 8 + 1 - bytes.Length;
                                 byte[] bs = new byte[l];
@@ -723,14 +800,17 @@ namespace ToolGood.FlowVision.Commons
             {
                 if (!isPublicKeyLoaded) throw new CryptographicException("Public Key must be loaded before using the Public Encryption method!");
 
-                int len = (rsa.KeySize / 8) + 1;
-                if (data.Length > len) {
-                    using (var ms = new MemoryStream()) {
+                int len = rsa.KeySize / 8 + 1;
+                if (data.Length > len)
+                {
+                    using (var ms = new MemoryStream())
+                    {
                         MemoryStream msInput = new MemoryStream(data);
                         byte[] buffer = new byte[len];
                         int readLen = msInput.Read(buffer, 0, len);
 
-                        while (readLen > 0) {
+                        while (readLen > 0)
+                        {
                             while (buffer[readLen - 1] == 0) { readLen--; }
                             byte[] dataToEnc = new byte[readLen];
                             Array.Copy(buffer, 0, dataToEnc, 0, readLen);
