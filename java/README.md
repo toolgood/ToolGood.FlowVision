@@ -1,9 +1,10 @@
-# FlowVision 可视化规则引擎(JAVA未完成)
+# FlowVision 可视化规则引擎
 
 本开源库包括`FlowVision可视化规则引擎`核心算法。不包含编辑程序完整源码。
 
     完整程序下载：https://pan.baidu.com/s/138R4d172-drb731GoTI6Vg?pwd=92i2
 
+**js脚本执行未检验**
 
 ## 规则引擎适用场景
 - 商品价格计算
@@ -37,7 +38,6 @@
 	分类：项目一
 	编码：Project1
 	简称：项目一
-	全称：项目一
 ### 4、在顶部【项目管理】->左侧菜单栏【流程设计】->【流程信息】页面点击【新增流程】
 	编码：Flow
 	名称：流程一
@@ -72,22 +72,19 @@
 ```
 
 ## 类库使用
-``` cs
-    // 使用的是快速上手 案例 生成导出的文件
-    var text = File.ReadAllText("dict/项目_20221207133837.json");
-    var project = ProjectWork.LoadJson(text);
-    FlowEngine flowEngine = new FlowEngine(project);
-    flowEngine.BuildTreeNode("Flow", "Project1", "{\"数量\":800}");
-    flowEngine.EvaluateInputNum();
-    var t = flowEngine.TryEvaluate("总价", 0);
+``` java
+        // 使用的是快速上手 案例 生成导出的文件
+        ProjectWork project = ProjectWork.LoadJson("dict/项目_20221207133837.json");
+        IFlowEngine flowEngine = new FlowEngine(project);
+        flowEngine.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
+        flowEngine.EvaluateInputNum();
+        var t = flowEngine.TryEvaluate("总价", 0);
 
-
-    var fileBytes = File.ReadAllBytes("dict/项目_20221207133841.data");
-    var project2 = ProjectWork.LoadJsonWithRsa(fileBytes);
-    FlowEngine flowEngine2 = new FlowEngine(project2);
-    flowEngine2.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
-    flowEngine2.EvaluateInputNum();
-    var t2 = flowEngine2.TryEvaluate("总价", 0);
+        project = ProjectWork.LoadJsonUsedRsa("dict/项目_20221207133841.data");
+        IFlowEngine flowEngine2 = new FlowEngine(project);
+        flowEngine2.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
+        flowEngine2.EvaluateInputNum();
+        var t2 = flowEngine2.TryEvaluate("总价", 0);
 ```
 
 

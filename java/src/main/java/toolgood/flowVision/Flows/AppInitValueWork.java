@@ -24,16 +24,6 @@ public class AppInitValueWork {
         }
     }
 
-    public String GetMatchFormula(FlowEngine engine) throws Exception {
-        for (int i = 0; i < Conditions.size(); i++) {
-            SettingFormulaItemWork item = Conditions.get(i);
-            if (item.Check(engine)) {
-                return item.Formula;
-            }
-        }
-        return null;
-    }
-
     final static AppInitValueWork parse(JSONObject jsonObject) {
         AppInitValueWork result = new AppInitValueWork();
         result.Name = jsonObject.getString("name");
