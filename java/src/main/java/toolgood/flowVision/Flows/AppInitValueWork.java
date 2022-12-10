@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppInitValueWork {
-    private ProjectWork Project;// { get; set; }
     public String Name;
     public toolgood.flowVision.Flows.Enums.InputType InputType;
     public List<SettingFormulaItemWork> Conditions;
@@ -17,7 +16,6 @@ public class AppInitValueWork {
     public String ErrorMessage;
 
     public void Init(ProjectWork work) {
-        Project = work;
         for (int i = 0; i < Conditions.size(); i++) {
             SettingFormulaItemWork item = Conditions.get(i);
             item.Init(work);

@@ -28,4 +28,9 @@ public class AppTest {
     }
 
 
+    public void JsTest() {
+
+    }
+
+
 }

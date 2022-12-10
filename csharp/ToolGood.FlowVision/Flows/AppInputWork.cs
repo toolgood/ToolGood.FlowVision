@@ -1,13 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using ToolGood.FlowVision.Engines;
-using UnitConversion;
 
 namespace ToolGood.FlowVision.Flows
 {
     public sealed class AppInputWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
+        private ProjectWork Project;
 
         /// <summary>
         /// 输入名

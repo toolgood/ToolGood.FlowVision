@@ -6,8 +6,7 @@ namespace ToolGood.FlowVision.Flows
 {
     public sealed class FactoryMachineWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
+		private ProjectWork Project;// { get; set; }
 
         public string Factory { get; set; }
 

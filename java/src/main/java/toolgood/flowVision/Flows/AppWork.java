@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AppWork {
-    private ProjectWork Project;
     public String Code;
     public String Name;
     public List<AppInitValueWork> InitValueList;
@@ -20,7 +19,6 @@ public class AppWork {
     public StartFlowWork Start;
 
     public void Init(ProjectWork work) {
-        Project = work;
         for (int i = 0; i < InitValueList.size(); i++) {
             AppInitValueWork item = InitValueList.get(i);
             item.Init(work);

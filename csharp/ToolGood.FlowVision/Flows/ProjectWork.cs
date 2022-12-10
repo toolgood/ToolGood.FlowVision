@@ -1,16 +1,15 @@
 ﻿using Antlr4.Runtime;
-using ToolGood.Algorithm.Internals;
-using ToolGood.Algorithm;
-using static ToolGood.Algorithm.mathParser;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using ToolGood.Algorithm.Enums;
-using System.Collections.Generic;
-using System;
-using System.IO;
+using System.Text.Json.Serialization;
+using ToolGood.Algorithm;
+using ToolGood.Algorithm.Internals;
 using ToolGood.FlowVision.Common;
+using static ToolGood.Algorithm.mathParser;
 
 namespace ToolGood.FlowVision.Flows
 {

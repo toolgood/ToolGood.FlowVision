@@ -4,9 +4,6 @@ namespace ToolGood.FlowVision.Flows
 {
     public sealed class FactoryWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
-
         /// <summary>
         /// 编号
         /// </summary>
@@ -21,7 +18,6 @@ namespace ToolGood.FlowVision.Flows
 
         internal void Init(ProjectWork work)
         {
-            Project = work;
         }
     }
 

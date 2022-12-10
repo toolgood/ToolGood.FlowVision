@@ -42,18 +42,6 @@ public class SettingFormulaWork {
         }
     }
 
-    public String GetMatchFormula(FlowEngine engine) throws Exception {
-        if (Conditions != null && Conditions.size() > 0) {
-            for (int i = 0; i < Conditions.size(); i++) {
-                SettingFormulaItemWork settingFormulaItem = Conditions.get(i);
-                if (settingFormulaItem.Check(engine)) {
-                    return settingFormulaItem.Formula;
-                }
-            }
-        }
-        return DefaultFormula;
-    }
-
     final static SettingFormulaWork parse(JSONObject jsonObject) {
         SettingFormulaWork result = new SettingFormulaWork();
         result.Name = jsonObject.getString("name");

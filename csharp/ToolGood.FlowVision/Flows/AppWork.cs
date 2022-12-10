@@ -6,8 +6,7 @@ namespace ToolGood.FlowVision.Flows
 {
     public sealed class AppWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
+		private ProjectWork Project;// { get; set; }
         /// <summary>
         /// 编码
         /// </summary>

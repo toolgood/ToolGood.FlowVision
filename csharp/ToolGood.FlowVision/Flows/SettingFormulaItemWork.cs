@@ -7,8 +7,7 @@ namespace ToolGood.FlowVision.Flows
 {
     public sealed class SettingFormulaItemWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
+        private ProjectWork Project;// { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string Condition { get; set; }

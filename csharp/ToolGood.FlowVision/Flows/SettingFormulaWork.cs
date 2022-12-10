@@ -7,8 +7,7 @@ namespace ToolGood.FlowVision.Flows
 {
     public sealed class SettingFormulaWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
+		private ProjectWork Project;// { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         public NodeWork NodeWork { get; set; }

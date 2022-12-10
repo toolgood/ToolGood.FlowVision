@@ -11,7 +11,7 @@ namespace ToolGood.FlowVision.Flows
     public abstract class NodeWork
     {
         [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project { get; set; }
+		public ProjectWork Project { get; set; }
 
         public abstract CellType NodeType { get; }
         public string Id { get; set; }

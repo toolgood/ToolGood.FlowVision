@@ -2,15 +2,11 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using ToolGood.FlowVision.Engines;
 
 namespace ToolGood.FlowVision.Flows
 {
     public sealed class AppInitValueWork
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ProjectWork Project;// { get; set; }
-
         /// <summary>
         /// 名称
         /// </summary>
@@ -36,23 +32,12 @@ namespace ToolGood.FlowVision.Flows
 
         internal void Init(ProjectWork work)
         {
-            Project = work;
             for (int i = 0; i < Conditions.Count; i++) {
                 var item = Conditions[i];
                 item.Init(work);
             }
         }
-
-        internal string GetMatchFormula(FlowEngine engine)
-        {
-            for (int i = 0; i < Conditions.Count; i++) {
-                var item = Conditions[i];
-                if (item.Check(engine)) {
-                    return item.Formula;
-                }
-            }
-            return null;
-        }
+ 
 
     }
 }
