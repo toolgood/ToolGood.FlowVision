@@ -36,7 +36,7 @@ public class JsonMapper {
             while (true) {
                 JsonData item = ReadValue(reader);
                 if (item == null && reader.Token() == JsonToken.ArrayEnd) break;
-                instance.Add((IJsonWrapper)item);
+                instance.Add(item);
             }
         } else if (reader.Token() == JsonToken.ObjectStart) {
             instance.SetJsonType(JsonType.Object);
@@ -47,7 +47,7 @@ public class JsonMapper {
                 if (reader.Token() == JsonToken.ObjectEnd) break;
 
                 String property = (String)reader.Value();
-                instance.Set(property,(IJsonWrapper) ReadValue(reader));
+                instance.Set(property, ReadValue(reader));
             }
 
         }
@@ -59,6 +59,6 @@ public class JsonMapper {
     public static JsonData ToObject(String json) throws JsonException
     {
         JsonReader reader = new JsonReader(json);
-        return (JsonData)ReadValue(reader) ;
+        return ReadValue(reader);
     }
 }

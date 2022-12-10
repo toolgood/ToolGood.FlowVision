@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import toolgood.algorithm.Operand;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
-import toolgood.flowVision.Flows.Enums.InputType;
 
 public class AppInputWork {
     private ProjectWork Project;
@@ -23,7 +22,7 @@ public class AppInputWork {
             return true;
         }
         mathParser.ProgContext progContext = Project.CreateProgContext(CheckInput);
-        Operand operand = engine.EvaluateFormula(progContext, InputType.Bool);
+        Operand operand = engine.EvaluateFormula(progContext, toolgood.flowVision.Flows.Enums.InputType.Bool);
         return operand.BooleanValue();
     }
 

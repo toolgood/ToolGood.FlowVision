@@ -14,15 +14,15 @@ public class Lexer {
     private static int[] fsm_return_table;
     private static List<Function<FsmContext, Boolean>> fsm_handler_table;
 
-    private boolean allow_comments;
-    private boolean allow_single_quoted_strings;
+    private final boolean allow_comments;
+    private final boolean allow_single_quoted_strings;
     private boolean end_of_input;
-    private FsmContext fsm_context;
+    private final FsmContext fsm_context;
     private int input_buffer;
     private int input_char;
-    private StringReader reader;
+    private final StringReader reader;
     private int state;
-    private StringBuilder string_buffer;
+    private final StringBuilder string_buffer;
     private String string_value;
     private int token;
     private int unichar;
@@ -148,11 +148,11 @@ public class Lexer {
         Function<FsmContext, Boolean> state28 = ctx -> State28(ctx);
         fsm_handler_table.add(state28);
 
-        fsm_return_table = new int[] { (int) ParserToken.Char.value, 0, (int) ParserToken.Number.value,
-                (int) ParserToken.Number.value, 0, (int) ParserToken.Number.value, 0, (int) ParserToken.Number.value, 0,
-                0, (int) ParserToken.True.value, 0, 0, 0, (int) ParserToken.False.value, 0, 0,
-                (int) ParserToken.Null.value, (int) ParserToken.CharSeq.value, (int) ParserToken.Char.value, 0, 0,
-                (int) ParserToken.CharSeq.value, (int) ParserToken.Char.value, 0, 0, 0, 0 };
+        fsm_return_table = new int[] {ParserToken.Char.value, 0, ParserToken.Number.value,
+                ParserToken.Number.value, 0, ParserToken.Number.value, 0, ParserToken.Number.value, 0,
+                0, ParserToken.True.value, 0, 0, 0, ParserToken.False.value, 0, 0,
+                ParserToken.Null.value, ParserToken.CharSeq.value, ParserToken.Char.value, 0, 0,
+                ParserToken.CharSeq.value, ParserToken.Char.value, 0, 0, 0, 0 };
     }
 
     private static char ProcessEscChar(int esc_char) {
@@ -790,7 +790,7 @@ public class Lexer {
         fsm_context.Return = false;
 
         while (true) {
-            handler =(Function<FsmContext,Boolean>) fsm_handler_table.get(state - 1);// [state - 1];
+            handler = fsm_handler_table.get(state - 1);// [state - 1];
             
             if (!handler.apply(fsm_context))
                 throw new JsonException(input_char);
@@ -804,7 +804,7 @@ public class Lexer {
                 // string_buffer.Remove(0, string_buffer.length());
                 token = fsm_return_table[state - 1];
 
-                if (token == (int) ParserToken.Char.value)
+                if (token == ParserToken.Char.value)
                     token = input_char;
 
                 state = fsm_context.NextState;

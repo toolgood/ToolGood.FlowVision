@@ -3,8 +3,8 @@ package toolgood.flowVision.Engines;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.joda.time.DateTime;
-import toolgood.algorithm.Operand;
 import toolgood.algorithm.Enums.OperandType;
+import toolgood.algorithm.Operand;
 import toolgood.algorithm.internals.AntlrCharStream;
 import toolgood.algorithm.internals.AntlrErrorListener;
 import toolgood.algorithm.internals.MathVisitor;
@@ -26,9 +26,15 @@ import toolgood.flowVision.ThirdParty.UnitConversion.DistanceConverter;
 import toolgood.flowVision.ThirdParty.UnitConversion.MassConverter;
 import toolgood.flowVision.ThirdParty.UnitConversion.VolumeConverter;
 
-import javax.script.*;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,14 +44,14 @@ public final class FlowEngine implements IFlowEngine {
     private String AttachData;
     private TreeNode Start;
     private toolgood.flowVision.Flows.AppWork AppWork;
-    private Map<String, SettingFormulaWork> _startFormulaDict = new HashMap<String, SettingFormulaWork>();//用于默认
+    private final Map<String, SettingFormulaWork> _startFormulaDict = new HashMap<String, SettingFormulaWork>();//用于默认
     private Map<String, SettingFormulaWork> _progDict = new HashMap<String, SettingFormulaWork>();//用于临时
-    private Map<String, TreeNode> _outputNumDict = new HashMap<String, TreeNode>();//用于保存出量来源
+    private final Map<String, TreeNode> _outputNumDict = new HashMap<String, TreeNode>();//用于保存出量来源
 
     private Map<String, TreeNode> _inputNumDict = new TreeMap<>();
     private Map<String, CustomFlowWork> _scriptDict = new HashMap<String, CustomFlowWork>();// 脚本
 
-    private Map<String, Operand> _tempdict = new TreeMap<>();// 临时变量
+    private final Map<String, Operand> _tempdict = new TreeMap<>();// 临时变量
     private Map<String, Operand> _initDict = new HashMap<String, Operand>();//保存 初始值
     private Map<String, Operand> _inputDict = new HashMap<String, Operand>();//保存 输入项
 
@@ -225,7 +231,7 @@ public final class FlowEngine implements IFlowEngine {
         throw new Exception("json is error.");
     }
 
-    private static Pattern numRegex = Pattern.compile("^(\\d[0-9\\.]*)([^\\d][\\S\\s]*)$");
+    private static final Pattern numRegex = Pattern.compile("^(\\d[0-9\\.]*)([^\\d][\\S\\s]*)$");
 
     private Operand TextToNumber(AppInputWork appInput, Operand operand) {
         if (operand.Type() == OperandType.NUMBER) {
@@ -600,7 +606,7 @@ public final class FlowEngine implements IFlowEngine {
         return _inputDict.get("数量");
     }
 
-    private Stack<Operand> _tempOutputs = new Stack<Operand>();
+    private final Stack<Operand> _tempOutputs = new Stack<Operand>();
 
     public void SetOutputNum(Operand operand) {
         if (_tempdict.containsKey("出量")) {
@@ -751,9 +757,7 @@ public final class FlowEngine implements IFlowEngine {
         String key = categoryCode + '|' + code;
         if (MachineSetting.containsKey(key)) {
             Setting_Machine machine = MachineSetting.get(key);
-            if (machine.IsStop) {
-                return false;
-            }
+            return !machine.IsStop;
         }
         return true;
     }
@@ -929,10 +933,7 @@ public final class FlowEngine implements IFlowEngine {
             return true;
         } else if (_progDict.containsKey(name)) {
             return true;
-        } else if (Project.HasFormula(name)) {
-            return true;
-        }
-        return false;
+        } else return Project.HasFormula(name);
     }
 
     public void Dispose() {

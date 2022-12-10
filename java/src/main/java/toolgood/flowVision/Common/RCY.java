@@ -25,7 +25,7 @@ public class RCY {
             c = (byte) (a ^ mBox[((mBox[i] & 0xff) & (mBox[j] & 0xff))]);
             output[offset] = c;
 
-            j = j + (int) (a& 0xff) + (int) (c& 0xff);
+            j = j + (a& 0xff) + (c& 0xff);
         }
         return output;
     }

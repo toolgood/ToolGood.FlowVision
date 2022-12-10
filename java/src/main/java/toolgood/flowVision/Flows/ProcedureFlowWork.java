@@ -6,7 +6,6 @@ import toolgood.algorithm.Operand;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
-import toolgood.flowVision.Flows.Enums.CheckType;
 import toolgood.flowVision.Flows.Enums.InputNumberType;
 import toolgood.flowVision.Flows.Enums.InputType;
 import toolgood.flowVision.Flows.Interfaces.IInputFormulaNodeWork;
@@ -69,7 +68,7 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
                 return false;
             }
         }
-        if (CheckType == CheckType.Add) {
+        if (CheckType == toolgood.flowVision.Flows.Enums.CheckType.Add) {
             if (FactoryProcedure.Check(engine) == false) {
                 return false;
             }
@@ -100,10 +99,7 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
             }
         }
 
-        if (MachineRequired) {
-            return false;
-        }
-        return true;
+        return !MachineRequired;
     }
 
     public boolean CheckWithoutFactory(FlowEngine engine) throws Exception {
@@ -114,7 +110,7 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
                 return false;
             }
         }
-        if (CheckType == CheckType.Add) {
+        if (CheckType == toolgood.flowVision.Flows.Enums.CheckType.Add) {
             if (FactoryProcedure.Check(engine) == false) {
                 return false;
             }

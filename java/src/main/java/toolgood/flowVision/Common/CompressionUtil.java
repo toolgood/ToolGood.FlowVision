@@ -5,7 +5,7 @@ import com.aayushatharva.brotli4j.Brotli4jLoader;
 import com.aayushatharva.brotli4j.decoder.Decoder;
 import com.aayushatharva.brotli4j.decoder.DirectDecompress;
 
-import java.io.*;
+import java.io.IOException;
 
 public class CompressionUtil {
 

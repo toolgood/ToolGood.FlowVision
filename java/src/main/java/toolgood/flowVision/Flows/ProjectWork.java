@@ -14,6 +14,7 @@ import toolgood.flowVision.Common.RsaUtil;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,10 +65,7 @@ public class ProjectWork {
     }
 
     public boolean HasFormula(String name) {
-        if (FormulaList.containsKey(name)) {
-            return true;
-        }
-        return false;
+        return FormulaList.containsKey(name);
     }
 
     public static ProjectWork ParseJson(String json) throws Exception {
@@ -202,7 +200,7 @@ public class ProjectWork {
             bs2 = RCY.Encrypt(bs2, bs);
             bs2 = CompressionUtil.BrDecompress(bs2);
 
-            String json = new String(bs2, "utf-8");
+            String json = new String(bs2, StandardCharsets.UTF_8);
             return ParseJson(json);
         } finally {
             try {

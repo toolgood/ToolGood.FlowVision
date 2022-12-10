@@ -1,6 +1,7 @@
 package toolgood.algorithm.internals;
 
 import toolgood.algorithm.Operand;
+
 import java.util.List;
 
 public class MyFunction {

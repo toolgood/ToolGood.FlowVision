@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import toolgood.algorithm.Operand;
 import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
-import toolgood.flowVision.Flows.Enums.CheckType;
 import toolgood.flowVision.Flows.Enums.InputType;
 
 public class ProcedureFlowMachineInfo {
@@ -28,10 +27,8 @@ public class ProcedureFlowMachineInfo {
                 return false;
             }
         }
-        if (CheckType == CheckType.Add) {
-            if (FactoryMachine.Check(engine) == false) {
-                return false;
-            }
+        if (CheckType == toolgood.flowVision.Flows.Enums.CheckType.Add) {
+            return FactoryMachine.Check(engine) != false;
         }
         return true;
     }

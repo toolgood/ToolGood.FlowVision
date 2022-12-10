@@ -1,22 +1,11 @@
 package toolgood.algorithm.mathNet;
 
-import java.util.List;
-
-import toolgood.algorithm.mathNet.Distributions.Beta;
-import toolgood.algorithm.mathNet.Distributions.Binomial;
-import toolgood.algorithm.mathNet.Distributions.Exponential;
-import toolgood.algorithm.mathNet.Distributions.FisherSnedecor;
-import toolgood.algorithm.mathNet.Distributions.Gamma;
-import toolgood.algorithm.mathNet.Distributions.Hypergeometric;
-import toolgood.algorithm.mathNet.Distributions.LogNormal;
-import toolgood.algorithm.mathNet.Distributions.NegativeBinomial;
-import toolgood.algorithm.mathNet.Distributions.Normal;
-import toolgood.algorithm.mathNet.Distributions.Poisson;
-import toolgood.algorithm.mathNet.Distributions.StudentT;
-import toolgood.algorithm.mathNet.Distributions.Weibull;
+import toolgood.algorithm.mathNet.Distributions.*;
 import toolgood.algorithm.mathNet.Statistics.ArrayStatistics;
 import toolgood.algorithm.mathNet.Statistics.QuantileDefinition;
 import toolgood.algorithm.mathNet.Statistics.Statistics;
+
+import java.util.List;
 
 public class ExcelFunctions {
 

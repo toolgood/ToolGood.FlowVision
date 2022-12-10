@@ -1,10 +1,6 @@
 package toolgood.algorithm.litJson;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JsonData implements IJsonWrapper {
 
@@ -96,7 +92,7 @@ public class JsonData implements IJsonWrapper {
     @SuppressWarnings("rawtypes") 
     private Collection EnsureCollection() {
         if (type == JsonType.Array)
-            return (Collection) inst_array;
+            return inst_array;
         return (Collection) inst_object;
     }
 

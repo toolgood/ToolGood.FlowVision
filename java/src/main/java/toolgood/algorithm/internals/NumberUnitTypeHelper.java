@@ -5,11 +5,6 @@ import toolgood.algorithm.Enums.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static toolgood.algorithm.Enums.AreaUnitType.*;
-import static toolgood.algorithm.Enums.DistanceUnitType.*;
-import static toolgood.algorithm.Enums.MassUnitType.*;
-import static toolgood.algorithm.Enums.VolumeUnitType.*;
-
 public class NumberUnitTypeHelper {
     private static Map<String, NumberUnitType> unitTypedict;
     /// <summary>

@@ -20,7 +20,7 @@ public enum JsonToken {
 
     public int value;  
     // 构造方法  
-    private JsonToken( int index) {  
+    JsonToken(int index) {
          this.value = index;  
     }  
 }

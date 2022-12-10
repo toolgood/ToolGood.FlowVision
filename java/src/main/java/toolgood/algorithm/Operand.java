@@ -1,16 +1,15 @@
 package toolgood.algorithm;
 
+import org.joda.time.DateTime;
+import toolgood.algorithm.Enums.OperandType;
+import toolgood.algorithm.litJson.JsonData;
+import toolgood.algorithm.litJson.JsonMapper;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.joda.time.DateTime;
-
-import toolgood.algorithm.Enums.OperandType;
-import toolgood.algorithm.litJson.JsonMapper;
-import toolgood.algorithm.litJson.JsonData;
 
 public abstract class Operand {
     public final static Operand True = new OperandBoolean(true);
@@ -100,7 +99,7 @@ public abstract class Operand {
     public static Operand CreateJson(final String txt) {
         if ((txt.startsWith("{") && txt.endsWith("}")) || (txt.startsWith("[") && txt.endsWith("]"))) {
             try {
-                JsonData json = (JsonData) JsonMapper.ToObject(txt);
+                JsonData json = JsonMapper.ToObject(txt);
                 return Create(json);
             } catch (final Exception e) {
             }
@@ -159,7 +158,7 @@ public abstract class Operand {
             return BooleanValue() ? One : Zero;
         }
         if (Type() == OperandType.DATE) {
-            return Create((double) DateValue().ToNumber());
+            return Create(DateValue().ToNumber());
         }
         if (Type() == OperandType.TEXT) {
             try {
@@ -186,13 +185,13 @@ public abstract class Operand {
             return (NumberValue() != 0) ? True : False;
         }
         if (Type() == OperandType.DATE) {
-            return (((double) DateValue().ToNumber()) != 0) ? True : False;
+            return (DateValue().ToNumber() != 0) ? True : False;
         }
         if (Type() == OperandType.TEXT) {
-            if (TextValue().toLowerCase().equals("true")) {
+            if (TextValue().equalsIgnoreCase("true")) {
                 return True;
             }
-            if (TextValue().toLowerCase().equals("false")) {
+            if (TextValue().equalsIgnoreCase("false")) {
                 return False;
             }
             if (TextValue().equals("1")) {
@@ -532,7 +531,7 @@ public abstract class Operand {
         }
 
         private int listNum;
-        private List<KeyValue> TextList = new ArrayList<>();
+        private final List<KeyValue> TextList = new ArrayList<>();
 
         public Operand ToArray(String errorMessage) {
             return Create(this.ArrayValue());

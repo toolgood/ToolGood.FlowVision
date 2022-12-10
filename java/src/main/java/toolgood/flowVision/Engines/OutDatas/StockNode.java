@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 
 public class StockNode {
-    private List<ChannelNode> Nodes = new ArrayList<>();
-    private HashSet<String> IdSet = new HashSet<String>();
+    private final List<ChannelNode> Nodes = new ArrayList<>();
+    private final HashSet<String> IdSet = new HashSet<String>();
 
     public void Push(TreeNode node, String channel, int index) {
         if (IdSet.add(node.CurrWork.Id)) {// 防止合并

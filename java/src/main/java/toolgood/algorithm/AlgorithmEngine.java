@@ -1,23 +1,22 @@
 package toolgood.algorithm;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import toolgood.algorithm.internals.AntlrErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.joda.time.DateTime;
 import toolgood.algorithm.internals.AntlrCharStream;
+import toolgood.algorithm.internals.AntlrErrorListener;
 import toolgood.algorithm.internals.MathVisitor;
 import toolgood.algorithm.litJson.JsonData;
 import toolgood.algorithm.litJson.JsonMapper;
 import toolgood.algorithm.math.mathLexer;
 import toolgood.algorithm.math.mathParser;
-import toolgood.algorithm.math.mathParser.*;
+import toolgood.algorithm.math.mathParser.ProgContext;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.joda.time.DateTime;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class AlgorithmEngine {
     /**
@@ -161,7 +160,7 @@ public class AlgorithmEngine {
      */
     public void AddParameterFromJson(final String json) throws Exception {
         if (json.startsWith("{") && json.endsWith("}")) {
-            final JsonData jo = (JsonData) JsonMapper.ToObject(json);
+            final JsonData jo = JsonMapper.ToObject(json);
             if (jo.IsObject()) {
                 for (String item : jo.inst_object.keySet()) {
                     final JsonData v = jo.inst_object.get(item);

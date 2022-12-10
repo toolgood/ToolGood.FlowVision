@@ -7,7 +7,7 @@ public class CharUtil {
     public static char StandardChar(char c) {
         if (c <= 0)
             return c;
-        char o = (char) c;
+        char o = c;
         if (o == '‘')
             return '\'';
         if (o == '’')
@@ -77,9 +77,7 @@ public class CharUtil {
             return false;
         if (arg1 != null && EqualsOnce(left, arg1))
             return true;
-        if (arg2 != null && EqualsOnce(left, arg2))
-            return true;
-        return false;
+        return arg2 != null && EqualsOnce(left, arg2);
     }
 
     public static boolean Equals(String left, String arg1, String arg2, String arg3) {
@@ -89,9 +87,7 @@ public class CharUtil {
             return true;
         if (arg2 != null && EqualsOnce(left, arg2))
             return true;
-        if (arg3 != null && EqualsOnce(left, arg3))
-            return true;
-        return false;
+        return arg3 != null && EqualsOnce(left, arg3);
     }
 
     public static List<String> SplitFormula(String formula, List<Character> splitChars) {
