@@ -31,12 +31,6 @@
       <artifactId>joda-time</artifactId>
       <version>2.12.2</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.graalvm.js/js -->
-    <dependency>
-      <groupId>org.graalvm.js</groupId>
-      <artifactId>js</artifactId>
-      <version>22.3.0</version>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
     <dependency>
       <groupId>com.alibaba.fastjson2</groupId>

@@ -4,7 +4,7 @@
 
     完整程序下载：https://pan.baidu.com/s/138R4d172-drb731GoTI6Vg?pwd=92i2
 
-**js脚本执行未检验**
+**js脚本执行未完成**
 
 ## 规则引擎适用场景
 - 商品价格计算
@@ -86,7 +86,7 @@
         flowEngine2.EvaluateInputNum();
         var t2 = flowEngine2.TryEvaluate("总价", 0);
 ```
-
+**js脚本执行未完成**
 
 
 
