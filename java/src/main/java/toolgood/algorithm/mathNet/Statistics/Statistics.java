@@ -5,29 +5,31 @@ import java.util.List;
 
 public class Statistics {
     public static double QuantileCustom(final List<Double> data, final double tau,
-            final QuantileDefinition definition) throws Exception {
+                                        final QuantileDefinition definition) throws Exception {
         double[] array = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            array[i]=data.get(i);
+            array[i] = data.get(i);
         }
         return ArrayStatistics.QuantileCustomInplace(array, tau, definition);
     }
+
     public static double QuantileCustom(final double[] data, final double tau, final QuantileDefinition definition) throws Exception {
         return ArrayStatistics.QuantileCustomInplace(data, tau, definition);
     }
+
     public static double QuantileRank(final double[] data, final double x) {
-        List<Double> dt= new ArrayList<Double>();
-         for (int i = 0; i < data.length; i++) {
+        List<Double> dt = new ArrayList<Double>();
+        for (int i = 0; i < data.length; i++) {
             dt.add(data[i]);
         }
         return QuantileRank(dt, x);
     }
 
     public static double QuantileRank(final List<Double> data, final double x) {
-        List<Double> dt=ShellSort(data);
+        List<Double> dt = ShellSort(data);
         double[] array = new double[dt.size()];
         for (int i = 0; i < dt.size(); i++) {
-            array[i]=dt.get(i);
+            array[i] = dt.get(i);
         }
         return SortedArrayStatistics.QuantileRank(array, x);
     }

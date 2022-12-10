@@ -185,16 +185,16 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         result.Label = jsonObject.getString("label");
         result.Layer = jsonObject.getIntValue("layer");
         result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
-        result.NextNodeIds=new HashMap<>();
-        if (jsonObject.containsKey("nextNodeIds")){
-            JSONObject nextNodeIds=   jsonObject.getJSONObject("nextNodeIds");
-            for (Map.Entry<String,Object> kv : nextNodeIds.entrySet()) {
-                if (kv.getValue() instanceof JSONArray array){
-                    List<String> list=new ArrayList<>();
-                    for (Object obj:                    array) {
+        result.NextNodeIds = new HashMap<>();
+        if (jsonObject.containsKey("nextNodeIds")) {
+            JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
+            for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
+                if (kv.getValue() instanceof JSONArray array) {
+                    List<String> list = new ArrayList<>();
+                    for (Object obj : array) {
                         list.add(obj.toString());
                     }
-                    result.NextNodeIds.put(kv.getKey(),list);
+                    result.NextNodeIds.put(kv.getKey(), list);
                 }
             }
         }
@@ -203,28 +203,27 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         result.CheckFormula = jsonObject.getString("checkFormula");
         result.CheckType = toolgood.flowVision.Flows.Enums.CheckType.intToEnum(jsonObject.getIntValue("checkType"));
         result.InputName = jsonObject.getString("inputName");
-        result.NumberType =InputNumberType.intToEnum( jsonObject.getIntValue("numberType"));
+        result.NumberType = InputNumberType.intToEnum(jsonObject.getIntValue("numberType"));
         result.IsSubsidiaryCount = jsonObject.getBooleanValue("isSubsidiaryCount");
         result.MachineRequired = jsonObject.getBooleanValue("machineRequired");
 
 
-
-        result.SettingFormula =new ArrayList<>();
+        result.SettingFormula = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("settingFormula");
         for (Object s : array) {
-            if (s instanceof JSONObject jsonObject1){
-                SettingFormulaWork work=SettingFormulaWork.parse(jsonObject1);
-                if (work!=null){
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaWork work = SettingFormulaWork.parse(jsonObject1);
+                if (work != null) {
                     result.SettingFormula.add(work);
                 }
             }
         }
-        result.InputFormula=new ArrayList<>();
+        result.InputFormula = new ArrayList<>();
         JSONArray array2 = jsonObject.getJSONArray("inputFormula");
         for (Object s : array2) {
-            if (s instanceof JSONObject jsonObject1){
-                SettingFormulaItemWork work=SettingFormulaItemWork.parse(jsonObject1);
-                if (work!=null){
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
+                if (work != null) {
                     result.InputFormula.add(work);
                 }
             }

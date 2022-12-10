@@ -58,14 +58,14 @@ public class SettingFormulaWork {
         SettingFormulaWork result = new SettingFormulaWork();
         result.Name = jsonObject.getString("name");
         result.DefaultFormula = jsonObject.getString("defaultFormula");
-        result.Type=InputType.intToEnum(jsonObject.getIntValue("type"));
+        result.Type = InputType.intToEnum(jsonObject.getIntValue("type"));
 
-        result.Conditions=new ArrayList<>();
+        result.Conditions = new ArrayList<>();
         JSONArray array2 = jsonObject.getJSONArray("conditions");
         for (Object s : array2) {
-            if (s instanceof JSONObject jsonObject1){
-                SettingFormulaItemWork work=SettingFormulaItemWork.parse(jsonObject1);
-                if (work!=null){
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
+                if (work != null) {
                     result.Conditions.add(work);
                 }
             }

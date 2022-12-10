@@ -20,7 +20,7 @@ public class AppTest {
         flowEngine.EvaluateInputNum();
         var t = flowEngine.TryEvaluate("总价", 0);
 
-        project =  ProjectWork.LoadJsonUsedRsa("dict/项目_20221207133841.data");
+        project = ProjectWork.LoadJsonUsedRsa("dict/项目_20221207133841.data");
         IFlowEngine flowEngine2 = new FlowEngine(project);
         flowEngine2.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
         flowEngine2.EvaluateInputNum();

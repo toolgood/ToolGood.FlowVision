@@ -1,8 +1,7 @@
 package toolgood.algorithm.mathNet.Statistics;
 
 public class ArrayStatistics {
-    public static double Minimum(double[] data)
-    {
+    public static double Minimum(double[] data) {
         if (data.length == 0) {
             return Double.NaN;
         }
@@ -16,8 +15,8 @@ public class ArrayStatistics {
 
         return min;
     }
-    public static double Maximum(double[] data)
-    {
+
+    public static double Maximum(double[] data) {
         if (data.length == 0) {
             return Double.NaN;
         }
@@ -34,8 +33,7 @@ public class ArrayStatistics {
 
 
     public static double QuantileCustomInplace(double[] data, double tau, QuantileDefinition definition)
-            throws Exception
-    {
+            throws Exception {
         if (tau < 0d || tau > 1d || data.length == 0) {
             return Double.NaN;
         }
@@ -50,75 +48,74 @@ public class ArrayStatistics {
 
         switch (definition) {
             case R1: {
-                    double h = data.length * tau + 0.5d;
-                    return SelectInplace(data, (int)Math.ceil(h - 0.5d) - 1);
-                }
+                double h = data.length * tau + 0.5d;
+                return SelectInplace(data, (int) Math.ceil(h - 0.5d) - 1);
+            }
 
             case R2: {
-                    double h = data.length * tau + 0.5d;
-                    return (SelectInplace(data, (int)Math.ceil(h - 0.5d) - 1) + SelectInplace(data, (int)(h + 0.5d) - 1)) * 0.5d;
-                }
+                double h = data.length * tau + 0.5d;
+                return (SelectInplace(data, (int) Math.ceil(h - 0.5d) - 1) + SelectInplace(data, (int) (h + 0.5d) - 1)) * 0.5d;
+            }
 
             case R3: {
-                    double h = data.length * tau;
-                    return SelectInplace(data, (int)Math.round(h) - 1);
-                }
+                double h = data.length * tau;
+                return SelectInplace(data, (int) Math.round(h) - 1);
+            }
 
             case R4: {
-                    double h = data.length * tau;
-                    int hf = (int)h;
-                    double lower = SelectInplace(data, hf - 1);
-                    double upper = SelectInplace(data, hf);
-                    return lower + (h - hf) * (upper - lower);
-                }
+                double h = data.length * tau;
+                int hf = (int) h;
+                double lower = SelectInplace(data, hf - 1);
+                double upper = SelectInplace(data, hf);
+                return lower + (h - hf) * (upper - lower);
+            }
 
             case R5: {
-                    double h = data.length * tau + 0.5d;
-                    int hf = (int)h;
-                    double lower = SelectInplace(data, hf - 1);
-                    double upper = SelectInplace(data, hf);
-                    return lower + (h - hf) * (upper - lower);
-                }
+                double h = data.length * tau + 0.5d;
+                int hf = (int) h;
+                double lower = SelectInplace(data, hf - 1);
+                double upper = SelectInplace(data, hf);
+                return lower + (h - hf) * (upper - lower);
+            }
 
             case R6: {
-                    double h = (data.length + 1) * tau;
-                    int hf = (int)h;
-                    double lower = SelectInplace(data, hf - 1);
-                    double upper = SelectInplace(data, hf);
-                    return lower + (h - hf) * (upper - lower);
-                }
+                double h = (data.length + 1) * tau;
+                int hf = (int) h;
+                double lower = SelectInplace(data, hf - 1);
+                double upper = SelectInplace(data, hf);
+                return lower + (h - hf) * (upper - lower);
+            }
 
             case R7: {
-                    double h = (data.length - 1) * tau + 1d;
-                    int hf = (int)h;
-                    double lower = SelectInplace(data, hf - 1);
-                    double upper = SelectInplace(data, hf);
-                    return lower + (h - hf) * (upper - lower);
-                }
+                double h = (data.length - 1) * tau + 1d;
+                int hf = (int) h;
+                double lower = SelectInplace(data, hf - 1);
+                double upper = SelectInplace(data, hf);
+                return lower + (h - hf) * (upper - lower);
+            }
 
             case R8: {
-                    double h = (data.length + 1 / 3d) * tau + 1 / 3d;
-                    int hf = (int)h;
-                    double lower = SelectInplace(data, hf - 1);
-                    double upper = SelectInplace(data, hf);
-                    return lower + (h - hf) * (upper - lower);
-                }
+                double h = (data.length + 1 / 3d) * tau + 1 / 3d;
+                int hf = (int) h;
+                double lower = SelectInplace(data, hf - 1);
+                double upper = SelectInplace(data, hf);
+                return lower + (h - hf) * (upper - lower);
+            }
 
             case R9: {
-                    double h = (data.length + 0.25d) * tau + 0.375d;
-                    int hf = (int)h;
-                    double lower = SelectInplace(data, hf - 1);
-                    double upper = SelectInplace(data, hf);
-                    return lower + (h - hf) * (upper - lower);
-                }
+                double h = (data.length + 0.25d) * tau + 0.375d;
+                int hf = (int) h;
+                double lower = SelectInplace(data, hf - 1);
+                double upper = SelectInplace(data, hf);
+                return lower + (h - hf) * (upper - lower);
+            }
 
             default:
                 throw new Exception();
         }
     }
 
-    static double SelectInplace(double[] workingData, int rank)
-    {
+    static double SelectInplace(double[] workingData, int rank) {
         // Numerical Recipes: select
         // http://en.wikipedia.org/wiki/Selection_algorithm
         if (rank <= 0) {

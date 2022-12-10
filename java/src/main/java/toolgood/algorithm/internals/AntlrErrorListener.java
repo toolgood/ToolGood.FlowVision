@@ -14,8 +14,7 @@ public class AntlrErrorListener extends BaseErrorListener {
                             int line,
                             int charPositionInLine,
                             String msg,
-                            RecognitionException e)
-    {
+                            RecognitionException e) {
         IsError = true;
         ErrorMsg = msg;
     }

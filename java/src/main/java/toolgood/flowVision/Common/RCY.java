@@ -19,13 +19,13 @@ public class RCY {
         byte a, c;
         for (int offset = 0; offset < data.length; offset++) {
             i = (++i) & 0xFF;
-            j = (j + (mBox[i]& 0xff)) & 0xFF;
+            j = (j + (mBox[i] & 0xff)) & 0xFF;
 
             a = data[offset];
             c = (byte) (a ^ mBox[((mBox[i] & 0xff) & (mBox[j] & 0xff))]);
             output[offset] = c;
 
-            j = j + (a& 0xff) + (c& 0xff);
+            j = j + (a & 0xff) + (c & 0xff);
         }
         return output;
     }

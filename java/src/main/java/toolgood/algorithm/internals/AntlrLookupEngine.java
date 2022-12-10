@@ -8,11 +8,9 @@ public class AntlrLookupEngine extends AlgorithmEngine {
     public Operand Json;
 
     @Override
-    protected Operand GetParameter(String parameter)
-    {
+    protected Operand GetParameter(String parameter) {
         JsonData v = Json.JsonValue().GetChild(parameter);
-        if (v!=null)
-        {
+        if (v != null) {
             if (v.IsString()) return Operand.Create(v.StringValue());
             if (v.IsBoolean()) return Operand.Create(v.BooleanValue());
             if (v.IsDouble()) return Operand.Create(v.NumberValue());

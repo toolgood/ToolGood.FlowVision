@@ -33,6 +33,7 @@ public class SortedArrayStatistics {
             return ((data[right] - x) * a + (x - data[left]) * b) / (data[right] - data[left]);
         }
     }
+
     private static int binarySearch(double[] array, double key) {
         int low = 0;
         int high = array.length - 1;

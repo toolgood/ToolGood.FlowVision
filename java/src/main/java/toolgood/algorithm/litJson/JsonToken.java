@@ -18,9 +18,10 @@ public enum JsonToken {
     Null(10);
 
 
-    public int value;  
+    public int value;
+
     // 构造方法  
     JsonToken(int index) {
-         this.value = index;  
-    }  
+        this.value = index;
+    }
 }

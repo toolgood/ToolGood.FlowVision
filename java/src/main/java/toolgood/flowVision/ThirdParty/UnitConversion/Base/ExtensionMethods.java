@@ -9,8 +9,7 @@ public class ExtensionMethods {
     /// </summary>
     /// <param name="value">result value to be check</param>
     /// <returns>Closed value</returns>
-    public static double CheckCloseEnoughValue(  double value)
-    {
+    public static double CheckCloseEnoughValue(double value) {
         double diff = value - Math.floor(value);
         if (diff > lowerBoundEpsilon && diff < upperBoundEpsilon)
             return Math.ceil(value);

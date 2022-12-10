@@ -19,7 +19,7 @@ public class Precision {
     /// <summary>
     /// Value representing 10 * 2^(-53) = 1.11022302462516E-15
     /// </summary>
-   final static double DefaultDoubleAccuracy = DoublePrecision * 10;
+    final static double DefaultDoubleAccuracy = DoublePrecision * 10;
 
     public static double Increment(double value) {
         return Increment(value, -1);
@@ -47,7 +47,7 @@ public class Precision {
         // double < 0 --> long < 0, increasing in absolute magnitude as the double
         // gets closer to zero!
         // i.e. 0 - double.epsilon will give the largest long value!
-        long intValue = (long)value;
+        long intValue = (long) value;
         // long intValue = BitConverter.DoubleToInt64Bits(value);
         if (intValue < 0) {
             intValue -= count;
@@ -83,7 +83,7 @@ public class Precision {
             return Double.NaN;
         }
 
-        long signed64 = (long)value;
+        long signed64 = (long) value;
         // long signed64 = BitConverter.DoubleToInt64Bits(value);
         if (signed64 == 0) {
             signed64++;
@@ -91,10 +91,10 @@ public class Precision {
             // return BitConverter.Int64BitsToDouble(signed64) - value;
         }
         if (signed64-- < 0) {
-            return  signed64 - value;
+            return signed64 - value;
             // return BitConverter.Int64BitsToDouble(signed64) - value;
         }
-        return value -  signed64;
+        return value - signed64;
         // return value - BitConverter.Int64BitsToDouble(signed64);
     }
 

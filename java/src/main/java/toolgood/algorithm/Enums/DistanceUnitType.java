@@ -4,23 +4,23 @@ public enum DistanceUnitType {
     /// <summary>
     /// 毫米
     /// </summary>
-    MM(1) ,
+    MM(1),
     /// <summary>
     /// 厘米
     /// </summary>
-    CM (2),
+    CM(2),
     /// <summary>
     /// 分米
     /// </summary>
-    DM (3),
+    DM(3),
     /// <summary>
     /// 米
     /// </summary>
-    M (4),
+    M(4),
     /// <summary>
     /// 千米
     /// </summary>
-    KM (5);
+    KM(5);
 
     private final int value;
 

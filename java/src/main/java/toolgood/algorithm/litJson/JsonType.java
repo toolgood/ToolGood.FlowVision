@@ -12,10 +12,11 @@ public enum JsonType {
     Double(5),
     Boolean(6),
     Null(7);
-    
-    public int value;  
+
+    public int value;
+
     // 构造方法  
     JsonType(int index) {
-         this.value = index;  
-    }  
+        this.value = index;
+    }
 }

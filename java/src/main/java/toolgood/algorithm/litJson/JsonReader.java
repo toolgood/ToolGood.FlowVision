@@ -55,72 +55,72 @@ public class JsonReader {
         Map<Integer, Map<Integer, int[]>> parse_table = new HashMap<Integer, Map<Integer, int[]>>();
 
         TableAddRow(parse_table, ParserToken.Array);
-        TableAddCol(parse_table, ParserToken.Array, '[', new int[] { '[', ParserToken.ArrayPrime.value});
+        TableAddCol(parse_table, ParserToken.Array, '[', new int[]{'[', ParserToken.ArrayPrime.value});
 
         TableAddRow(parse_table, ParserToken.ArrayPrime);
         TableAddCol(parse_table, ParserToken.ArrayPrime, '"',
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
         TableAddCol(parse_table, ParserToken.ArrayPrime, '[',
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
-        TableAddCol(parse_table, ParserToken.ArrayPrime, ']', new int[] { ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
+        TableAddCol(parse_table, ParserToken.ArrayPrime, ']', new int[]{']'});
         TableAddCol(parse_table, ParserToken.ArrayPrime, '{',
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
         TableAddCol(parse_table, ParserToken.ArrayPrime, ParserToken.Number.value,
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
         TableAddCol(parse_table, ParserToken.ArrayPrime, ParserToken.True.value,
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
         TableAddCol(parse_table, ParserToken.ArrayPrime, ParserToken.False.value,
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
         TableAddCol(parse_table, ParserToken.ArrayPrime, ParserToken.Null.value,
-                new int[] {ParserToken.Value.value, ParserToken.ValueRest.value, ']' });
+                new int[]{ParserToken.Value.value, ParserToken.ValueRest.value, ']'});
 
         TableAddRow(parse_table, ParserToken.Object);
-        TableAddCol(parse_table, ParserToken.Object, '{', new int[] { '{', ParserToken.ObjectPrime.value});
+        TableAddCol(parse_table, ParserToken.Object, '{', new int[]{'{', ParserToken.ObjectPrime.value});
 
         TableAddRow(parse_table, ParserToken.ObjectPrime);
         TableAddCol(parse_table, ParserToken.ObjectPrime, '"',
-                new int[] {ParserToken.Pair.value, ParserToken.PairRest.value, '}' });
-        TableAddCol(parse_table, ParserToken.ObjectPrime, '}', new int[] { '}' });
+                new int[]{ParserToken.Pair.value, ParserToken.PairRest.value, '}'});
+        TableAddCol(parse_table, ParserToken.ObjectPrime, '}', new int[]{'}'});
 
         TableAddRow(parse_table, ParserToken.Pair);
         TableAddCol(parse_table, ParserToken.Pair, '"',
-                new int[] {ParserToken.String.value, ':', ParserToken.Value.value});
+                new int[]{ParserToken.String.value, ':', ParserToken.Value.value});
 
         TableAddRow(parse_table, ParserToken.PairRest);
         TableAddCol(parse_table, ParserToken.PairRest, ',',
-                new int[] { ',', ParserToken.Pair.value, ParserToken.PairRest.value});
-        TableAddCol(parse_table, ParserToken.PairRest, '}', new int[] {ParserToken.Epsilon.value});
+                new int[]{',', ParserToken.Pair.value, ParserToken.PairRest.value});
+        TableAddCol(parse_table, ParserToken.PairRest, '}', new int[]{ParserToken.Epsilon.value});
 
         TableAddRow(parse_table, ParserToken.String);
-        TableAddCol(parse_table, ParserToken.String, '"', new int[] { '"', ParserToken.CharSeq.value, '"' });
+        TableAddCol(parse_table, ParserToken.String, '"', new int[]{'"', ParserToken.CharSeq.value, '"'});
 
         TableAddRow(parse_table, ParserToken.Text);
-        TableAddCol(parse_table, ParserToken.Text, '[', new int[] {ParserToken.Array.value});
-        TableAddCol(parse_table, ParserToken.Text, '{', new int[] {ParserToken.Object.value});
+        TableAddCol(parse_table, ParserToken.Text, '[', new int[]{ParserToken.Array.value});
+        TableAddCol(parse_table, ParserToken.Text, '{', new int[]{ParserToken.Object.value});
 
         TableAddRow(parse_table, ParserToken.Value);
-        TableAddCol(parse_table, ParserToken.Value, '"', new int[] {ParserToken.String.value});
-        TableAddCol(parse_table, ParserToken.Value, '[', new int[] {ParserToken.Array.value});
-        TableAddCol(parse_table, ParserToken.Value, '{', new int[] {ParserToken.Object.value});
+        TableAddCol(parse_table, ParserToken.Value, '"', new int[]{ParserToken.String.value});
+        TableAddCol(parse_table, ParserToken.Value, '[', new int[]{ParserToken.Array.value});
+        TableAddCol(parse_table, ParserToken.Value, '{', new int[]{ParserToken.Object.value});
         TableAddCol(parse_table, ParserToken.Value, ParserToken.Number.value,
-                new int[] {ParserToken.Number.value});
+                new int[]{ParserToken.Number.value});
         TableAddCol(parse_table, ParserToken.Value, ParserToken.True.value,
-                new int[] {ParserToken.True.value});
+                new int[]{ParserToken.True.value});
         TableAddCol(parse_table, ParserToken.Value, ParserToken.False.value,
-                new int[] {ParserToken.False.value});
+                new int[]{ParserToken.False.value});
         TableAddCol(parse_table, ParserToken.Value, ParserToken.Null.value,
-                new int[] {ParserToken.Null.value});
+                new int[]{ParserToken.Null.value});
 
         TableAddRow(parse_table, ParserToken.ValueRest);
         TableAddCol(parse_table, ParserToken.ValueRest, ',',
-                new int[] { ',', ParserToken.Value.value, ParserToken.ValueRest.value});
-        TableAddCol(parse_table, ParserToken.ValueRest, ']', new int[] {ParserToken.Epsilon.value});
+                new int[]{',', ParserToken.Value.value, ParserToken.ValueRest.value});
+        TableAddCol(parse_table, ParserToken.ValueRest, ']', new int[]{ParserToken.Epsilon.value});
 
         return parse_table;
     }
 
     private static void TableAddCol(Map<Integer, Map<Integer, int[]>> parse_table, ParserToken row, int col,
-            int[] symbols) {
+                                    int[] symbols) {
         parse_table.get(row.value).put(col, symbols);
     }
 
@@ -128,10 +128,9 @@ public class JsonReader {
         parse_table.put(rule.value, new HashMap<Integer, int[]>());
     }
 
-    private void ProcessNumber(String number)
-    {
-        Double n_double=Double.valueOf(number);
-        if (n_double.isNaN()==false) {
+    private void ProcessNumber(String number) {
+        Double n_double = Double.valueOf(number);
+        if (n_double.isNaN() == false) {
             token_value = n_double.doubleValue();
             return;
         }
@@ -299,7 +298,7 @@ public class JsonReader {
             }
 
             try {
-                entry_symbols =  parse_table.get(current_symbol).get(current_input);
+                entry_symbols = parse_table.get(current_symbol).get(current_input);
 
             } catch (Exception e) {
                 throw new JsonException(ParserToken.values()[current_input], e);

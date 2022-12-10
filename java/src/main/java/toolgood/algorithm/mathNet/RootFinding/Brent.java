@@ -4,7 +4,7 @@ import toolgood.algorithm.mathNet.Precision;
 
 import java.util.function.Function;
 
- 
+
 public class Brent {
     public static double FindRoot(Function<Double, Double> f, double lowerBound, double upperBound, double accuracy)
             throws Exception {
@@ -12,10 +12,9 @@ public class Brent {
     }
 
     public static double FindRoot(Function<Double, Double> f, double lowerBound, double upperBound, double accuracy,
-            int maxIterations) throws Exception
-    {
-        RootNumber root=new RootNumber();
-        if (TryFindRoot(f, lowerBound, upperBound, accuracy, maxIterations,root)) {
+                                  int maxIterations) throws Exception {
+        RootNumber root = new RootNumber();
+        if (TryFindRoot(f, lowerBound, upperBound, accuracy, maxIterations, root)) {
             return root.root;
         }
         throw new Exception("RootFindingFailed");
@@ -23,8 +22,7 @@ public class Brent {
 
 
     public static boolean TryFindRoot(Function<Double, Double> f, double lowerBound, double upperBound, double accuracy,
-            int maxIterations, RootNumber root)
-    {
+                                      int maxIterations, RootNumber root) {
         double fmin = f.apply(lowerBound);
         double fmax = f.apply(upperBound);
         double froot = fmax;
@@ -60,7 +58,7 @@ public class Brent {
             double xMidOld = xMid;
             xMid = (upperBound - root.root) / 2.0;
 
-            if (Math.abs(xMid) <= xAcc1 || Precision.AlmostEqualNormRelative(froot,0, froot, accuracy)) {
+            if (Math.abs(xMid) <= xAcc1 || Precision.AlmostEqualNormRelative(froot, 0, froot, accuracy)) {
                 return true;
             }
 
@@ -74,7 +72,7 @@ public class Brent {
                 double s = froot / fmin;
                 double p;
                 double q;
-                if (Precision.AlmostEqualRelative(lowerBound,upperBound)) {
+                if (Precision.AlmostEqualRelative(lowerBound, upperBound)) {
                     p = 2.0 * xMid * s;
                     q = 1.0 - s;
                 } else {
@@ -118,11 +116,12 @@ public class Brent {
 
         return false;
     }
-    static int sign(double a){
-        if(a==0.0){
+
+    static int sign(double a) {
+        if (a == 0.0) {
             return 0;
         }
-        if(a<0){
+        if (a < 0) {
             return -1;
         }
         return 1;
@@ -130,8 +129,7 @@ public class Brent {
 
     /// <summary>Helper method useful for preventing rounding errors.</summary>
     /// <returns>a*sign(b)</returns>
-    static double Sign(double a, double b)
-    {
+    static double Sign(double a, double b) {
         return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);
     }
 

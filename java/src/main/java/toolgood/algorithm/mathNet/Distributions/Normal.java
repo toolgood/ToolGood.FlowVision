@@ -4,16 +4,15 @@ import toolgood.algorithm.mathNet.Constants;
 import toolgood.algorithm.mathNet.SpecialFunctions;
 
 public class Normal {
-    public static double CDF(double mean, double stddev, double x)
-    {
+    public static double CDF(double mean, double stddev, double x) {
         //if (stddev < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
 
         return 0.5 * SpecialFunctions.Erfc((mean - x) / (stddev * Constants.Sqrt2));
     }
-    public static double InvCDF(double mean, double stddev, double p)
-    {
+
+    public static double InvCDF(double mean, double stddev, double p) {
         //if (stddev < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
@@ -21,8 +20,7 @@ public class Normal {
         return mean - (stddev * Constants.Sqrt2 * SpecialFunctions.ErfcInv(2.0 * p));
     }
 
-    public static double PDF(double mean, double stddev, double x)
-    {
+    public static double PDF(double mean, double stddev, double x) {
         //if (stddev < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}

@@ -7,12 +7,16 @@ import toolgood.flowVision.Flows.SettingFormulaItemWork;
 import java.util.List;
 
 public interface IInputFormulaNodeWork {
-    ProjectWork Project() ;
-    String InputName() ;
-    List<SettingFormulaItemWork> InputFormula() ;
+    ProjectWork Project();
+
+    String InputName();
+
+    List<SettingFormulaItemWork> InputFormula();
+
     boolean IsSubsidiaryCount();
 
     double EvaluateInputNum(FlowEngine engine) throws Exception;
+
     String GetMatchFormula(FlowEngine engine) throws Exception;
 
 }

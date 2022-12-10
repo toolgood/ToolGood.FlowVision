@@ -89,7 +89,7 @@ public class JsonData implements IJsonWrapper {
         // object_list.Add(entry);
     }
 
-    @SuppressWarnings("rawtypes") 
+    @SuppressWarnings("rawtypes")
     private Collection EnsureCollection() {
         if (type == JsonType.Array)
             return inst_array;
@@ -145,7 +145,6 @@ public class JsonData implements IJsonWrapper {
         this.type = type;
     }
 
- 
 
     public boolean BooleanValue() {
         return inst_boolean;

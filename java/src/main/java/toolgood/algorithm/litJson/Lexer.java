@@ -148,11 +148,11 @@ public class Lexer {
         Function<FsmContext, Boolean> state28 = ctx -> State28(ctx);
         fsm_handler_table.add(state28);
 
-        fsm_return_table = new int[] {ParserToken.Char.value, 0, ParserToken.Number.value,
+        fsm_return_table = new int[]{ParserToken.Char.value, 0, ParserToken.Number.value,
                 ParserToken.Number.value, 0, ParserToken.Number.value, 0, ParserToken.Number.value, 0,
                 0, ParserToken.True.value, 0, 0, 0, ParserToken.False.value, 0, 0,
                 ParserToken.Null.value, ParserToken.CharSeq.value, ParserToken.Char.value, 0, 0,
-                ParserToken.CharSeq.value, ParserToken.Char.value, 0, 0, 0, 0 };
+                ParserToken.CharSeq.value, ParserToken.Char.value, 0, 0, 0, 0};
     }
 
     private static char ProcessEscChar(int esc_char) {
@@ -767,7 +767,7 @@ public class Lexer {
     private boolean GetChar() {
         try {
             if ((input_char = NextChar()) != -1)
-            return true;
+                return true;
         } catch (Exception e) {
         }
         end_of_input = true;
@@ -786,12 +786,12 @@ public class Lexer {
     }
 
     public boolean NextToken() throws JsonException {
-        Function<FsmContext,Boolean> handler;
+        Function<FsmContext, Boolean> handler;
         fsm_context.Return = false;
 
         while (true) {
             handler = fsm_handler_table.get(state - 1);// [state - 1];
-            
+
             if (!handler.apply(fsm_context))
                 throw new JsonException(input_char);
 

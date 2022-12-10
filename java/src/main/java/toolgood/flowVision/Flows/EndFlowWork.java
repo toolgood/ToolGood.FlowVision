@@ -39,26 +39,26 @@ public class EndFlowWork extends NodeWork implements ISettingFormulaNodeWork {
         result.Label = jsonObject.getString("label");
         result.Layer = jsonObject.getIntValue("layer");
         result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
-        result.NextNodeIds=new HashMap<>();
-        if (jsonObject.containsKey("nextNodeIds")){
-            JSONObject nextNodeIds=   jsonObject.getJSONObject("nextNodeIds");
-            for (Map.Entry<String,Object> kv : nextNodeIds.entrySet()) {
-                if (kv.getValue() instanceof JSONArray array){
-                    List<String> list=new ArrayList<>();
-                    for (Object obj:                    array) {
+        result.NextNodeIds = new HashMap<>();
+        if (jsonObject.containsKey("nextNodeIds")) {
+            JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
+            for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
+                if (kv.getValue() instanceof JSONArray array) {
+                    List<String> list = new ArrayList<>();
+                    for (Object obj : array) {
                         list.add(obj.toString());
                     }
-                    result.NextNodeIds.put(kv.getKey(),list);
+                    result.NextNodeIds.put(kv.getKey(), list);
                 }
             }
         }
 
-        result.SettingFormula =new ArrayList<>();
+        result.SettingFormula = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("settingFormula");
         for (Object s : array) {
-            if (s instanceof JSONObject jsonObject1){
-                SettingFormulaWork work=SettingFormulaWork.parse(jsonObject1);
-                if (work!=null){
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaWork work = SettingFormulaWork.parse(jsonObject1);
+                if (work != null) {
                     result.SettingFormula.add(work);
                 }
             }

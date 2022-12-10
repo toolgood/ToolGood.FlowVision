@@ -3,8 +3,7 @@ package toolgood.algorithm.mathNet.Distributions;
 import toolgood.algorithm.mathNet.SpecialFunctions;
 
 public class Gamma {
-    public static double CDF(double shape, double rate, double x)
-    {
+    public static double CDF(double shape, double rate, double x) {
         //if (shape < 0.0 || rate < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
@@ -20,8 +19,7 @@ public class Gamma {
         return SpecialFunctions.GammaLowerRegularized(shape, x * rate);
     }
 
-    public static double PDF(double shape, double rate, double x)
-    {
+    public static double PDF(double shape, double rate, double x) {
         //if (shape < 0.0 || rate < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
@@ -44,8 +42,8 @@ public class Gamma {
 
         return Math.pow(rate, shape) * Math.pow(x, shape - 1.0) * Math.exp(-rate * x) / SpecialFunctions.Gamma(shape);
     }
-    public static double PDFLn(double shape, double rate, double x)
-    {
+
+    public static double PDFLn(double shape, double rate, double x) {
         //if (shape < 0.0 || rate < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
@@ -65,8 +63,7 @@ public class Gamma {
         return (shape * Math.log(rate)) + ((shape - 1.0) * Math.log(x)) - (rate * x) - SpecialFunctions.GammaLn(shape);
     }
 
-    public static double InvCDF(double shape, double rate, double p)
-    {
+    public static double InvCDF(double shape, double rate, double p) {
         //if (shape < 0.0 || rate < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}

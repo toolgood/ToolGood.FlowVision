@@ -6,9 +6,8 @@ import toolgood.algorithm.mathNet.SpecialFunctions;
 import java.util.function.Function;
 
 public class Beta {
-    
-    public static double CDF(double a, double b, double x)
-    {
+
+    public static double CDF(double a, double b, double x) {
         //if (a < 0.0 || b < 0.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
@@ -20,7 +19,7 @@ public class Beta {
         if (x >= 1.0) {
             return 1.0;
         }
-        
+
         if (Double.isInfinite(a) && Double.isInfinite(b)) {
             return x < 0.5 ? 0.0 : 1.0;
         }
@@ -56,17 +55,16 @@ public class Beta {
         return SpecialFunctions.BetaRegularized(a, b, x);
     }
 
-    public static double InvCDF(double a, double b, double p) throws Exception
-    {
+    public static double InvCDF(double a, double b, double p) throws Exception {
 
         //if (a < 0.0 || b < 0.0 || p < 0.0 || p > 1.0) {
         //    throw new ArgumentException(Resources.InvalidDistributionParameters);
         //}
-        Function<Double,Double> f= x->{
+        Function<Double, Double> f = x -> {
             return SpecialFunctions.BetaRegularized(a, b, x) - p;
         };
 
-        return Brent.FindRoot(f, 0.0, 1.0,   1e-12);
+        return Brent.FindRoot(f, 0.0, 1.0, 1e-12);
     }
- 
+
 }

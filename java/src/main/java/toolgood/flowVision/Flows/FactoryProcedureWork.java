@@ -34,7 +34,7 @@ public class FactoryProcedureWork {
         result.Name = jsonObject.getString("name");
         result.CheckFormula = jsonObject.getString("checkFormula");
 
-        result.Items=new HashMap<>();
+        result.Items = new HashMap<>();
         JSONObject allNodeWork = jsonObject.getJSONObject("items");
         for (Map.Entry<String, Object> item : allNodeWork.entrySet()) {
             if (item.getValue() instanceof JSONObject jsonObject1) {

@@ -63,48 +63,54 @@ public class ExcelFunctions {
     public static double GammaInv(double probability, double alpha, double beta) {
         return Gamma.InvCDF(alpha, 1 / beta, probability);
     }
+
     public static double Quartile(List<Double> data, int quant) throws Exception {
-        double[] array=new double[data.size()];
+        double[] array = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            array[i]=data.get(i);
+            array[i] = data.get(i);
         }
-        return Quartile(array,quant);
+        return Quartile(array, quant);
     }
+
     public static double Quartile(double[] array, int quant) throws Exception {
         switch (quant) {
             case 0:
                 return ArrayStatistics.Minimum(array);
             case 1:
-                return Statistics.QuantileCustom(array,0.25, QuantileDefinition.R7);
+                return Statistics.QuantileCustom(array, 0.25, QuantileDefinition.R7);
             case 2:
-                return Statistics.QuantileCustom(array,0.5, QuantileDefinition.R7);
+                return Statistics.QuantileCustom(array, 0.5, QuantileDefinition.R7);
             case 3:
-                return Statistics.QuantileCustom(array,0.75, QuantileDefinition.R7);
+                return Statistics.QuantileCustom(array, 0.75, QuantileDefinition.R7);
             case 4:
                 return ArrayStatistics.Maximum(array);
             default:
                 throw new Exception("quant");
         }
     }
+
     public static double Percentile(List<Double> data, double quant) throws Exception {
-        double[] array=new double[data.size()];
+        double[] array = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            array[i]=data.get(i);
+            array[i] = data.get(i);
         }
-        return Percentile(array,quant);
+        return Percentile(array, quant);
     }
+
     public static double Percentile(double[] array, double k) throws Exception {
-        return Statistics.QuantileCustom(array,k, QuantileDefinition.R7);
+        return Statistics.QuantileCustom(array, k, QuantileDefinition.R7);
     }
+
     public static double PercentRank(List<Double> data, double x) {
-        double[] array=new double[data.size()];
+        double[] array = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            array[i]=data.get(i);
+            array[i] = data.get(i);
         }
-        return Statistics.QuantileRank(array,x);
+        return Statistics.QuantileRank(array, x);
     }
+
     public static double PercentRank(double[] array, double x) {
-        return Statistics.QuantileRank(array,x);
+        return Statistics.QuantileRank(array, x);
         // return array.QuantileRank(x);
     }
 
