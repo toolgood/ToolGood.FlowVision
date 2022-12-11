@@ -23,4 +23,17 @@ public enum MassUnitType {
     public int getValue() {
         return value;
     }
+
+    public static MassUnitType intToEnum(int value) {
+        switch (value) {
+            case 31:
+                return G;
+            case 32:
+                return KG;
+            case 33:
+                return T;
+            default:
+                return null;
+        }
+    }
 }

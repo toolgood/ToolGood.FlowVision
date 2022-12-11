@@ -24,6 +24,10 @@ public class ProjectWork {
 
     public int ExcelIndex;
     public boolean NumberRequired;
+    public int Distance;
+    public int Area;
+    public int Volume;
+    public int Mass;
 
     public Map<String, String> FormulaList;
     public Map<String, FactoryWork> FactoryList;
@@ -92,6 +96,10 @@ public class ProjectWork {
         projectWork.Code = jsonObject.getString("code");
         projectWork.ExcelIndex = jsonObject.getIntValue("excelIndex");
         projectWork.NumberRequired = jsonObject.getBooleanValue("numberRequired");
+        projectWork.Distance = jsonObject.getIntValue("distance");
+        projectWork.Area = jsonObject.getIntValue("area");
+        projectWork.Volume = jsonObject.getIntValue("volume");
+        projectWork.Mass = jsonObject.getIntValue("mass");
 
         projectWork.FormulaList = new HashMap<>();
         if (jsonObject.containsKey("formulaList")) {

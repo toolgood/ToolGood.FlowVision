@@ -48,7 +48,7 @@ public class StatusFlowWork extends NodeWork implements ISettingFormulaNodeWork 
         if (CheckFormula == null || CheckFormula.equals("")) {
             return true;
         }
-        var progContext = Project.CreateProgContext(StatusCheckFormula);
+        mathParser.ProgContext progContext = Project.CreateProgContext(StatusCheckFormula);
         Operand operand = engine.EvaluateFormula(progContext, InputType.Bool);
         return operand.BooleanValue();
     }

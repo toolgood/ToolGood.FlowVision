@@ -31,4 +31,21 @@ public enum DistanceUnitType {
     public int getValue() {
         return value;
     }
+
+    public static DistanceUnitType intToEnum(int value) {
+        switch (value) {
+            case 1:
+                return MM;
+            case 2:
+                return CM;
+            case 3:
+                return DM;
+            case 4:
+                return M;
+            case 5:
+                return KM;
+            default:
+                return null;
+        }
+    }
 }

@@ -672,7 +672,11 @@ namespace ToolGood.FlowVision.Engines
             var visitor = new MathVisitor();
             visitor.GetParameter += GetTempParameter;
             visitor.excelIndex = Project.ExcelIndex;
-            var result = visitor.Visit(context);
+			visitor.DistanceUnit = (DistanceUnitType)Project.Distance;
+			visitor.AreaUnit = (AreaUnitType)Project.Area;
+			visitor.VolumeUnit = (VolumeUnitType)Project.Volume;
+			visitor.MassUnit = (MassUnitType)Project.Mass;
+			var result = visitor.Visit(context);
             visitor = null;
             return result;
         }
@@ -694,7 +698,11 @@ namespace ToolGood.FlowVision.Engines
             var visitor = new MathVisitor();
             visitor.GetParameter += GetTempParameter;
             visitor.excelIndex = Project.ExcelIndex;
-            var result = visitor.Visit(context);
+			visitor.DistanceUnit = (DistanceUnitType)Project.Distance;
+			visitor.AreaUnit = (AreaUnitType)Project.Area;
+			visitor.VolumeUnit = (VolumeUnitType)Project.Volume;
+			visitor.MassUnit = (MassUnitType)Project.Mass;
+			var result = visitor.Visit(context);
             visitor = null;
             return result;
         }

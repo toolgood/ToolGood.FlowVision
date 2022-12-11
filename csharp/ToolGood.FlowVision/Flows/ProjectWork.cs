@@ -23,6 +23,10 @@ namespace ToolGood.FlowVision.Flows
 
 		public int ExcelIndex { get; set; }
 		public bool NumberRequired { get; set; }
+		public int Distance { get; set; }
+		public int Area { get; set; }
+		public int Volume { get; set; }
+		public int Mass { get; set; }
 
 		public Dictionary<string, string> FormulaList { get; set; }
 		public Dictionary<string, FactoryWork> FactoryList { get; set; }
