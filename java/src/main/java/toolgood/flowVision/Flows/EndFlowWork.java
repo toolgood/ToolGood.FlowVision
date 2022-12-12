@@ -18,21 +18,6 @@ public class EndFlowWork extends NodeWork implements ISettingFormulaNodeWork {
         NodeType = CellType.End;
     }
 
-    @Override
-    public void Init(ProjectWork work, AppWork app) {
-        super.Init(work, app);
-        for (int i = 0; i < SettingFormula.size(); i++) {
-            SettingFormulaWork item = SettingFormula.get(i);
-            item.Init(work);
-            item.NodeWork = this;
-        }
-    }
-
-    @Override
-    public List<SettingFormulaWork> SettingFormula() {
-        return SettingFormula;
-    }
-
     final static EndFlowWork parse2(JSONObject jsonObject) {
         EndFlowWork result = new EndFlowWork();
         result.Id = jsonObject.getString("id");
@@ -64,5 +49,20 @@ public class EndFlowWork extends NodeWork implements ISettingFormulaNodeWork {
             }
         }
         return result;
+    }
+
+    @Override
+    public void Init(ProjectWork work, AppWork app) {
+        super.Init(work, app);
+        for (int i = 0; i < SettingFormula.size(); i++) {
+            SettingFormulaWork item = SettingFormula.get(i);
+            item.Init(work);
+            item.NodeWork = this;
+        }
+    }
+
+    @Override
+    public List<SettingFormulaWork> SettingFormula() {
+        return SettingFormula;
     }
 }

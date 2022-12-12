@@ -22,6 +22,16 @@ public class TreeNode {
     public NodeWork CurrWork;
     public FactoryMachineWork MachineItem;
     public FactoryProcedureItemWork ProcedureItem;
+    public Double InputNum;
+    public Double OutputNum;
+
+    public TreeNode(NodeWork work, FactoryMachineWork factoryMachineItem, FactoryProcedureItemWork factoryProcedureItem) {
+        CurrWork = work;
+        MachineItem = factoryMachineItem;
+        ProcedureItem = factoryProcedureItem;
+        PrevNodes = new ArrayList<>();
+        NextNodes = new HashMap<>();
+    }
 
     public String Id() {
         return CurrWork.Id;
@@ -37,17 +47,6 @@ public class TreeNode {
             return work.IsSubsidiaryCount();
         }
         return false;
-    }
-
-    public Double InputNum;
-    public Double OutputNum;
-
-    public TreeNode(NodeWork work, FactoryMachineWork factoryMachineItem, FactoryProcedureItemWork factoryProcedureItem) {
-        CurrWork = work;
-        MachineItem = factoryMachineItem;
-        ProcedureItem = factoryProcedureItem;
-        PrevNodes = new ArrayList<>();
-        NextNodes = new HashMap<>();
     }
 
     public void AddNextNode(TreeNode node, String channel, int index) {

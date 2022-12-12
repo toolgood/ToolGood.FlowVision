@@ -8,11 +8,17 @@ import toolgood.flowVision.Flows.Enums.InputType;
 
 
 public class SettingFormulaItemWork {
-    private ProjectWork Project;// { get; set; }
-
     public String Condition;
     public String Formula;
+    private ProjectWork Project;// { get; set; }
 
+    final static SettingFormulaItemWork parse(JSONObject jsonObject) {
+        SettingFormulaItemWork result = new SettingFormulaItemWork();
+        result.Condition = jsonObject.getString("condition");
+        result.Formula = jsonObject.getString("formula");
+
+        return result;
+    }
 
     public Operand EvaluateFormula(FlowEngine engine, InputType inputType) throws Exception {
         mathParser.ProgContext progContext = Project.CreateProgContext(Formula);
@@ -23,7 +29,6 @@ public class SettingFormulaItemWork {
         Project = work;
     }
 
-
     public boolean Check(FlowEngine engine) throws Exception {
         if (Condition == null || Condition.equals("")) {
             return true;
@@ -33,13 +38,5 @@ public class SettingFormulaItemWork {
         }
         mathParser.ProgContext progContext = Project.CreateProgContext(Condition);
         return engine.TryEvaluate(progContext, false);
-    }
-
-    final static SettingFormulaItemWork parse(JSONObject jsonObject) {
-        SettingFormulaItemWork result = new SettingFormulaItemWork();
-        result.Condition = jsonObject.getString("condition");
-        result.Formula = jsonObject.getString("formula");
-
-        return result;
     }
 }

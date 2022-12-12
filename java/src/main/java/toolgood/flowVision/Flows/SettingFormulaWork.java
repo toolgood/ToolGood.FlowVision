@@ -11,13 +11,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SettingFormulaWork {
-    private ProjectWork Project;
     public NodeWork NodeWork;
-
     public String Name;
     public InputType Type;
     public String DefaultFormula;
     public List<SettingFormulaItemWork> Conditions;
+    private ProjectWork Project;
+
+    final static SettingFormulaWork parse(JSONObject jsonObject) {
+        SettingFormulaWork result = new SettingFormulaWork();
+        result.Name = jsonObject.getString("name");
+        result.DefaultFormula = jsonObject.getString("defaultFormula");
+        result.Type = InputType.intToEnum(jsonObject.getIntValue("type"));
+
+        result.Conditions = new ArrayList<>();
+        JSONArray array2 = jsonObject.getJSONArray("conditions");
+        for (Object s : array2) {
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
+                if (work != null) {
+                    result.Conditions.add(work);
+                }
+            }
+        }
+        return result;
+    }
 
     public Operand EvaluateFormula(FlowEngine engine) throws Exception {
         if (Conditions != null && Conditions.size() > 0) {
@@ -40,24 +58,5 @@ public class SettingFormulaWork {
                 settingFormulaItem.Init(work);
             }
         }
-    }
-
-    final static SettingFormulaWork parse(JSONObject jsonObject) {
-        SettingFormulaWork result = new SettingFormulaWork();
-        result.Name = jsonObject.getString("name");
-        result.DefaultFormula = jsonObject.getString("defaultFormula");
-        result.Type = InputType.intToEnum(jsonObject.getIntValue("type"));
-
-        result.Conditions = new ArrayList<>();
-        JSONArray array2 = jsonObject.getJSONArray("conditions");
-        for (Object s : array2) {
-            if (s instanceof JSONObject jsonObject1) {
-                SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
-                if (work != null) {
-                    result.Conditions.add(work);
-                }
-            }
-        }
-        return result;
     }
 }

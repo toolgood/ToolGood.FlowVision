@@ -18,6 +18,41 @@ public class AppWork {
     public Map<String, List<NodeWork>> ParentNodeWorks;
     public StartFlowWork Start;
 
+    final static AppWork parse(JSONObject jsonObject) throws Exception {
+        AppWork result = new AppWork();
+        result.Code = jsonObject.getString("code");
+        result.Name = jsonObject.getString("name");
+
+        result.InitValueList = new ArrayList<>();
+        JSONArray initValueList = jsonObject.getJSONArray("initValueList");
+        for (Object item : initValueList) {
+            if (item instanceof JSONObject jsonObject1) {
+                AppInitValueWork work = AppInitValueWork.parse(jsonObject1);
+                result.InitValueList.add(work);
+            }
+        }
+
+        result.InputList = new ArrayList<>();
+        JSONArray inputList = jsonObject.getJSONArray("inputList");
+        for (Object item : inputList) {
+            if (item instanceof JSONObject jsonObject1) {
+                AppInputWork work = AppInputWork.parse(jsonObject1);
+                result.InputList.add(work);
+            }
+        }
+
+        result.AllNodeWork = new HashMap<>();
+        JSONObject allNodeWork = jsonObject.getJSONObject("allNodeWork");
+        for (Map.Entry<String, Object> item : allNodeWork.entrySet()) {
+            if (item.getValue() instanceof JSONObject jsonObject1) {
+                NodeWork work = NodeWork.parse(jsonObject1);
+                result.AllNodeWork.put(item.getKey(), work);
+            }
+        }
+
+        return result;
+    }
+
     public void Init(ProjectWork work) {
         for (int i = 0; i < InitValueList.size(); i++) {
             AppInitValueWork item = InitValueList.get(i);
@@ -54,40 +89,5 @@ public class AppWork {
         }
 
 
-    }
-
-    final static AppWork parse(JSONObject jsonObject) throws Exception {
-        AppWork result = new AppWork();
-        result.Code = jsonObject.getString("code");
-        result.Name = jsonObject.getString("name");
-
-        result.InitValueList = new ArrayList<>();
-        JSONArray initValueList = jsonObject.getJSONArray("initValueList");
-        for (Object item : initValueList) {
-            if (item instanceof JSONObject jsonObject1) {
-                AppInitValueWork work = AppInitValueWork.parse(jsonObject1);
-                result.InitValueList.add(work);
-            }
-        }
-
-        result.InputList = new ArrayList<>();
-        JSONArray inputList = jsonObject.getJSONArray("inputList");
-        for (Object item : inputList) {
-            if (item instanceof JSONObject jsonObject1) {
-                AppInputWork work = AppInputWork.parse(jsonObject1);
-                result.InputList.add(work);
-            }
-        }
-
-        result.AllNodeWork = new HashMap<>();
-        JSONObject allNodeWork = jsonObject.getJSONObject("allNodeWork");
-        for (Map.Entry<String, Object> item : allNodeWork.entrySet()) {
-            if (item.getValue() instanceof JSONObject jsonObject1) {
-                NodeWork work = NodeWork.parse(jsonObject1);
-                result.AllNodeWork.put(item.getKey(), work);
-            }
-        }
-
-        return result;
     }
 }

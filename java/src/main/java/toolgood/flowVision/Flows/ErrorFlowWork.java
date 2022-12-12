@@ -13,21 +13,10 @@ import java.util.Map;
 
 public class ErrorFlowWork extends NodeWork {
 
-    public ErrorFlowWork() {
-        NodeType = toolgood.flowVision.Flows.Enums.CellType.Error;
-    }
-
     public String CheckFormula;
     public String ErrorMessage;
-
-    @Override
-    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
-
-        if (CheckFormula == null || CheckFormula.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
-        return engine.TryEvaluate(progContext, false);
+    public ErrorFlowWork() {
+        NodeType = toolgood.flowVision.Flows.Enums.CellType.Error;
     }
 
     final static ErrorFlowWork parse2(JSONObject jsonObject) {
@@ -53,5 +42,15 @@ public class ErrorFlowWork extends NodeWork {
         result.CheckFormula = jsonObject.getString("checkFormula");
         result.ErrorMessage = jsonObject.getString("errorMessage");
         return result;
+    }
+
+    @Override
+    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
+
+        if (CheckFormula == null || CheckFormula.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
+        return engine.TryEvaluate(progContext, false);
     }
 }

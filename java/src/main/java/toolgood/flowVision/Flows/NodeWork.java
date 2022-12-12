@@ -10,14 +10,34 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class NodeWork {
-    protected ProjectWork Project;
     public CellType NodeType;
     public String Id;
     public String Label;
     public int Layer;
-
     public Map<String, List<NodeWork>> NextNodes;
     public Map<String, List<String>> NextNodeIds;
+    protected ProjectWork Project;
+
+    final static NodeWork parse(JSONObject jsonObject) throws Exception {
+        CellType type = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+        if (type == CellType.Start)
+            return StartFlowWork.parse2(jsonObject);
+        if (type == CellType.End)
+            return EndFlowWork.parse2(jsonObject);
+        if (type == CellType.Error)
+            return ErrorFlowWork.parse2(jsonObject);
+        if (type == CellType.Procedure)
+            return ProcedureFlowWork.parse2(jsonObject);
+        if (type == CellType.Custom)
+            return CustomFlowWork.parse2(jsonObject);
+        if (type == CellType.Jump)
+            return JumpFlowWork.parse2(jsonObject);
+        if (type == CellType.Merge)
+            return MergeFlowWork.parse2(jsonObject);
+        if (type == CellType.Status)
+            return StatusFlowWork.parse2(jsonObject);
+        throw new Exception("NodeType类型出错了");
+    }
 
     public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
         return true;
@@ -47,26 +67,5 @@ public abstract class NodeWork {
                 NextNodes.put(key, list);
             }
         }
-    }
-
-    final static NodeWork parse(JSONObject jsonObject) throws Exception {
-        CellType type = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
-        if (type == CellType.Start)
-            return StartFlowWork.parse2(jsonObject);
-        if (type == CellType.End)
-            return EndFlowWork.parse2(jsonObject);
-        if (type == CellType.Error)
-            return ErrorFlowWork.parse2(jsonObject);
-        if (type == CellType.Procedure)
-            return ProcedureFlowWork.parse2(jsonObject);
-        if (type == CellType.Custom)
-            return CustomFlowWork.parse2(jsonObject);
-        if (type == CellType.Jump)
-            return JumpFlowWork.parse2(jsonObject);
-        if (type == CellType.Merge)
-            return MergeFlowWork.parse2(jsonObject);
-        if (type == CellType.Status)
-            return StatusFlowWork.parse2(jsonObject);
-        throw new Exception("NodeType类型出错了");
     }
 }

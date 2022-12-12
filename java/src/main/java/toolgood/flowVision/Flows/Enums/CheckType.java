@@ -9,11 +9,6 @@ public enum CheckType {
         value = v;
     }
 
-    public int getValue() {
-        return value;
-    }
-
-
     public static CheckType intToEnum(int value) {
         switch (value) {
             case 0:
@@ -23,5 +18,9 @@ public enum CheckType {
             default:
                 return null;
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 }

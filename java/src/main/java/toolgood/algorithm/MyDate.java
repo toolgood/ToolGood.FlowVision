@@ -10,6 +10,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MyDate {
+    public Integer Year;
+    public Integer Month;
+    public Integer Day;
+    public int Hour;
+    public int Minute;
+    public int Second;
+
+    // public MyDate(TimeSpan dt) {
+    // Day = dt.Days;
+    // Hour = dt.Hours;
+    // Minute = dt.Minutes;
+    // Second = dt.Seconds;
+    // }
+
     private MyDate() {
     }
 
@@ -21,7 +35,6 @@ public class MyDate {
         Minute = minute;
         Second = second;
     }
-
     public MyDate(Date dt) {
         DateTime dTime = new DateTime(dt);
         Year = dTime.getYear();
@@ -31,7 +44,6 @@ public class MyDate {
         Minute = dTime.getMinuteOfHour();
         Second = dTime.getSecondOfMinute();
     }
-
     public MyDate(DateTime dTime) {
         Year = dTime.getYear();
         Month = dTime.getMonthOfYear();
@@ -39,6 +51,22 @@ public class MyDate {
         Hour = dTime.getHourOfDay();
         Minute = dTime.getMinuteOfHour();
         Second = dTime.getSecondOfMinute();
+    }
+    public MyDate(double num) {
+        int days = (int) num;
+        if (days > 365) {
+            LocalDate start = LocalDate.of(1900, 1, 1);
+            start = start.plusDays(days - 2);
+            Year = start.getYear();
+            Month = start.getMonthValue();
+            Day = start.getDayOfMonth();
+        } else {
+            Day = days;
+        }
+        double d = num - days;
+        Hour = (int) (d * 24);
+        Minute = (int) ((d * 24 - Hour) * 60.0);
+        Second = (int) (((d * 24 - Hour) * 60.0 - Minute) * 60.0);
     }
 
     public static MyDate parse(String txt) {
@@ -104,37 +132,6 @@ public class MyDate {
     public static MyDate now() {
         return new MyDate(DateTime.now());
     }
-
-    // public MyDate(TimeSpan dt) {
-    // Day = dt.Days;
-    // Hour = dt.Hours;
-    // Minute = dt.Minutes;
-    // Second = dt.Seconds;
-    // }
-
-    public MyDate(double num) {
-        int days = (int) num;
-        if (days > 365) {
-            LocalDate start = LocalDate.of(1900, 1, 1);
-            start = start.plusDays(days - 2);
-            Year = start.getYear();
-            Month = start.getMonthValue();
-            Day = start.getDayOfMonth();
-        } else {
-            Day = days;
-        }
-        double d = num - days;
-        Hour = (int) (d * 24);
-        Minute = (int) ((d * 24 - Hour) * 60.0);
-        Second = (int) (((d * 24 - Hour) * 60.0 - Minute) * 60.0);
-    }
-
-    public Integer Year;
-    public Integer Month;
-    public Integer Day;
-    public int Hour;
-    public int Minute;
-    public int Second;
 
     @Override
     public String toString() {

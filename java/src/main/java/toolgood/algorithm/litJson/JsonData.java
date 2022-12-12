@@ -5,12 +5,15 @@ import java.util.*;
 public class JsonData implements IJsonWrapper {
 
     public ArrayList<JsonData> inst_array;
+    public Map<String, JsonData> inst_object;
     private boolean inst_boolean;
     private double inst_double;
-    public Map<String, JsonData> inst_object;
     private String inst_string;
     private JsonType type;
     // private IList<KeyValuePair<string, JsonData>> object_list;
+
+    public JsonData() {
+    }
 
     public int Count() {
         return EnsureCollection().size();
@@ -53,9 +56,6 @@ public class JsonData implements IJsonWrapper {
         if (type == JsonType.Array)
             return inst_array.get(index);
         return null;
-    }
-
-    public JsonData() {
     }
 
     public void SetBoolean(final boolean val) {

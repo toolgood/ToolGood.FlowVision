@@ -30,6 +30,78 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
     public Map<String, List<ProcedureFlowMachineInfo>> Machines;
     public FactoryProcedureWork FactoryProcedure;
 
+    public ProcedureFlowWork() {
+        NodeType = CellType.Procedure;
+    }
+
+    final static ProcedureFlowWork parse2(JSONObject jsonObject) {
+        ProcedureFlowWork result = new ProcedureFlowWork();
+        result.Id = jsonObject.getString("id");
+        result.Label = jsonObject.getString("label");
+        result.Layer = jsonObject.getIntValue("layer");
+        result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
+        result.NextNodeIds = new HashMap<>();
+        if (jsonObject.containsKey("nextNodeIds")) {
+            JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
+            for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
+                if (kv.getValue() instanceof JSONArray array) {
+                    List<String> list = new ArrayList<>();
+                    for (Object obj : array) {
+                        list.add(obj.toString());
+                    }
+                    result.NextNodeIds.put(kv.getKey(), list);
+                }
+            }
+        }
+
+        result.Procedure = jsonObject.getString("procedure");
+        result.CheckFormula = jsonObject.getString("checkFormula");
+        result.CheckType = toolgood.flowVision.Flows.Enums.CheckType.intToEnum(jsonObject.getIntValue("checkType"));
+        result.InputName = jsonObject.getString("inputName");
+        result.NumberType = InputNumberType.intToEnum(jsonObject.getIntValue("numberType"));
+        result.IsSubsidiaryCount = jsonObject.getBooleanValue("isSubsidiaryCount");
+        result.MachineRequired = jsonObject.getBooleanValue("machineRequired");
+
+        result.SettingFormula = new ArrayList<>();
+        JSONArray array = jsonObject.getJSONArray("settingFormula");
+        for (Object s : array) {
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaWork work = SettingFormulaWork.parse(jsonObject1);
+                if (work != null) {
+                    result.SettingFormula.add(work);
+                }
+            }
+        }
+        result.InputFormula = new ArrayList<>();
+        JSONArray array2 = jsonObject.getJSONArray("inputFormula");
+        for (Object s : array2) {
+            if (s instanceof JSONObject jsonObject1) {
+                SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
+                if (work != null) {
+                    result.InputFormula.add(work);
+                }
+            }
+        }
+        result.Machines = new HashMap<>();
+        JSONArray array3 = jsonObject.getJSONArray("machines");
+        for (Object s : array3) {
+            if (s instanceof JSONObject jsonObject1) {
+                for (Map.Entry<String, Object> item : jsonObject1.entrySet()) {
+                    if (item.getValue() instanceof JSONArray jsonArray) {
+                        List<ProcedureFlowMachineInfo> list = new ArrayList<>();
+                        for (Object o : jsonArray) {
+                            ProcedureFlowMachineInfo info = ProcedureFlowMachineInfo.parse((JSONObject) o);
+                            list.add(info);
+                        }
+                        result.Machines.put(item.getKey(), list);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
     @Override
     public ProjectWork Project() {
         return Project;
@@ -53,10 +125,6 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
     @Override
     public List<SettingFormulaWork> SettingFormula() {
         return SettingFormula;
-    }
-
-    public ProcedureFlowWork() {
-        NodeType = CellType.Procedure;
     }
 
     @Override
@@ -177,73 +245,5 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
             }
         }
         return null;
-    }
-
-    final static ProcedureFlowWork parse2(JSONObject jsonObject) {
-        ProcedureFlowWork result = new ProcedureFlowWork();
-        result.Id = jsonObject.getString("id");
-        result.Label = jsonObject.getString("label");
-        result.Layer = jsonObject.getIntValue("layer");
-        result.NodeType = CellType.intToEnum(jsonObject.getIntValue("nodeType"));
-        result.NextNodeIds = new HashMap<>();
-        if (jsonObject.containsKey("nextNodeIds")) {
-            JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
-            for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
-                if (kv.getValue() instanceof JSONArray array) {
-                    List<String> list = new ArrayList<>();
-                    for (Object obj : array) {
-                        list.add(obj.toString());
-                    }
-                    result.NextNodeIds.put(kv.getKey(), list);
-                }
-            }
-        }
-
-        result.Procedure = jsonObject.getString("procedure");
-        result.CheckFormula = jsonObject.getString("checkFormula");
-        result.CheckType = toolgood.flowVision.Flows.Enums.CheckType.intToEnum(jsonObject.getIntValue("checkType"));
-        result.InputName = jsonObject.getString("inputName");
-        result.NumberType = InputNumberType.intToEnum(jsonObject.getIntValue("numberType"));
-        result.IsSubsidiaryCount = jsonObject.getBooleanValue("isSubsidiaryCount");
-        result.MachineRequired = jsonObject.getBooleanValue("machineRequired");
-
-        result.SettingFormula = new ArrayList<>();
-        JSONArray array = jsonObject.getJSONArray("settingFormula");
-        for (Object s : array) {
-            if (s instanceof JSONObject jsonObject1) {
-                SettingFormulaWork work = SettingFormulaWork.parse(jsonObject1);
-                if (work != null) {
-                    result.SettingFormula.add(work);
-                }
-            }
-        }
-        result.InputFormula = new ArrayList<>();
-        JSONArray array2 = jsonObject.getJSONArray("inputFormula");
-        for (Object s : array2) {
-            if (s instanceof JSONObject jsonObject1) {
-                SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
-                if (work != null) {
-                    result.InputFormula.add(work);
-                }
-            }
-        }
-        result.Machines = new HashMap<>();
-        JSONArray array3 = jsonObject.getJSONArray("machines");
-        for (Object s : array3) {
-            if (s instanceof JSONObject jsonObject1) {
-                for (Map.Entry<String, Object> item : jsonObject1.entrySet()) {
-                    if (item.getValue() instanceof JSONArray jsonArray) {
-                        List<ProcedureFlowMachineInfo> list = new ArrayList<>();
-                        for (Object o : jsonArray) {
-                            ProcedureFlowMachineInfo info = ProcedureFlowMachineInfo.parse((JSONObject) o);
-                            list.add(info);
-                        }
-                        result.Machines.put(item.getKey(), list);
-                    }
-                }
-            }
-        }
-
-        return result;
     }
 }

@@ -23,6 +23,13 @@ import java.util.regex.Pattern;
 
 
 public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements mathVisitor<Operand> {
+    static final String[] CN_UPPER_NUMBER = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
+    static final String[] CN_UPPER_MONETRAY_UNIT = {"分", "角", "元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰",
+            "仟", "兆", "拾", "佰", "仟"};
+    static final String CN_FULL = "整";
+    static final String CN_NEGATIVE = "负";
+    static final int MONEY_PRECISION = 2;
+    static final String CN_ZEOR_FULL = "零元" + CN_FULL;
     private static final Pattern sumifRegex = Pattern.compile("(<|<=|>|>=|=|==|===|!=|!==|<>) *([-+]?\\d+(\\.(\\d+)?)?)");
     private static final Pattern clearRegex = Pattern.compile("[\\f\\n\\r\\t\\v]");
     private static final Pattern numberRegex = Pattern.compile("^-?(0|[1-9])\\d*(\\.\\d+)?$");
@@ -32,6 +39,16 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public AreaUnitType AreaUnit = AreaUnitType.M2;
     public VolumeUnitType VolumeUnit = VolumeUnitType.M3;
     public MassUnitType MassUnit = MassUnitType.KG;
+
+    static int sign(final double a) {
+        if (a == 0.0) {
+            return 0;
+        }
+        if (a < 0) {
+            return -1;
+        }
+        return 1;
+    }
 
     public Operand visitProg(final ProgContext context) {
         return visit(context.expr());
@@ -1988,14 +2005,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         return sb.toString();
     }
-
-    static final String[] CN_UPPER_NUMBER = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
-    static final String[] CN_UPPER_MONETRAY_UNIT = {"分", "角", "元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰",
-            "仟", "兆", "拾", "佰", "仟"};
-    static final String CN_FULL = "整";
-    static final String CN_NEGATIVE = "负";
-    static final int MONEY_PRECISION = 2;
-    static final String CN_ZEOR_FULL = "零元" + CN_FULL;
 
     @SuppressWarnings("deprecation")
     private String F_base_ToChineseRMB(final BigDecimal numberOfMoney) {
@@ -4705,21 +4714,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Error(" Operator is error!");
     }
 
-
     @SuppressWarnings("deprecation")
     private double round(final double value, final int p) {
         final BigDecimal bigD = BigDecimal.valueOf(value);
         return bigD.setScale(p, BigDecimal.ROUND_HALF_UP).doubleValue();
-    }
-
-    static int sign(final double a) {
-        if (a == 0.0) {
-            return 0;
-        }
-        if (a < 0) {
-            return -1;
-        }
-        return 1;
     }
 
     private double Sum(final List<Double> array) {

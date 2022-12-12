@@ -39,24 +39,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class FlowEngine implements IFlowEngine {
+    private static final Pattern numRegex = Pattern.compile("^(\\d[0-9\\.]*)([^\\d][\\S\\s]*)$");
+    private final Map<String, SettingFormulaWork> _startFormulaDict = new HashMap<String, SettingFormulaWork>();//用于默认
+    private final Map<String, TreeNode> _outputNumDict = new HashMap<String, TreeNode>();//用于保存出量来源
+    private final Map<String, Operand> _tempdict = new TreeMap<>();// 临时变量
+    private final Stack<Operand> _tempOutputs = new Stack<Operand>();
+    public Set<String> _tempNames;
+    public Map<String, Integer> _tempdictCount;//用于删除临时变量
+    String js_error = null;
     private ProjectWork Project;
     private Map<String, Setting_Machine> MachineSetting;
     private String AttachData;
     private TreeNode Start;
     private toolgood.flowVision.Flows.AppWork AppWork;
-    private final Map<String, SettingFormulaWork> _startFormulaDict = new HashMap<String, SettingFormulaWork>();//用于默认
     private Map<String, SettingFormulaWork> _progDict = new HashMap<String, SettingFormulaWork>();//用于临时
-    private final Map<String, TreeNode> _outputNumDict = new HashMap<String, TreeNode>();//用于保存出量来源
-
     private Map<String, TreeNode> _inputNumDict = new TreeMap<>();
     private Map<String, CustomFlowWork> _scriptDict = new HashMap<String, CustomFlowWork>();// 脚本
-
-    private final Map<String, Operand> _tempdict = new TreeMap<>();// 临时变量
     private Map<String, Operand> _initDict = new HashMap<String, Operand>();//保存 初始值
     private Map<String, Operand> _inputDict = new HashMap<String, Operand>();//保存 输入项
-
-    public Set<String> _tempNames;
-    public Map<String, Integer> _tempdictCount;//用于删除临时变量
 
     public FlowEngine(ProjectWork project) {
         this(project, null, null);
@@ -230,8 +230,6 @@ public final class FlowEngine implements IFlowEngine {
         }
         throw new Exception("json is error.");
     }
-
-    private static final Pattern numRegex = Pattern.compile("^(\\d[0-9\\.]*)([^\\d][\\S\\s]*)$");
 
     private Operand TextToNumber(AppInputWork appInput, Operand operand) {
         if (operand.Type() == OperandType.NUMBER) {
@@ -601,12 +599,9 @@ public final class FlowEngine implements IFlowEngine {
         _initDict.put("上个流程", Operand.CreateJson(previous));
     }
 
-
     public Operand GetNum() {
         return _inputDict.get("数量");
     }
-
-    private final Stack<Operand> _tempOutputs = new Stack<Operand>();
 
     public void SetOutputNum(Operand operand) {
         if (_tempdict.containsKey("出量")) {
@@ -759,7 +754,6 @@ public final class FlowEngine implements IFlowEngine {
         return result;
     }
 
-
     public boolean CheckMachine(String categoryCode, String code) {
         if (MachineSetting == null || MachineSetting.size() == 0) {
             return true;
@@ -846,9 +840,8 @@ public final class FlowEngine implements IFlowEngine {
         return Operand.Error(parameter + "的公式未找到！");
     }
 
-    String js_error = null;
-
     private void EvaluateJs(String script) throws Exception {
+        js_error = null; //初始化，设置null
         ScriptEngineManager engineManager = new ScriptEngineManager();
         ScriptEngine jsEngine = engineManager.getEngineByName("nashorn");
 

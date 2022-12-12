@@ -20,10 +20,6 @@ public enum MassUnitType {
         value = v;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static MassUnitType intToEnum(int value) {
         switch (value) {
             case 31:
@@ -35,5 +31,9 @@ public enum MassUnitType {
             default:
                 return null;
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 }

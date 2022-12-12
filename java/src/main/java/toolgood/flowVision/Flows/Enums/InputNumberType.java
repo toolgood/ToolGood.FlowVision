@@ -19,11 +19,6 @@ public enum InputNumberType {
         value = v;
     }
 
-    public int getValue() {
-        return value;
-    }
-
-
     public static InputNumberType intToEnum(int value) {
         switch (value) {
             case 0:
@@ -53,5 +48,9 @@ public enum InputNumberType {
             default:
                 return null;
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 }

@@ -23,35 +23,6 @@ public class JumpFlowWork extends NodeWork implements ISettingFormulaNodeWork, I
         NodeType = CellType.Jump;
     }
 
-    @Override
-    public void Init(ProjectWork work, AppWork app) {
-        super.Init(work, app);
-        for (int i = 0; i < SettingFormula.size(); i++) {
-            SettingFormulaWork item = SettingFormula.get(i);
-            item.Init(work);
-            item.NodeWork = this;
-        }
-    }
-
-    @Override
-    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
-        if (CheckFormula == null || CheckFormula.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
-        return engine.TryEvaluate(progContext, false);
-    }
-
-    @Override
-    public String InputName() {
-        return InputName;
-    }
-
-    @Override
-    public List<SettingFormulaWork> SettingFormula() {
-        return SettingFormula;
-    }
-
     final static JumpFlowWork parse2(JSONObject jsonObject) {
         JumpFlowWork result = new JumpFlowWork();
         result.Id = jsonObject.getString("id");
@@ -86,5 +57,34 @@ public class JumpFlowWork extends NodeWork implements ISettingFormulaNodeWork, I
             }
         }
         return result;
+    }
+
+    @Override
+    public void Init(ProjectWork work, AppWork app) {
+        super.Init(work, app);
+        for (int i = 0; i < SettingFormula.size(); i++) {
+            SettingFormulaWork item = SettingFormula.get(i);
+            item.Init(work);
+            item.NodeWork = this;
+        }
+    }
+
+    @Override
+    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
+        if (CheckFormula == null || CheckFormula.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
+        return engine.TryEvaluate(progContext, false);
+    }
+
+    @Override
+    public String InputName() {
+        return InputName;
+    }
+
+    @Override
+    public List<SettingFormulaWork> SettingFormula() {
+        return SettingFormula;
     }
 }

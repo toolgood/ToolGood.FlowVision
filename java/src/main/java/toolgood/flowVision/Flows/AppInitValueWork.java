@@ -2,7 +2,6 @@ package toolgood.flowVision.Flows;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import toolgood.flowVision.Engines.FlowEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +13,6 @@ public class AppInitValueWork {
 
     public boolean IsThrowError;
     public String ErrorMessage;
-
-    public void Init(ProjectWork work) {
-        for (int i = 0; i < Conditions.size(); i++) {
-            SettingFormulaItemWork item = Conditions.get(i);
-            item.Init(work);
-        }
-    }
 
     final static AppInitValueWork parse(JSONObject jsonObject) {
         AppInitValueWork result = new AppInitValueWork();
@@ -37,5 +29,12 @@ public class AppInitValueWork {
             }
         }
         return result;
+    }
+
+    public void Init(ProjectWork work) {
+        for (int i = 0; i < Conditions.size(); i++) {
+            SettingFormulaItemWork item = Conditions.get(i);
+            item.Init(work);
+        }
     }
 }

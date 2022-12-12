@@ -1,6 +1,10 @@
 package toolgood.flowVision.ThirdParty.UnitConversion.Base;
 
 public abstract class BaseUnitConverter implements IUnitConverter {
+    public String UnitLeft;
+    public String UnitRight;
+    protected UnitFactors Units;
+
     @Override
     public double LeftToRight(double value) throws UnitNotSupportedException {
         return AToB(value, UnitLeft, UnitRight);
@@ -10,10 +14,6 @@ public abstract class BaseUnitConverter implements IUnitConverter {
     public double RightToLeft(double value) throws UnitNotSupportedException {
         return AToB(value, UnitRight, UnitLeft);
     }
-
-    protected UnitFactors Units;
-    public String UnitLeft;
-    public String UnitRight;
 
     protected void Instantiate(UnitFactors conversionFactors) {
         Units = conversionFactors;

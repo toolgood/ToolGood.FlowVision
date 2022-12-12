@@ -28,10 +28,6 @@ public enum DistanceUnitType {
         value = v;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static DistanceUnitType intToEnum(int value) {
         switch (value) {
             case 1:
@@ -47,5 +43,9 @@ public enum DistanceUnitType {
             default:
                 return null;
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 }

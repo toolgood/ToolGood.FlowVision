@@ -19,58 +19,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProjectWork {
+    private final Map<String, mathParser.ProgContext> ProgList = new HashMap<>();
     public String Name;
     public String Code;
-
     public int ExcelIndex;
     public boolean NumberRequired;
     public int Distance;
     public int Area;
     public int Volume;
     public int Mass;
-
     public Map<String, String> FormulaList;
     public Map<String, FactoryWork> FactoryList;
     public Map<String, FactoryMachineWork> FactoryMachineList;
     public Map<String, FactoryProcedureWork> FactoryProcedureList;
     public Map<String, AppWork> AppList;
-    private final Map<String, mathParser.ProgContext> ProgList = new HashMap<>();
-
-    public mathParser.ProgContext CreateProgContext(String exp) throws Exception {
-        if (ProgList.containsKey(exp)) {
-            return ProgList.get(exp);
-        }
-        if (exp == null || exp.equals("")) {
-            return null;
-        }
-        AntlrCharStream stream = new AntlrCharStream(CharStreams.fromString(exp));
-        mathLexer lexer = new mathLexer(stream);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        mathParser parser = new mathParser(tokens);
-        AntlrErrorListener antlrErrorListener = new AntlrErrorListener();
-        parser.removeErrorListeners();
-        parser.addErrorListener(antlrErrorListener);
-
-        mathParser.ProgContext context = parser.prog();
-        if (antlrErrorListener.IsError) {
-            throw new Exception(antlrErrorListener.ErrorMsg);
-        }
-        ProgList.put(exp, context);
-        return context;
-    }
-
-    public boolean TryGetFormula(String name, mathParser.ProgContext context) throws Exception {
-        if (FormulaList.containsKey(name)) {
-            context = CreateProgContext(FormulaList.get(name));
-            return true;
-        }
-        context = null;
-        return false;
-    }
-
-    public boolean HasFormula(String name) {
-        return FormulaList.containsKey(name);
-    }
 
     public static ProjectWork ParseJson(String json) throws Exception {
         JSONObject jsonObject = JSONObject.parseObject(json);
@@ -176,7 +138,6 @@ public class ProjectWork {
         return ParseJson(json);
     }
 
-
     public static ProjectWork LoadJsonUsedRsa(String filename) throws Exception {
         String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu3W3xI6mH9tr3A+sNZVhyIbQWFhePbPWdFeTtM39yR7kO4Akp6Dsb1NYKpKxSGjIwDv1TC6/IUwOgOYYSVa0pgfIujHPrYFO/LlDk6kPAyHluLimKFkHkze5FsY7YAqd2mExqdJ4Zfb1pXgIrVFgOs4o69p9vyBV6kWS0FBOnyyUK92bRYxeqS1raRfM3GUlIEaQW5ZIuJxQtFrfwSnsfDVhkp8rvFVt7I5aqawWeoJZu+/HZqQO/gz+BJ7ntlUWoPgfe13/U3kIOHMTc/Deczb5x3DeBv9XrwJ5+DrzrJV8jTdhiYeNcBNBYaKoHGS15chxt6no4sIDZYsI2N4ciQIDAQAB";
 
@@ -228,6 +189,42 @@ public class ProjectWork {
         byte[] bytes = byteBuffer.array();
         int res = ((bytes[3] & 0xff) << 24) + ((bytes[2] & 0xff) << 16) + ((bytes[1] & 0xff) << 8) + (bytes[0] & 0xff);
         return res;
+    }
+
+    public mathParser.ProgContext CreateProgContext(String exp) throws Exception {
+        if (ProgList.containsKey(exp)) {
+            return ProgList.get(exp);
+        }
+        if (exp == null || exp.equals("")) {
+            return null;
+        }
+        AntlrCharStream stream = new AntlrCharStream(CharStreams.fromString(exp));
+        mathLexer lexer = new mathLexer(stream);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        mathParser parser = new mathParser(tokens);
+        AntlrErrorListener antlrErrorListener = new AntlrErrorListener();
+        parser.removeErrorListeners();
+        parser.addErrorListener(antlrErrorListener);
+
+        mathParser.ProgContext context = parser.prog();
+        if (antlrErrorListener.IsError) {
+            throw new Exception(antlrErrorListener.ErrorMsg);
+        }
+        ProgList.put(exp, context);
+        return context;
+    }
+
+    public boolean TryGetFormula(String name, mathParser.ProgContext context) throws Exception {
+        if (FormulaList.containsKey(name)) {
+            context = CreateProgContext(FormulaList.get(name));
+            return true;
+        }
+        context = null;
+        return false;
+    }
+
+    public boolean HasFormula(String name) {
+        return FormulaList.containsKey(name);
     }
 
 

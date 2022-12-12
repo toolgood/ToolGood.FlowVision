@@ -6,8 +6,6 @@ import toolgood.algorithm.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
 
 public class AppInputWork {
-    private ProjectWork Project;
-
     public String InputName;
     public String Unit;
     public toolgood.flowVision.Flows.Enums.InputType InputType;
@@ -16,19 +14,7 @@ public class AppInputWork {
     public boolean UseDefaultValue;
     public String DefaultValue;
     public String ErrorMessage;
-
-    public boolean Check(FlowEngine engine) throws Exception {
-        if (CheckInput == null || CheckInput.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = Project.CreateProgContext(CheckInput);
-        Operand operand = engine.EvaluateFormula(progContext, toolgood.flowVision.Flows.Enums.InputType.Bool);
-        return operand.BooleanValue();
-    }
-
-    public void Init(ProjectWork work) {
-        Project = work;
-    }
+    private ProjectWork Project;
 
     final static AppInputWork parse(JSONObject jsonObject) {
         AppInputWork result = new AppInputWork();
@@ -42,5 +28,18 @@ public class AppInputWork {
         result.ErrorMessage = jsonObject.getString("errorMessage");
 
         return result;
+    }
+
+    public boolean Check(FlowEngine engine) throws Exception {
+        if (CheckInput == null || CheckInput.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = Project.CreateProgContext(CheckInput);
+        Operand operand = engine.EvaluateFormula(progContext, toolgood.flowVision.Flows.Enums.InputType.Bool);
+        return operand.BooleanValue();
+    }
+
+    public void Init(ProjectWork work) {
+        Project = work;
     }
 }

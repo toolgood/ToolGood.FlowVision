@@ -17,50 +17,6 @@ public abstract class Operand {
     public final static Operand One = Operand.Create(1);
     public final static Operand Zero = Operand.Create(0);
 
-    public boolean IsNull() {
-        return false;
-    }
-
-    public boolean IsError() {
-        return false;
-    }
-
-    public String ErrorMsg() {
-        return null;
-    }
-
-    public OperandType Type() {
-        return OperandType.ERROR;
-    }
-
-    public double NumberValue() {
-        return 0.0;
-    }
-
-    public int IntValue() {
-        return 0;
-    }
-
-    public String TextValue() {
-        return null;
-    }
-
-    public boolean BooleanValue() {
-        return false;
-    }
-
-    public List<Operand> ArrayValue() {
-        return null;
-    }
-
-    public JsonData JsonValue() {
-        return null;
-    }
-
-    public MyDate DateValue() {
-        return null;
-    }
-
     public static Operand Create(final boolean obj) {
         return obj ? True : False;
     }
@@ -141,6 +97,50 @@ public abstract class Operand {
 
     public static Operand CreateNull() {
         return new OperandNull();
+    }
+
+    public boolean IsNull() {
+        return false;
+    }
+
+    public boolean IsError() {
+        return false;
+    }
+
+    public String ErrorMsg() {
+        return null;
+    }
+
+    public OperandType Type() {
+        return OperandType.ERROR;
+    }
+
+    public double NumberValue() {
+        return 0.0;
+    }
+
+    public int IntValue() {
+        return 0;
+    }
+
+    public String TextValue() {
+        return null;
+    }
+
+    public boolean BooleanValue() {
+        return false;
+    }
+
+    public List<Operand> ArrayValue() {
+        return null;
+    }
+
+    public JsonData JsonValue() {
+        return null;
+    }
+
+    public MyDate DateValue() {
+        return null;
     }
 
     public Operand ToNumber() {
@@ -513,6 +513,9 @@ public abstract class Operand {
     }
 
     public static class OperandKeyValueList extends OperandT<KeyValue> {
+        private final List<KeyValue> TextList = new ArrayList<>();
+        private int listNum;
+
         public OperandKeyValueList(KeyValue obj, int excelIndex) {
             super(obj);
             listNum = excelIndex;
@@ -529,9 +532,6 @@ public abstract class Operand {
             }
             return result;
         }
-
-        private int listNum;
-        private final List<KeyValue> TextList = new ArrayList<>();
 
         public Operand ToArray(String errorMessage) {
             return Create(this.ArrayValue());

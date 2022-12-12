@@ -8,29 +8,21 @@ import java.util.Stack;
 public class JsonReader {
     private static final Map<Integer, Map<Integer, int[]>> parse_table;
 
+    static {
+        parse_table = PopulateParseTable();
+    }
+
     private final Stack<Integer> automaton_stack;
+    private final Lexer lexer;
     private int current_input;
     private int current_symbol;
     private boolean end_of_json;
     private boolean end_of_input;
-    private final Lexer lexer;
     private boolean parser_in_string;
     private boolean parser_return;
     private boolean read_started;
     private Object token_value;
     private JsonToken token;
-
-    public JsonToken Token() {
-        return token;
-    }
-
-    public Object Value() {
-        return token_value;
-    }
-
-    static {
-        parse_table = PopulateParseTable();
-    }
 
     public JsonReader(String json_text) {
         StringReader reader = new StringReader(json_text);
@@ -126,6 +118,14 @@ public class JsonReader {
 
     private static void TableAddRow(Map<Integer, Map<Integer, int[]>> parse_table, ParserToken rule) {
         parse_table.put(rule.value, new HashMap<Integer, int[]>());
+    }
+
+    public JsonToken Token() {
+        return token;
+    }
+
+    public Object Value() {
+        return token_value;
     }
 
     private void ProcessNumber(String number) {

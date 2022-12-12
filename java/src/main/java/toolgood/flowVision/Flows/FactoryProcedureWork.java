@@ -8,24 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FactoryProcedureWork {
-    private ProjectWork Project;// { get; set; }
     public String Category;
     public String Code;
     public String Name;
     public String CheckFormula;
     public Map<String, FactoryProcedureItemWork> Items;
-
-    public void Init(ProjectWork work) {
-        Project = work;
-    }
-
-    public boolean Check(FlowEngine engine) throws Exception {
-        if (CheckFormula == null || CheckFormula.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
-        return engine.TryEvaluate(progContext, false);
-    }
+    private ProjectWork Project;// { get; set; }
 
     final static FactoryProcedureWork parse(JSONObject jsonObject) {
         FactoryProcedureWork result = new FactoryProcedureWork();
@@ -44,5 +32,17 @@ public class FactoryProcedureWork {
         }
 
         return result;
+    }
+
+    public void Init(ProjectWork work) {
+        Project = work;
+    }
+
+    public boolean Check(FlowEngine engine) throws Exception {
+        if (CheckFormula == null || CheckFormula.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
+        return engine.TryEvaluate(progContext, false);
     }
 }

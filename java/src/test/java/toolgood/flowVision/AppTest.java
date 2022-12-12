@@ -1,7 +1,5 @@
 package toolgood.flowVision;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Engines.IFlowEngine;
@@ -23,6 +21,10 @@ import java.util.function.Supplier;
  */
 public class AppTest {
 
+    public Map<String, String> map = new HashMap<>();
+    public String js_error = null;
+    public String AttachData = null;
+
     @Test
     public void TestJsonFile() throws Exception {
         ProjectWork project = ProjectWork.LoadJson("dict/第一个项目_20221211121519.json");
@@ -40,7 +42,7 @@ public class AppTest {
 
     @Test
     public void JsTest() throws Exception {
-        map.put("aaa","123");
+        map.put("aaa", "123");
         EvaluateJs("""
                 var tt= getValue("aaa");
                 setValue("tt",tt);
@@ -50,10 +52,6 @@ public class AppTest {
                 """);
 
     }
-
-    public Map<String, String> map = new HashMap<>();
-    public String js_error = null;
-    public String AttachData = null;
 
     private void EvaluateJs(String script) throws Exception {
         ScriptEngineManager manager = new ScriptEngineManager();
@@ -79,7 +77,7 @@ public class AppTest {
     }
 
     private void js_setValue(String name, Object value) {
-        map.put(name,value.toString());
+        map.put(name, value.toString());
     }
 
     private Object js_getValue(String name) {
@@ -87,10 +85,7 @@ public class AppTest {
     }
 
     private Boolean js_hasKey(String name) {
-        if (map.containsKey(name)) {
-            return true;
-        }
-        return false;
+        return map.containsKey(name);
     }
 
 

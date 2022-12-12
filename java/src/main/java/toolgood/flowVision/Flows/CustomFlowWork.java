@@ -20,20 +20,6 @@ public class CustomFlowWork extends NodeWork {
         NodeType = CellType.Custom;
     }
 
-    @Override
-    public boolean Check(FlowEngine engine, String factoryCode) {
-        if (CheckFormula == null || CheckFormula.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = null;
-        try {
-            progContext = Project.CreateProgContext(CheckFormula);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return engine.TryEvaluate(progContext, false);
-    }
-
     final static CustomFlowWork parse2(JSONObject jsonObject) {
         CustomFlowWork result = new CustomFlowWork();
         result.Id = jsonObject.getString("id");
@@ -62,5 +48,19 @@ public class CustomFlowWork extends NodeWork {
             result.Names.add(s.toString());
         }
         return result;
+    }
+
+    @Override
+    public boolean Check(FlowEngine engine, String factoryCode) {
+        if (CheckFormula == null || CheckFormula.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = null;
+        try {
+            progContext = Project.CreateProgContext(CheckFormula);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return engine.TryEvaluate(progContext, false);
     }
 }

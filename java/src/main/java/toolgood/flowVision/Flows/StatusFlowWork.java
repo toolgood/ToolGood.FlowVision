@@ -25,41 +25,6 @@ public class StatusFlowWork extends NodeWork implements ISettingFormulaNodeWork 
         NodeType = CellType.Status;
     }
 
-    @Override
-    public void Init(ProjectWork work, AppWork app) {
-        super.Init(work, app);
-        for (int i = 0; i < SettingFormula.size(); i++) {
-            SettingFormulaWork item = SettingFormula.get(i);
-            item.Init(work);
-            item.NodeWork = this;
-        }
-    }
-
-    @Override
-    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
-        if (CheckFormula == null || CheckFormula.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
-        return engine.TryEvaluate(progContext, false);
-    }
-
-    public boolean CheckStatus(FlowEngine engine) throws Exception {
-        if (CheckFormula == null || CheckFormula.equals("")) {
-            return true;
-        }
-        mathParser.ProgContext progContext = Project.CreateProgContext(StatusCheckFormula);
-        Operand operand = engine.EvaluateFormula(progContext, InputType.Bool);
-        return operand.BooleanValue();
-    }
-
-
-    @Override
-    public List<SettingFormulaWork> SettingFormula() {
-        return SettingFormula;
-    }
-
-
     final static StatusFlowWork parse2(JSONObject jsonObject) {
         StatusFlowWork result = new StatusFlowWork();
         result.Id = jsonObject.getString("id");
@@ -95,5 +60,38 @@ public class StatusFlowWork extends NodeWork implements ISettingFormulaNodeWork 
             }
         }
         return result;
+    }
+
+    @Override
+    public void Init(ProjectWork work, AppWork app) {
+        super.Init(work, app);
+        for (int i = 0; i < SettingFormula.size(); i++) {
+            SettingFormulaWork item = SettingFormula.get(i);
+            item.Init(work);
+            item.NodeWork = this;
+        }
+    }
+
+    @Override
+    public boolean Check(FlowEngine engine, String factoryCode) throws Exception {
+        if (CheckFormula == null || CheckFormula.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = Project.CreateProgContext(CheckFormula);
+        return engine.TryEvaluate(progContext, false);
+    }
+
+    public boolean CheckStatus(FlowEngine engine) throws Exception {
+        if (CheckFormula == null || CheckFormula.equals("")) {
+            return true;
+        }
+        mathParser.ProgContext progContext = Project.CreateProgContext(StatusCheckFormula);
+        Operand operand = engine.EvaluateFormula(progContext, InputType.Bool);
+        return operand.BooleanValue();
+    }
+
+    @Override
+    public List<SettingFormulaWork> SettingFormula() {
+        return SettingFormula;
     }
 }

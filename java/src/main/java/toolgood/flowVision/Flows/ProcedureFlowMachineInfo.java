@@ -13,6 +13,14 @@ public class ProcedureFlowMachineInfo {
     public toolgood.flowVision.Flows.Enums.CheckType CheckType;
     public FactoryMachineWork FactoryMachine;
 
+    final static ProcedureFlowMachineInfo parse(JSONObject jsonObject) {
+        ProcedureFlowMachineInfo result = new ProcedureFlowMachineInfo();
+        result.Name = jsonObject.getString("name");
+        result.Condition = jsonObject.getString("condition");
+        result.CheckType = toolgood.flowVision.Flows.Enums.CheckType.intToEnum(jsonObject.getIntValue("checkType"));
+
+        return result;
+    }
 
     public void Init(ProjectWork work) {
         Project = work;
@@ -31,14 +39,5 @@ public class ProcedureFlowMachineInfo {
             return FactoryMachine.Check(engine) != false;
         }
         return true;
-    }
-
-    final static ProcedureFlowMachineInfo parse(JSONObject jsonObject) {
-        ProcedureFlowMachineInfo result = new ProcedureFlowMachineInfo();
-        result.Name = jsonObject.getString("name");
-        result.Condition = jsonObject.getString("condition");
-        result.CheckType = toolgood.flowVision.Flows.Enums.CheckType.intToEnum(jsonObject.getIntValue("checkType"));
-
-        return result;
     }
 }

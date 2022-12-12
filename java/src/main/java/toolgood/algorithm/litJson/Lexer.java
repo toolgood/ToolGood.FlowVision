@@ -14,34 +14,22 @@ public class Lexer {
     private static int[] fsm_return_table;
     private static List<Function<FsmContext, Boolean>> fsm_handler_table;
 
-    private final boolean allow_comments;
-    private final boolean allow_single_quoted_strings;
-    private boolean end_of_input;
-    private final FsmContext fsm_context;
-    private int input_buffer;
-    private int input_char;
-    private final StringReader reader;
-    private int state;
-    private final StringBuilder string_buffer;
-    private String string_value;
-    private int token;
-    private int unichar;
-
-    public boolean EndOfInput() {
-        return end_of_input;
-    }
-
-    public int Token() {
-        return token;
-    }
-
-    public String StringValue() {
-        return string_value;
-    }
-
     static {
         PopulateFsmTables();
     }
+
+    private final boolean allow_comments;
+    private final boolean allow_single_quoted_strings;
+    private final FsmContext fsm_context;
+    private final StringReader reader;
+    private final StringBuilder string_buffer;
+    private boolean end_of_input;
+    private int input_buffer;
+    private int input_char;
+    private int state;
+    private String string_value;
+    private int token;
+    private int unichar;
 
     public Lexer(StringReader _reader) {
         allow_comments = true;
@@ -762,6 +750,18 @@ public class Lexer {
         }
 
         return true;
+    }
+
+    public boolean EndOfInput() {
+        return end_of_input;
+    }
+
+    public int Token() {
+        return token;
+    }
+
+    public String StringValue() {
+        return string_value;
     }
 
     private boolean GetChar() {

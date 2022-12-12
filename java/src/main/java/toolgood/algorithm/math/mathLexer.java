@@ -9,13 +9,6 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class mathLexer extends Lexer {
-    static {
-        RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION);
-    }
-
-    protected static final DFA[] _decisionToDFA;
-    protected static final PredictionContextCache _sharedContextCache =
-            new PredictionContextCache();
     public static final int
             T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, T__7 = 8, T__8 = 9,
             T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, T__14 = 15, T__15 = 16, T__16 = 17,
@@ -49,192 +42,12 @@ public class mathLexer extends Lexer {
             SUBSTRING = 199, STARTSWITH = 200, ENDSWITH = 201, ISNULLOREMPTY = 202, ISNULLORWHITESPACE = 203,
             REMOVESTART = 204, REMOVEEND = 205, JSON = 206, LOOKUP = 207, IN = 208, HAS = 209,
             PARAM = 210, PARAMETER = 211, PARAMETER2 = 212, WS = 213, COMMENT = 214, LINE_COMMENT = 215;
-    public static String[] channelNames = {
-            "DEFAULT_TOKEN_CHANNEL", "HIDDEN"
-    };
-
-    public static String[] modeNames = {
-            "DEFAULT_MODE"
-    };
-
-    private static String[] makeRuleNames() {
-        return new String[]{
-                "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8",
-                "T__9", "T__10", "T__11", "T__12", "T__13", "T__14", "T__15", "T__16",
-                "T__17", "T__18", "T__19", "T__20", "T__21", "T__22", "T__23", "T__24",
-                "T__25", "T__26", "T__27", "SUB", "NUM", "STRING", "NULL", "ERROR", "UNIT",
-                "IF", "IFERROR", "ISNUMBER", "ISTEXT", "ISERROR", "ISNONTEXT", "ISLOGICAL",
-                "ISEVEN", "ISODD", "ISNULL", "ISNULLORERROR", "AND", "OR", "NOT", "TRUE",
-                "FALSE", "E", "PI", "ABS", "QUOTIENT", "MOD", "SIGN", "SQRT", "TRUNC",
-                "INT", "GCD", "LCM", "COMBIN", "PERMUT", "DEGREES", "RADIANS", "COS",
-                "COSH", "SIN", "SINH", "TAN", "TANH", "ACOS", "ACOSH", "ASIN", "ASINH",
-                "ATAN", "ATANH", "ATAN2", "ROUND", "ROUNDDOWN", "ROUNDUP", "CEILING",
-                "FLOOR", "EVEN", "ODD", "MROUND", "RAND", "RANDBETWEEN", "FACT", "FACTDOUBLE",
-                "POWER", "EXP", "LN", "LOG", "LOG10", "MULTINOMIAL", "PRODUCT", "SQRTPI",
-                "SUMSQ", "ASC", "JIS", "CHAR", "CLEAN", "CODE", "CONCATENATE", "EXACT",
-                "FIND", "FIXED", "LEFT", "LEN", "LOWER", "MID", "PROPER", "REPLACE",
-                "REPT", "RIGHT", "RMB", "SEARCH", "SUBSTITUTE", "T", "TEXT", "TRIM",
-                "UPPER", "VALUE", "DATEVALUE", "TIMEVALUE", "DATE", "TIME", "NOW", "TODAY",
-                "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND", "WEEKDAY", "DATEDIF",
-                "DAYS360", "EDATE", "EOMONTH", "NETWORKDAYS", "WORKDAY", "WEEKNUM", "MAX",
-                "MEDIAN", "MIN", "QUARTILE", "MODE", "LARGE", "SMALL", "PERCENTILE",
-                "PERCENTRANK", "AVERAGE", "AVERAGEIF", "GEOMEAN", "HARMEAN", "COUNT",
-                "COUNTIF", "SUM", "SUMIF", "AVEDEV", "STDEV", "STDEVP", "DEVSQ", "VAR",
-                "VARP", "NORMDIST", "NORMINV", "NORMSDIST", "NORMSINV", "BETADIST", "BETAINV",
-                "BINOMDIST", "EXPONDIST", "FDIST", "FINV", "FISHER", "FISHERINV", "GAMMADIST",
-                "GAMMAINV", "GAMMALN", "HYPGEOMDIST", "LOGINV", "LOGNORMDIST", "NEGBINOMDIST",
-                "POISSON", "TDIST", "TINV", "WEIBULL", "REGEXREPALCE", "ISREGEX", "TRIMSTART",
-                "TRIMEND", "INDEXOF", "LASTINDEXOF", "SPLIT", "JOIN", "SUBSTRING", "STARTSWITH",
-                "ENDSWITH", "ISNULLOREMPTY", "ISNULLORWHITESPACE", "REMOVESTART", "REMOVEEND",
-                "JSON", "LOOKUP", "IN", "HAS", "PARAM", "PARAMETER", "PARAMETER2", "FullWidthLetter",
-                "WS", "COMMENT", "LINE_COMMENT"
-        };
-    }
-
     public static final String[] ruleNames = makeRuleNames();
-
-    private static String[] makeLiteralNames() {
-        return new String[]{
-                null, "'.'", "'('", "')'", "','", "'['", "']'", "'!'", "'%'", "'*'",
-                "'/'", "'+'", "'&'", "'>'", "'>='", "'<'", "'<='", "'='", "'=='", "'==='",
-                "'!=='", "'!='", "'<>'", "'&&'", "'||'", "'?'", "':'", "'{'", "'}'",
-                "'-'", null, null, "'NULL'", "'ERROR'", null, "'IF'", "'IFERROR'", "'ISNUMBER'",
-                "'ISTEXT'", "'ISERROR'", "'ISNONTEXT'", "'ISLOGICAL'", "'ISEVEN'", "'ISODD'",
-                "'ISNULL'", "'ISNULLORERROR'", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'",
-                "'E'", "'PI'", "'ABS'", "'QUOTIENT'", "'MOD'", "'SIGN'", "'SQRT'", "'TRUNC'",
-                "'INT'", "'GCD'", "'LCM'", "'COMBIN'", "'PERMUT'", "'DEGREES'", "'RADIANS'",
-                "'COS'", "'COSH'", "'SIN'", "'SINH'", "'TAN'", "'TANH'", "'ACOS'", "'ACOSH'",
-                "'ASIN'", "'ASINH'", "'ATAN'", "'ATANH'", "'ATAN2'", "'ROUND'", "'ROUNDDOWN'",
-                "'ROUNDUP'", "'CEILING'", "'FLOOR'", "'EVEN'", "'ODD'", "'MROUND'", "'RAND'",
-                "'RANDBETWEEN'", "'FACT'", "'FACTDOUBLE'", "'POWER'", "'EXP'", "'LN'",
-                "'LOG'", "'LOG10'", "'MULTINOMIAL'", "'PRODUCT'", "'SQRTPI'", "'SUMSQ'",
-                "'ASC'", null, "'CHAR'", "'CLEAN'", "'CODE'", "'CONCATENATE'", "'EXACT'",
-                "'FIND'", "'FIXED'", "'LEFT'", "'LEN'", null, "'MID'", "'PROPER'", "'REPLACE'",
-                "'REPT'", "'RIGHT'", "'RMB'", "'SEARCH'", "'SUBSTITUTE'", "'T'", "'TEXT'",
-                "'TRIM'", null, "'VALUE'", "'DATEVALUE'", "'TIMEVALUE'", "'DATE'", "'TIME'",
-                "'NOW'", "'TODAY'", "'YEAR'", "'MONTH'", "'DAY'", "'HOUR'", "'MINUTE'",
-                "'SECOND'", "'WEEKDAY'", "'DATEDIF'", "'DAYS360'", "'EDATE'", "'EOMONTH'",
-                "'NETWORKDAYS'", "'WORKDAY'", "'WEEKNUM'", "'MAX'", "'MEDIAN'", "'MIN'",
-                "'QUARTILE'", "'MODE'", "'LARGE'", "'SMALL'", "'PERCENTILE'", "'PERCENTRANK'",
-                "'AVERAGE'", "'AVERAGEIF'", "'GEOMEAN'", "'HARMEAN'", "'COUNT'", "'COUNTIF'",
-                "'SUM'", "'SUMIF'", "'AVEDEV'", "'STDEV'", "'STDEVP'", "'DEVSQ'", "'VAR'",
-                "'VARP'", "'NORMDIST'", "'NORMINV'", "'NORMSDIST'", "'NORMSINV'", "'BETADIST'",
-                "'BETAINV'", "'BINOMDIST'", "'EXPONDIST'", "'FDIST'", "'FINV'", "'FISHER'",
-                "'FISHERINV'", "'GAMMADIST'", "'GAMMAINV'", "'GAMMALN'", "'HYPGEOMDIST'",
-                "'LOGINV'", "'LOGNORMDIST'", "'NEGBINOMDIST'", "'POISSON'", "'TDIST'",
-                "'TINV'", "'WEIBULL'", "'REGEXREPALCE'", null, null, null, "'INDEXOF'",
-                "'LASTINDEXOF'", "'SPLIT'", "'JOIN'", "'SUBSTRING'", "'STARTSWITH'",
-                "'ENDSWITH'", "'ISNULLOREMPTY'", "'ISNULLORWHITESPACE'", "'REMOVESTART'",
-                "'REMOVEEND'", "'JSON'", "'LOOKUP'"
-        };
-    }
-
-    private static final String[] _LITERAL_NAMES = makeLiteralNames();
-
-    private static String[] makeSymbolicNames() {
-        return new String[]{
-                null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, "SUB", "NUM", "STRING", "NULL", "ERROR",
-                "UNIT", "IF", "IFERROR", "ISNUMBER", "ISTEXT", "ISERROR", "ISNONTEXT",
-                "ISLOGICAL", "ISEVEN", "ISODD", "ISNULL", "ISNULLORERROR", "AND", "OR",
-                "NOT", "TRUE", "FALSE", "E", "PI", "ABS", "QUOTIENT", "MOD", "SIGN",
-                "SQRT", "TRUNC", "INT", "GCD", "LCM", "COMBIN", "PERMUT", "DEGREES",
-                "RADIANS", "COS", "COSH", "SIN", "SINH", "TAN", "TANH", "ACOS", "ACOSH",
-                "ASIN", "ASINH", "ATAN", "ATANH", "ATAN2", "ROUND", "ROUNDDOWN", "ROUNDUP",
-                "CEILING", "FLOOR", "EVEN", "ODD", "MROUND", "RAND", "RANDBETWEEN", "FACT",
-                "FACTDOUBLE", "POWER", "EXP", "LN", "LOG", "LOG10", "MULTINOMIAL", "PRODUCT",
-                "SQRTPI", "SUMSQ", "ASC", "JIS", "CHAR", "CLEAN", "CODE", "CONCATENATE",
-                "EXACT", "FIND", "FIXED", "LEFT", "LEN", "LOWER", "MID", "PROPER", "REPLACE",
-                "REPT", "RIGHT", "RMB", "SEARCH", "SUBSTITUTE", "T", "TEXT", "TRIM",
-                "UPPER", "VALUE", "DATEVALUE", "TIMEVALUE", "DATE", "TIME", "NOW", "TODAY",
-                "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND", "WEEKDAY", "DATEDIF",
-                "DAYS360", "EDATE", "EOMONTH", "NETWORKDAYS", "WORKDAY", "WEEKNUM", "MAX",
-                "MEDIAN", "MIN", "QUARTILE", "MODE", "LARGE", "SMALL", "PERCENTILE",
-                "PERCENTRANK", "AVERAGE", "AVERAGEIF", "GEOMEAN", "HARMEAN", "COUNT",
-                "COUNTIF", "SUM", "SUMIF", "AVEDEV", "STDEV", "STDEVP", "DEVSQ", "VAR",
-                "VARP", "NORMDIST", "NORMINV", "NORMSDIST", "NORMSINV", "BETADIST", "BETAINV",
-                "BINOMDIST", "EXPONDIST", "FDIST", "FINV", "FISHER", "FISHERINV", "GAMMADIST",
-                "GAMMAINV", "GAMMALN", "HYPGEOMDIST", "LOGINV", "LOGNORMDIST", "NEGBINOMDIST",
-                "POISSON", "TDIST", "TINV", "WEIBULL", "REGEXREPALCE", "ISREGEX", "TRIMSTART",
-                "TRIMEND", "INDEXOF", "LASTINDEXOF", "SPLIT", "JOIN", "SUBSTRING", "STARTSWITH",
-                "ENDSWITH", "ISNULLOREMPTY", "ISNULLORWHITESPACE", "REMOVESTART", "REMOVEEND",
-                "JSON", "LOOKUP", "IN", "HAS", "PARAM", "PARAMETER", "PARAMETER2", "WS",
-                "COMMENT", "LINE_COMMENT"
-        };
-    }
-
-    private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
-    public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
-
     /**
      * @deprecated Use {@link #VOCABULARY} instead.
      */
     @Deprecated
     public static final String[] tokenNames;
-
-    static {
-        tokenNames = new String[_SYMBOLIC_NAMES.length];
-        for (int i = 0; i < tokenNames.length; i++) {
-            tokenNames[i] = VOCABULARY.getLiteralName(i);
-            if (tokenNames[i] == null) {
-                tokenNames[i] = VOCABULARY.getSymbolicName(i);
-            }
-
-            if (tokenNames[i] == null) {
-                tokenNames[i] = "<INVALID>";
-            }
-        }
-    }
-
-    @Override
-    @Deprecated
-    public String[] getTokenNames() {
-        return tokenNames;
-    }
-
-    @Override
-
-    public Vocabulary getVocabulary() {
-        return VOCABULARY;
-    }
-
-
-    public mathLexer(CharStream input) {
-        super(input);
-        _interp = new LexerATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
-    }
-
-    @Override
-    public String getGrammarFileName() {
-        return "math.g4";
-    }
-
-    @Override
-    public String[] getRuleNames() {
-        return ruleNames;
-    }
-
-    @Override
-    public String getSerializedATN() {
-        return _serializedATN;
-    }
-
-    @Override
-    public String[] getChannelNames() {
-        return channelNames;
-    }
-
-    @Override
-    public String[] getModeNames() {
-        return modeNames;
-    }
-
-    @Override
-    public ATN getATN() {
-        return _ATN;
-    }
-
     public static final String _serializedATN =
             "\u0004\u0000\u00d7\u07d5\u0006\uffff\uffff\u0002\u0000\u0007\u0000\u0002" +
                     "\u0001\u0007\u0001\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002" +
@@ -1482,11 +1295,191 @@ public class mathLexer extends Lexer {
                     "\u07b8\u07c2\u07d0\u0001\u0006\u0000\u0000";
     public static final ATN _ATN =
             new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+    protected static final DFA[] _decisionToDFA;
+    protected static final PredictionContextCache _sharedContextCache =
+            new PredictionContextCache();
+    private static final String[] _LITERAL_NAMES = makeLiteralNames();
+    private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
+    public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+    public static String[] channelNames = {
+            "DEFAULT_TOKEN_CHANNEL", "HIDDEN"
+    };
+    public static String[] modeNames = {
+            "DEFAULT_MODE"
+    };
+
+    static {
+        RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION);
+    }
+
+    static {
+        tokenNames = new String[_SYMBOLIC_NAMES.length];
+        for (int i = 0; i < tokenNames.length; i++) {
+            tokenNames[i] = VOCABULARY.getLiteralName(i);
+            if (tokenNames[i] == null) {
+                tokenNames[i] = VOCABULARY.getSymbolicName(i);
+            }
+
+            if (tokenNames[i] == null) {
+                tokenNames[i] = "<INVALID>";
+            }
+        }
+    }
 
     static {
         _decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
         for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
             _decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
         }
+    }
+
+    public mathLexer(CharStream input) {
+        super(input);
+        _interp = new LexerATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
+    }
+
+    private static String[] makeRuleNames() {
+        return new String[]{
+                "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8",
+                "T__9", "T__10", "T__11", "T__12", "T__13", "T__14", "T__15", "T__16",
+                "T__17", "T__18", "T__19", "T__20", "T__21", "T__22", "T__23", "T__24",
+                "T__25", "T__26", "T__27", "SUB", "NUM", "STRING", "NULL", "ERROR", "UNIT",
+                "IF", "IFERROR", "ISNUMBER", "ISTEXT", "ISERROR", "ISNONTEXT", "ISLOGICAL",
+                "ISEVEN", "ISODD", "ISNULL", "ISNULLORERROR", "AND", "OR", "NOT", "TRUE",
+                "FALSE", "E", "PI", "ABS", "QUOTIENT", "MOD", "SIGN", "SQRT", "TRUNC",
+                "INT", "GCD", "LCM", "COMBIN", "PERMUT", "DEGREES", "RADIANS", "COS",
+                "COSH", "SIN", "SINH", "TAN", "TANH", "ACOS", "ACOSH", "ASIN", "ASINH",
+                "ATAN", "ATANH", "ATAN2", "ROUND", "ROUNDDOWN", "ROUNDUP", "CEILING",
+                "FLOOR", "EVEN", "ODD", "MROUND", "RAND", "RANDBETWEEN", "FACT", "FACTDOUBLE",
+                "POWER", "EXP", "LN", "LOG", "LOG10", "MULTINOMIAL", "PRODUCT", "SQRTPI",
+                "SUMSQ", "ASC", "JIS", "CHAR", "CLEAN", "CODE", "CONCATENATE", "EXACT",
+                "FIND", "FIXED", "LEFT", "LEN", "LOWER", "MID", "PROPER", "REPLACE",
+                "REPT", "RIGHT", "RMB", "SEARCH", "SUBSTITUTE", "T", "TEXT", "TRIM",
+                "UPPER", "VALUE", "DATEVALUE", "TIMEVALUE", "DATE", "TIME", "NOW", "TODAY",
+                "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND", "WEEKDAY", "DATEDIF",
+                "DAYS360", "EDATE", "EOMONTH", "NETWORKDAYS", "WORKDAY", "WEEKNUM", "MAX",
+                "MEDIAN", "MIN", "QUARTILE", "MODE", "LARGE", "SMALL", "PERCENTILE",
+                "PERCENTRANK", "AVERAGE", "AVERAGEIF", "GEOMEAN", "HARMEAN", "COUNT",
+                "COUNTIF", "SUM", "SUMIF", "AVEDEV", "STDEV", "STDEVP", "DEVSQ", "VAR",
+                "VARP", "NORMDIST", "NORMINV", "NORMSDIST", "NORMSINV", "BETADIST", "BETAINV",
+                "BINOMDIST", "EXPONDIST", "FDIST", "FINV", "FISHER", "FISHERINV", "GAMMADIST",
+                "GAMMAINV", "GAMMALN", "HYPGEOMDIST", "LOGINV", "LOGNORMDIST", "NEGBINOMDIST",
+                "POISSON", "TDIST", "TINV", "WEIBULL", "REGEXREPALCE", "ISREGEX", "TRIMSTART",
+                "TRIMEND", "INDEXOF", "LASTINDEXOF", "SPLIT", "JOIN", "SUBSTRING", "STARTSWITH",
+                "ENDSWITH", "ISNULLOREMPTY", "ISNULLORWHITESPACE", "REMOVESTART", "REMOVEEND",
+                "JSON", "LOOKUP", "IN", "HAS", "PARAM", "PARAMETER", "PARAMETER2", "FullWidthLetter",
+                "WS", "COMMENT", "LINE_COMMENT"
+        };
+    }
+
+    private static String[] makeLiteralNames() {
+        return new String[]{
+                null, "'.'", "'('", "')'", "','", "'['", "']'", "'!'", "'%'", "'*'",
+                "'/'", "'+'", "'&'", "'>'", "'>='", "'<'", "'<='", "'='", "'=='", "'==='",
+                "'!=='", "'!='", "'<>'", "'&&'", "'||'", "'?'", "':'", "'{'", "'}'",
+                "'-'", null, null, "'NULL'", "'ERROR'", null, "'IF'", "'IFERROR'", "'ISNUMBER'",
+                "'ISTEXT'", "'ISERROR'", "'ISNONTEXT'", "'ISLOGICAL'", "'ISEVEN'", "'ISODD'",
+                "'ISNULL'", "'ISNULLORERROR'", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'",
+                "'E'", "'PI'", "'ABS'", "'QUOTIENT'", "'MOD'", "'SIGN'", "'SQRT'", "'TRUNC'",
+                "'INT'", "'GCD'", "'LCM'", "'COMBIN'", "'PERMUT'", "'DEGREES'", "'RADIANS'",
+                "'COS'", "'COSH'", "'SIN'", "'SINH'", "'TAN'", "'TANH'", "'ACOS'", "'ACOSH'",
+                "'ASIN'", "'ASINH'", "'ATAN'", "'ATANH'", "'ATAN2'", "'ROUND'", "'ROUNDDOWN'",
+                "'ROUNDUP'", "'CEILING'", "'FLOOR'", "'EVEN'", "'ODD'", "'MROUND'", "'RAND'",
+                "'RANDBETWEEN'", "'FACT'", "'FACTDOUBLE'", "'POWER'", "'EXP'", "'LN'",
+                "'LOG'", "'LOG10'", "'MULTINOMIAL'", "'PRODUCT'", "'SQRTPI'", "'SUMSQ'",
+                "'ASC'", null, "'CHAR'", "'CLEAN'", "'CODE'", "'CONCATENATE'", "'EXACT'",
+                "'FIND'", "'FIXED'", "'LEFT'", "'LEN'", null, "'MID'", "'PROPER'", "'REPLACE'",
+                "'REPT'", "'RIGHT'", "'RMB'", "'SEARCH'", "'SUBSTITUTE'", "'T'", "'TEXT'",
+                "'TRIM'", null, "'VALUE'", "'DATEVALUE'", "'TIMEVALUE'", "'DATE'", "'TIME'",
+                "'NOW'", "'TODAY'", "'YEAR'", "'MONTH'", "'DAY'", "'HOUR'", "'MINUTE'",
+                "'SECOND'", "'WEEKDAY'", "'DATEDIF'", "'DAYS360'", "'EDATE'", "'EOMONTH'",
+                "'NETWORKDAYS'", "'WORKDAY'", "'WEEKNUM'", "'MAX'", "'MEDIAN'", "'MIN'",
+                "'QUARTILE'", "'MODE'", "'LARGE'", "'SMALL'", "'PERCENTILE'", "'PERCENTRANK'",
+                "'AVERAGE'", "'AVERAGEIF'", "'GEOMEAN'", "'HARMEAN'", "'COUNT'", "'COUNTIF'",
+                "'SUM'", "'SUMIF'", "'AVEDEV'", "'STDEV'", "'STDEVP'", "'DEVSQ'", "'VAR'",
+                "'VARP'", "'NORMDIST'", "'NORMINV'", "'NORMSDIST'", "'NORMSINV'", "'BETADIST'",
+                "'BETAINV'", "'BINOMDIST'", "'EXPONDIST'", "'FDIST'", "'FINV'", "'FISHER'",
+                "'FISHERINV'", "'GAMMADIST'", "'GAMMAINV'", "'GAMMALN'", "'HYPGEOMDIST'",
+                "'LOGINV'", "'LOGNORMDIST'", "'NEGBINOMDIST'", "'POISSON'", "'TDIST'",
+                "'TINV'", "'WEIBULL'", "'REGEXREPALCE'", null, null, null, "'INDEXOF'",
+                "'LASTINDEXOF'", "'SPLIT'", "'JOIN'", "'SUBSTRING'", "'STARTSWITH'",
+                "'ENDSWITH'", "'ISNULLOREMPTY'", "'ISNULLORWHITESPACE'", "'REMOVESTART'",
+                "'REMOVEEND'", "'JSON'", "'LOOKUP'"
+        };
+    }
+
+    private static String[] makeSymbolicNames() {
+        return new String[]{
+                null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, "SUB", "NUM", "STRING", "NULL", "ERROR",
+                "UNIT", "IF", "IFERROR", "ISNUMBER", "ISTEXT", "ISERROR", "ISNONTEXT",
+                "ISLOGICAL", "ISEVEN", "ISODD", "ISNULL", "ISNULLORERROR", "AND", "OR",
+                "NOT", "TRUE", "FALSE", "E", "PI", "ABS", "QUOTIENT", "MOD", "SIGN",
+                "SQRT", "TRUNC", "INT", "GCD", "LCM", "COMBIN", "PERMUT", "DEGREES",
+                "RADIANS", "COS", "COSH", "SIN", "SINH", "TAN", "TANH", "ACOS", "ACOSH",
+                "ASIN", "ASINH", "ATAN", "ATANH", "ATAN2", "ROUND", "ROUNDDOWN", "ROUNDUP",
+                "CEILING", "FLOOR", "EVEN", "ODD", "MROUND", "RAND", "RANDBETWEEN", "FACT",
+                "FACTDOUBLE", "POWER", "EXP", "LN", "LOG", "LOG10", "MULTINOMIAL", "PRODUCT",
+                "SQRTPI", "SUMSQ", "ASC", "JIS", "CHAR", "CLEAN", "CODE", "CONCATENATE",
+                "EXACT", "FIND", "FIXED", "LEFT", "LEN", "LOWER", "MID", "PROPER", "REPLACE",
+                "REPT", "RIGHT", "RMB", "SEARCH", "SUBSTITUTE", "T", "TEXT", "TRIM",
+                "UPPER", "VALUE", "DATEVALUE", "TIMEVALUE", "DATE", "TIME", "NOW", "TODAY",
+                "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND", "WEEKDAY", "DATEDIF",
+                "DAYS360", "EDATE", "EOMONTH", "NETWORKDAYS", "WORKDAY", "WEEKNUM", "MAX",
+                "MEDIAN", "MIN", "QUARTILE", "MODE", "LARGE", "SMALL", "PERCENTILE",
+                "PERCENTRANK", "AVERAGE", "AVERAGEIF", "GEOMEAN", "HARMEAN", "COUNT",
+                "COUNTIF", "SUM", "SUMIF", "AVEDEV", "STDEV", "STDEVP", "DEVSQ", "VAR",
+                "VARP", "NORMDIST", "NORMINV", "NORMSDIST", "NORMSINV", "BETADIST", "BETAINV",
+                "BINOMDIST", "EXPONDIST", "FDIST", "FINV", "FISHER", "FISHERINV", "GAMMADIST",
+                "GAMMAINV", "GAMMALN", "HYPGEOMDIST", "LOGINV", "LOGNORMDIST", "NEGBINOMDIST",
+                "POISSON", "TDIST", "TINV", "WEIBULL", "REGEXREPALCE", "ISREGEX", "TRIMSTART",
+                "TRIMEND", "INDEXOF", "LASTINDEXOF", "SPLIT", "JOIN", "SUBSTRING", "STARTSWITH",
+                "ENDSWITH", "ISNULLOREMPTY", "ISNULLORWHITESPACE", "REMOVESTART", "REMOVEEND",
+                "JSON", "LOOKUP", "IN", "HAS", "PARAM", "PARAMETER", "PARAMETER2", "WS",
+                "COMMENT", "LINE_COMMENT"
+        };
+    }
+
+    @Override
+    @Deprecated
+    public String[] getTokenNames() {
+        return tokenNames;
+    }
+
+    @Override
+
+    public Vocabulary getVocabulary() {
+        return VOCABULARY;
+    }
+
+    @Override
+    public String getGrammarFileName() {
+        return "math.g4";
+    }
+
+    @Override
+    public String[] getRuleNames() {
+        return ruleNames;
+    }
+
+    @Override
+    public String getSerializedATN() {
+        return _serializedATN;
+    }
+
+    @Override
+    public String[] getChannelNames() {
+        return channelNames;
+    }
+
+    @Override
+    public String[] getModeNames() {
+        return modeNames;
+    }
+
+    @Override
+    public ATN getATN() {
+        return _ATN;
     }
 }

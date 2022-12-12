@@ -20,6 +20,11 @@ import java.util.TreeMap;
 
 public class AlgorithmEngine {
     /**
+     * 是否忽略大小写
+     */
+    public final boolean IgnoreCase;
+    private final Map<String, Operand> _tempdict;
+    /**
      * 使用EXCEL索引
      */
     public boolean UseExcelIndex = true;
@@ -31,12 +36,7 @@ public class AlgorithmEngine {
      * 保存到临时文档
      */
     public boolean UseTempDict = false;
-    /**
-     * 是否忽略大小写
-     */
-    public final boolean IgnoreCase;
     private ProgContext _context;
-    private final Map<String, Operand> _tempdict;
 
     /// <summary>
     /// 默认不带缓存

@@ -16,10 +16,6 @@ public enum CellType {
         value = v;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static CellType intToEnum(int value) {
         switch (value) {
             case 0:
@@ -43,5 +39,9 @@ public enum CellType {
             default:
                 return null;
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 }

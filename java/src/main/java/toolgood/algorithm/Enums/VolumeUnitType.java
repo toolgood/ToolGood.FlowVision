@@ -28,10 +28,6 @@ public enum VolumeUnitType {
         value = v;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static VolumeUnitType intToEnum(int value) {
         switch (value) {
             case 21:
@@ -47,5 +43,9 @@ public enum VolumeUnitType {
             default:
                 return null;
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 }
