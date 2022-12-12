@@ -56,7 +56,7 @@ public class AppTest {
 
     private void EvaluateJs(String script) throws Exception {
         ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine jsEngine = manager.getEngineByName("JavaScript"); // 不知道为什么总是null
+        ScriptEngine jsEngine = manager.getEngineByName("nashorn"); // 不知道为什么总是null
 
         Bindings bindings = jsEngine.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put("getDatas", (Supplier<String>) this::js_getDatas);
