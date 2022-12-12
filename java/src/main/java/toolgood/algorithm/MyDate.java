@@ -35,6 +35,7 @@ public class MyDate {
         Minute = minute;
         Second = second;
     }
+
     public MyDate(Date dt) {
         DateTime dTime = new DateTime(dt);
         Year = dTime.getYear();
@@ -44,6 +45,7 @@ public class MyDate {
         Minute = dTime.getMinuteOfHour();
         Second = dTime.getSecondOfMinute();
     }
+
     public MyDate(DateTime dTime) {
         Year = dTime.getYear();
         Month = dTime.getMonthOfYear();
@@ -52,6 +54,7 @@ public class MyDate {
         Minute = dTime.getMinuteOfHour();
         Second = dTime.getSecondOfMinute();
     }
+
     public MyDate(double num) {
         int days = (int) num;
         if (days > 365) {

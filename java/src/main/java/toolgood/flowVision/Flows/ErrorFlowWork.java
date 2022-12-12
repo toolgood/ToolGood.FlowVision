@@ -15,6 +15,7 @@ public class ErrorFlowWork extends NodeWork {
 
     public String CheckFormula;
     public String ErrorMessage;
+
     public ErrorFlowWork() {
         NodeType = toolgood.flowVision.Flows.Enums.CellType.Error;
     }
