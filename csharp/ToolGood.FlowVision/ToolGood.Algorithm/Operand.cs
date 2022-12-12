@@ -13,6 +13,7 @@ namespace ToolGood.Algorithm
 	public abstract class Operand : IDisposable
 	{
 		internal static readonly CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-US");
+
 		/// <summary>
 		/// True
 		/// </summary>
@@ -20,14 +21,17 @@ namespace ToolGood.Algorithm
 		/// TRUE
 		/// </summary>
 		public static readonly Operand True = new OperandBoolean(true);
+
 		/// <summary>
 		/// FALSE
 		/// </summary>
 		public static readonly Operand False = new OperandBoolean(false);
+
 		/// <summary>
 		/// 1
 		/// </summary>
 		public static readonly Operand One = new OperandNumber(1);
+
 		/// <summary>
 		/// 0
 		/// </summary>
@@ -37,39 +41,49 @@ namespace ToolGood.Algorithm
 		/// 是否为空
 		/// </summary>
 		public virtual bool IsNull => false;
+
 		/// <summary>
 		/// 是否出错
 		/// </summary>
 		public virtual bool IsError => false;
+
 		/// <summary>
 		/// 错误信息
 		/// </summary>
 		public virtual string ErrorMsg => null;
+
 		/// <summary>
 		/// 操作数类型
 		/// </summary>
 		public abstract OperandType Type { get; }
+
 		/// <summary>
 		/// 数字值
 		/// </summary>
 		public virtual double NumberValue => throw new NotImplementedException();
+
 		/// <summary>
 		/// int值
 		/// </summary>
 		public virtual int IntValue => throw new NotImplementedException();
+
 		/// <summary>
 		/// 字符串值
 		/// </summary>
 		public virtual string TextValue => throw new NotImplementedException();
+
 		/// <summary>
 		/// 布尔值
 		/// </summary>
 		public virtual bool BooleanValue => throw new NotImplementedException();
+
 		/// <summary>
 		/// 数组值
 		/// </summary>
 		public virtual List<Operand> ArrayValue => throw new NotImplementedException();
+
 		internal virtual JsonData JsonValue => throw new NotImplementedException();
+
 		/// <summary>
 		/// 时间值
 		/// </summary>
@@ -88,6 +102,7 @@ namespace ToolGood.Algorithm
 		}
 
 		#region number
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -97,6 +112,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandNumber(obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -111,6 +127,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandNumber(obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -125,6 +142,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandNumber((double)obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -139,6 +157,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandNumber((double)obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -153,6 +172,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandNumber((double)obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -167,6 +187,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandNumber((double)obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -176,6 +197,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandNumber((double)obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -185,6 +207,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandNumber(obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -194,7 +217,8 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandNumber((double)obj);
 		}
-		#endregion
+
+		#endregion number
 
 		/// <summary>
 		/// 创建操作数
@@ -225,6 +249,7 @@ namespace ToolGood.Algorithm
 			}
 			return Operand.Error("string to json is error!");
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -234,6 +259,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandMyDate(obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -243,6 +269,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandMyDate(new MyDate(obj));
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -252,6 +279,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandMyDate(new MyDate(obj));
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -261,6 +289,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandJson(obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -270,6 +299,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandArray(obj);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -283,6 +313,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandArray(array);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -296,6 +327,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandArray(array);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -309,6 +341,7 @@ namespace ToolGood.Algorithm
 			}
 			return new OperandArray(array);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -332,6 +365,7 @@ namespace ToolGood.Algorithm
 		{
 			return new OperandError(msg);
 		}
+
 		/// <summary>
 		/// 创建操作数
 		/// </summary>
@@ -341,48 +375,64 @@ namespace ToolGood.Algorithm
 			return new OperandNull();
 		}
 
-		#endregion
+		#endregion Create
+
 		/// <summary>
 		/// 转数值类型
 		/// </summary>
 		/// <param name="errorMessage"></param>
 		/// <returns></returns>
-		public virtual Operand ToNumber(string errorMessage = null) { return Error(errorMessage); }
+		public virtual Operand ToNumber(string errorMessage = null)
+		{ return Error(errorMessage); }
+
 		/// <summary>
 		/// 转bool类型
 		/// </summary>
 		/// <param name="errorMessage"></param>
 		/// <returns></returns>
-		public virtual Operand ToBoolean(string errorMessage = null) { return Error(errorMessage); }
+		public virtual Operand ToBoolean(string errorMessage = null)
+		{ return Error(errorMessage); }
+
 		/// <summary>
 		/// 转String类型
 		/// </summary>
 		/// <param name="errorMessage"></param>
 		/// <returns></returns>
-		public virtual Operand ToText(string errorMessage = null) { return Error(errorMessage); }
+		public virtual Operand ToText(string errorMessage = null)
+		{ return Error(errorMessage); }
+
 		/// <summary>
 		/// 转MyDate类型
 		/// </summary>
 		/// <param name="errorMessage"></param>
 		/// <returns></returns>
-		public virtual Operand ToMyDate(string errorMessage = null) { return Error(errorMessage); }
+		public virtual Operand ToMyDate(string errorMessage = null)
+		{ return Error(errorMessage); }
+
 		/// <summary>
 		/// 转Json类型
 		/// </summary>
 		/// <param name="errorMessage"></param>
 		/// <returns></returns>
-		public virtual Operand ToJson(string errorMessage = null) { return Error(errorMessage); }
+		public virtual Operand ToJson(string errorMessage = null)
+		{ return Error(errorMessage); }
+
 		/// <summary>
 		/// 转Array类型
 		/// </summary>
 		/// <param name="errorMessage"></param>
 		/// <returns></returns>
-		public virtual Operand ToArray(string errorMessage = null) { return Error(errorMessage); }
+		public virtual Operand ToArray(string errorMessage = null)
+		{ return Error(errorMessage); }
 
-		void IDisposable.Dispose() { }
+		void IDisposable.Dispose()
+		{
+		}
 
 		#region Operand
+
 		#region number
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -391,6 +441,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((int)obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -399,6 +450,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -407,6 +459,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((double)obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -415,6 +468,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((double)obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -423,6 +477,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((double)obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -431,6 +486,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((double)obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -439,6 +495,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((double)obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -447,6 +504,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -455,7 +513,9 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create((double)obj);
 		}
-		#endregion
+
+		#endregion number
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -464,6 +524,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -472,6 +533,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -480,6 +542,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -488,6 +551,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -496,6 +560,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -504,6 +569,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -512,6 +578,7 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
+
 		/// <summary>
 		/// 转 Operand
 		/// </summary>
@@ -520,17 +587,21 @@ namespace ToolGood.Algorithm
 		{
 			return Operand.Create(obj);
 		}
-		#endregion
+
+		#endregion Operand
 	}
-	abstract class Operand<T> : Operand
+
+	internal abstract class Operand<T> : Operand
 	{
 		public T Value { get; private set; }
+
 		public Operand(T obj)
 		{
 			Value = obj;
 		}
 	}
-	class KeyValue
+
+	internal class KeyValue
 	{
 		public int? Index;
 		public string Key;
@@ -543,6 +614,7 @@ namespace ToolGood.Algorithm
 		{
 			listNum = excelIndex;
 		}
+
 		public override OperandType Type => OperandType.ARRARYJSON;
 		public override List<Operand> ArrayValue => TextList.Select(q => q.Value).ToList();
 
@@ -583,6 +655,7 @@ namespace ToolGood.Algorithm
 			value = null;
 			return false;
 		}
+
 		public bool TryGetValue(string key, out Operand value)
 		{
 			foreach (var item in TextList) {
@@ -594,6 +667,7 @@ namespace ToolGood.Algorithm
 			value = null;
 			return false;
 		}
+
 		public bool ContainsValue(Operand value)
 		{
 			foreach (var item in TextList) {
@@ -636,58 +710,86 @@ namespace ToolGood.Algorithm
 
 	internal sealed class OperandKeyValue : Operand<KeyValue>
 	{
-		public OperandKeyValue(KeyValue obj) : base(obj) { }
-		public override OperandType Type => OperandType.ARRARYJSON;
+		public OperandKeyValue(KeyValue obj) : base(obj)
+		{
+		}
 
+		public override OperandType Type => OperandType.ARRARYJSON;
 	}
 
-	sealed class OperandNumber : Operand<double>
+	internal sealed class OperandNumber : Operand<double>
 	{
-		public OperandNumber(double obj) : base(obj) { }
+		public OperandNumber(double obj) : base(obj)
+		{
+		}
+
 		public override OperandType Type => OperandType.NUMBER;
 		public override int IntValue => (int)Value;
 		public override double NumberValue => Value;
 
-		public override Operand ToNumber(string errorMessage = null) { return this; }
-		public override Operand ToBoolean(string errorMessage = null) { return NumberValue != 0 ? True : False; }
-		public override Operand ToText(string errorMessage = null) { return Create(Math.Round(NumberValue, 10).ToString(cultureInfo)); }
-		public override Operand ToMyDate(string errorMessage = null) { return Create((MyDate)NumberValue); }
+		public override Operand ToNumber(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToBoolean(string errorMessage = null)
+		{ return NumberValue != 0 ? True : False; }
+
+		public override Operand ToText(string errorMessage = null)
+		{ return Create(Math.Round(NumberValue, 10).ToString(cultureInfo)); }
+
+		public override Operand ToMyDate(string errorMessage = null)
+		{ return Create((MyDate)NumberValue); }
 
 		public override Operand ToArray(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert number to array error!");
 		}
+
 		public override Operand ToJson(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert number to json error!");
 		}
 	}
-	sealed class OperandBoolean : Operand<bool>
+
+	internal sealed class OperandBoolean : Operand<bool>
 	{
-		public OperandBoolean(bool obj) : base(obj) { }
+		public OperandBoolean(bool obj) : base(obj)
+		{
+		}
+
 		public override OperandType Type => OperandType.BOOLEAN;
 		public override bool BooleanValue => Value;
 
-		public override Operand ToNumber(string errorMessage = null) { return BooleanValue ? One : Zero; }
-		public override Operand ToBoolean(string errorMessage = null) { return this; }
-		public override Operand ToText(string errorMessage = null) { return Create(BooleanValue ? "TRUE" : "FALSE"); }
+		public override Operand ToNumber(string errorMessage = null)
+		{ return BooleanValue ? One : Zero; }
+
+		public override Operand ToBoolean(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToText(string errorMessage = null)
+		{ return Create(BooleanValue ? "TRUE" : "FALSE"); }
 
 		public override Operand ToArray(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert bool to array error!");
 		}
+
 		public override Operand ToJson(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert bool to json error!");
 		}
+
 		public override Operand ToMyDate(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert bool to date error!");
 		}
 	}
-	sealed class OperandString : Operand<string>
+
+	internal sealed class OperandString : Operand<string>
 	{
-		public OperandString(string obj) : base(obj) { }
+		public OperandString(string obj) : base(obj)
+		{
+		}
+
 		public override OperandType Type => OperandType.TEXT;
 		public override string TextValue => Value;
 
@@ -701,10 +803,12 @@ namespace ToolGood.Algorithm
 			}
 			return Error(errorMessage);
 		}
+
 		public override Operand ToText(string errorMessage = null)
 		{
 			return this;
 		}
+
 		public override Operand ToBoolean(string errorMessage = null)
 		{
 			if (TextValue.Equals("true", StringComparison.OrdinalIgnoreCase)) { return True; }
@@ -718,6 +822,7 @@ namespace ToolGood.Algorithm
 			}
 			return Error(errorMessage);
 		}
+
 		public override Operand ToMyDate(string errorMessage = null)
 		{
 			if (TimeSpan.TryParse(TextValue, cultureInfo, out TimeSpan t)) { return Create(new MyDate(t)); }
@@ -727,6 +832,7 @@ namespace ToolGood.Algorithm
 			}
 			return Error(errorMessage);
 		}
+
 		public override Operand ToJson(string errorMessage = null)
 		{
 			var txt = TextValue.Trim();
@@ -747,9 +853,13 @@ namespace ToolGood.Algorithm
 			return Error(errorMessage ?? "Convert string to array error!");
 		}
 	}
-	sealed class OperandMyDate : Operand<MyDate>
+
+	internal sealed class OperandMyDate : Operand<MyDate>
 	{
-		public OperandMyDate(MyDate obj) : base(obj) { }
+		public OperandMyDate(MyDate obj) : base(obj)
+		{
+		}
+
 		public override OperandType Type => OperandType.DATE;
 		public override MyDate DateValue => Value;
 
@@ -757,32 +867,43 @@ namespace ToolGood.Algorithm
 		{
 			return Create((double)DateValue);
 		}
+
 		public override Operand ToBoolean(string errorMessage = null)
 		{
 			return ((double)DateValue) != 0 ? True : False;
 		}
+
 		public override Operand ToText(string errorMessage = null)
 		{
 			return Create(DateValue.ToString());
 		}
-		public override Operand ToMyDate(string errorMessage = null) { return this; }
+
+		public override Operand ToMyDate(string errorMessage = null)
+		{ return this; }
 
 		public override Operand ToArray(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert date to array error!");
 		}
+
 		public override Operand ToJson(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert date to json error!");
 		}
 	}
-	sealed class OperandJson : Operand<JsonData>
+
+	internal sealed class OperandJson : Operand<JsonData>
 	{
-		public OperandJson(JsonData obj) : base(obj) { }
+		public OperandJson(JsonData obj) : base(obj)
+		{
+		}
+
 		public override OperandType Type => OperandType.JSON;
 		internal override JsonData JsonValue => Value;
 
-		public override Operand ToJson(string errorMessage = null) { return this; }
+		public override Operand ToJson(string errorMessage = null)
+		{ return this; }
+
 		public override Operand ToArray(string errorMessage = null)
 		{
 			if (JsonValue.IsArray) {
@@ -803,50 +924,73 @@ namespace ToolGood.Algorithm
 			}
 			return Error(errorMessage ?? "Convert json to array error!");
 		}
+
 		public override Operand ToBoolean(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert json to bool error!");
 		}
+
 		public override Operand ToMyDate(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert json to date error!");
 		}
+
 		public override Operand ToNumber(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert json to number error!");
 		}
+
 		public override Operand ToText(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert json to string error!");
 		}
 	}
-	sealed class OperandArray : Operand<List<Operand>>
+
+	internal sealed class OperandArray : Operand<List<Operand>>
 	{
-		public OperandArray(List<Operand> obj) : base(obj) { }
+		public OperandArray(List<Operand> obj) : base(obj)
+		{
+		}
+
 		public override OperandType Type => OperandType.ARRARY;
 		public override List<Operand> ArrayValue => Value;
 
-		public override Operand ToArray(string errorMessage = null) { return this; }
+		public override Operand ToArray(string errorMessage = null)
+		{ return this; }
 	}
-	sealed class OperandError : Operand
+
+	internal sealed class OperandError : Operand
 	{
 		public override OperandType Type => OperandType.ERROR;
 		public override bool IsError => true;
 		private readonly string _errorMsg;
 		public override string ErrorMsg => _errorMsg;
+
 		public OperandError(string msg)
 		{
 			_errorMsg = msg;
 		}
-		public override Operand ToNumber(string errorMessage = null) { return this; }
-		public override Operand ToBoolean(string errorMessage = null) { return this; }
-		public override Operand ToText(string errorMessage = null) { return this; }
-		public override Operand ToArray(string errorMessage = null) { return this; }
-		public override Operand ToJson(string errorMessage = null) { return this; }
-		public override Operand ToMyDate(string errorMessage = null) { return this; }
+
+		public override Operand ToNumber(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToBoolean(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToText(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToArray(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToJson(string errorMessage = null)
+		{ return this; }
+
+		public override Operand ToMyDate(string errorMessage = null)
+		{ return this; }
 	}
 
-	sealed class OperandNull : Operand
+	internal sealed class OperandNull : Operand
 	{
 		public override OperandType Type => OperandType.NULL;
 		public override bool IsNull => true;
@@ -855,26 +999,30 @@ namespace ToolGood.Algorithm
 		{
 			return Error(errorMessage ?? "Convert null to array error!");
 		}
+
 		public override Operand ToBoolean(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert null to bool error!");
 		}
+
 		public override Operand ToText(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert null to string error!");
 		}
+
 		public override Operand ToNumber(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert null to number error!");
 		}
+
 		public override Operand ToJson(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert null to json error!");
 		}
+
 		public override Operand ToMyDate(string errorMessage = null)
 		{
 			return Error(errorMessage ?? "Convert null to date error!");
 		}
 	}
-
 }

@@ -1,14 +1,14 @@
 ﻿namespace ToolGood.Algorithm.LitJson
 {
-    internal enum JsonType
-    {
-        None,
+	internal enum JsonType
+	{
+		None,
 
-        Object,
-        Array,
-        String,
-        Double,
-        Boolean,
-        Null
-    }
+		Object,
+		Array,
+		String,
+		Double,
+		Boolean,
+		Null
+	}
 }

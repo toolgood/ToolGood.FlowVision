@@ -1,10 +1,8 @@
 ﻿using Antlr4.Runtime.Tree;
-using Esprima.Ast;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using ToolGood.Algorithm.Enums;
 using ToolGood.Algorithm.LitJson;
@@ -12,16 +10,17 @@ using ToolGood.Algorithm.MathNet.Numerics;
 
 namespace ToolGood.Algorithm.Internals
 {
-	sealed class MathVisitor : AbstractParseTreeVisitor<Operand>, ImathVisitor<Operand>
+	internal sealed class MathVisitor : AbstractParseTreeVisitor<Operand>, ImathVisitor<Operand>
 	{
 		private static readonly CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-US");
+
 		public event Func<string, Operand> GetParameter;
+
 		public int excelIndex;
 		public DistanceUnitType DistanceUnit = DistanceUnitType.M;
 		public AreaUnitType AreaUnit = AreaUnitType.M2;
 		public VolumeUnitType VolumeUnit = VolumeUnitType.M3;
 		public MassUnitType MassUnit = MassUnitType.KG;
-
 
 		#region base
 
@@ -271,6 +270,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(r != 0);
 		}
+
 		private Operand Compare(Operand op1, Operand op2, string type)
 		{
 			double t1 = op1.NumberValue;
@@ -312,9 +312,10 @@ namespace ToolGood.Algorithm.Internals
 			return this.Visit(exprs[1]).ToBoolean();
 		}
 
-		#endregion
+		#endregion base
 
 		#region flow
+
 		public Operand VisitIF_fun(mathParser.IF_funContext context)
 		{
 			var exprs = context.expr();
@@ -337,6 +338,7 @@ namespace ToolGood.Algorithm.Internals
 			if (exprs.Length == 3) { return this.Visit(exprs[2]); }
 			return Operand.False;
 		}
+
 		public Operand VisitISNUMBER_fun(mathParser.ISNUMBER_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.IsError) { return args1; }
@@ -344,6 +346,7 @@ namespace ToolGood.Algorithm.Internals
 			if (args1.Type == OperandType.NUMBER) { return Operand.True; }
 			return Operand.False;
 		}
+
 		public Operand VisitISTEXT_fun(mathParser.ISTEXT_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.IsError) { return args1; }
@@ -351,6 +354,7 @@ namespace ToolGood.Algorithm.Internals
 			if (args1.Type == OperandType.TEXT) { return Operand.True; }
 			return Operand.False;
 		}
+
 		public Operand VisitISERROR_fun(mathParser.ISERROR_funContext context)
 		{
 			var exprs = context.expr();
@@ -433,6 +437,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return b ? Operand.True : Operand.False;
 		}
+
 		public Operand VisitOR_fun(mathParser.OR_funContext context)
 		{
 			var index = 1;
@@ -444,20 +449,24 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return b ? Operand.True : Operand.False;
 		}
+
 		public Operand VisitNOT_fun(mathParser.NOT_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.BOOLEAN) { args1 = args1.ToBoolean("Function NOT parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(!args1.BooleanValue);
 		}
+
 		public Operand VisitTRUE_fun(mathParser.TRUE_funContext context)
 		{
 			return Operand.True;
 		}
+
 		public Operand VisitFALSE_fun(mathParser.FALSE_funContext context)
 		{
 			return Operand.False;
 		}
-		#endregion
+
+		#endregion flow
 
 		#region math
 
@@ -467,6 +476,7 @@ namespace ToolGood.Algorithm.Internals
 		{
 			return Operand.Create(Math.E);
 		}
+
 		public Operand VisitPI_fun(mathParser.PI_funContext context)
 		{
 			return Operand.Create(Math.PI);
@@ -478,6 +488,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(Math.Abs(args1.NumberValue));
 		}
+
 		public Operand VisitQUOTIENT_fun(mathParser.QUOTIENT_funContext context)
 		{
 			var exprs = context.expr();
@@ -489,6 +500,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create((double)(int)(args1.NumberValue / args2.NumberValue));
 		}
+
 		public Operand VisitMOD_fun(mathParser.MOD_funContext context)
 		{
 			var exprs = context.expr();
@@ -499,30 +511,34 @@ namespace ToolGood.Algorithm.Internals
 				return Operand.Error("Function MOD div 0 error!");
 			}
 			return Operand.Create((int)(args1.NumberValue % args2.NumberValue));
-
 		}
+
 		public Operand VisitSIGN_fun(mathParser.SIGN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function SIGN parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(Math.Sign(args1.NumberValue));
 		}
+
 		public Operand VisitSQRT_fun(mathParser.SQRT_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function SQRT parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(Math.Sqrt(args1.NumberValue));
 		}
+
 		public Operand VisitTRUNC_fun(mathParser.TRUNC_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function TRUNC parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create((int)(args1.NumberValue));
 		}
+
 		public Operand VisitINT_fun(mathParser.INT_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function INT parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create((int)(args1.NumberValue));
 		}
+
 		public Operand VisitGCD_fun(mathParser.GCD_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -534,6 +550,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(F_base_gcd(list));
 		}
+
 		public Operand VisitLCM_fun(mathParser.LCM_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -545,6 +562,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(F_base_lgm(list));
 		}
+
 		public Operand VisitCOMBIN_fun(mathParser.COMBIN_funContext context)
 		{
 			var exprs = context.expr();
@@ -561,6 +579,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sum / sum2);
 		}
+
 		public Operand VisitPERMUT_fun(mathParser.PERMUT_funContext context)
 		{
 			var exprs = context.expr();
@@ -593,12 +612,14 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return g;
 		}
+
 		private int F_base_gcd(int a, int b)
 		{
 			if (b == 1) { return 1; }
 			if (b == 0) { return a; }
 			return F_base_gcd(b, a % b);
 		}
+
 		private int F_base_lgm(List<double> list)
 		{
 			list = list.OrderBy(q => q).ToList();
@@ -612,9 +633,11 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return a;
 		}
-		#endregion
+
+		#endregion base
 
 		#region trigonometric functions
+
 		public Operand VisitDEGREES_fun(mathParser.DEGREES_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function DEGREES parameter is error!"); if (args1.IsError) { return args1; } }
@@ -623,6 +646,7 @@ namespace ToolGood.Algorithm.Internals
 			var r = (z / Math.PI * 180);
 			return Operand.Create(r);
 		}
+
 		public Operand VisitRADIANS_fun(mathParser.RADIANS_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function RADIANS parameter is error!"); if (args1.IsError) { return args1; } }
@@ -630,37 +654,44 @@ namespace ToolGood.Algorithm.Internals
 			var r = args1.NumberValue / 180 * Math.PI;
 			return Operand.Create(r);
 		}
+
 		public Operand VisitCOS_fun(mathParser.COS_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function COS parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Cos(args1.NumberValue));
 		}
+
 		public Operand VisitCOSH_fun(mathParser.COSH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function COSH parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(Math.Cosh(args1.NumberValue));
 		}
+
 		public Operand VisitSIN_fun(mathParser.SIN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function SIN parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Sin(args1.NumberValue));
 		}
+
 		public Operand VisitSINH_fun(mathParser.SINH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function SINH parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Sinh(args1.NumberValue));
 		}
+
 		public Operand VisitTAN_fun(mathParser.TAN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function TAN parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Tan(args1.NumberValue));
 		}
+
 		public Operand VisitTANH_fun(mathParser.TANH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function TANH parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Tanh(args1.NumberValue));
 		}
+
 		public Operand VisitACOS_fun(mathParser.ACOS_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ACOS parameter is error!"); if (args1.IsError) { return args1; } }
@@ -670,6 +701,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Acos(x));
 		}
+
 		public Operand VisitACOSH_fun(mathParser.ACOSH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ACOSH parameter is error!"); if (args1.IsError) { return args1; } }
@@ -680,6 +712,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Acosh(z));
 		}
+
 		public Operand VisitASIN_fun(mathParser.ASIN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ASIN parameter is error!"); if (args1.IsError) { return args1; } }
@@ -689,17 +722,20 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Asin(x));
 		}
+
 		public Operand VisitASINH_fun(mathParser.ASINH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ASINH parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Asinh(args1.NumberValue));
 		}
+
 		public Operand VisitATAN_fun(mathParser.ATAN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ATAN parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(Math.Atan(args1.NumberValue));
 		}
+
 		public Operand VisitATANH_fun(mathParser.ATANH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ATANH parameter is error!"); if (args1.IsError) { return args1; } }
@@ -709,6 +745,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Atanh(x));
 		}
+
 		public Operand VisitATAN2_fun(mathParser.ATAN2_funContext context)
 		{
 			var exprs = context.expr();
@@ -717,6 +754,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(Math.Atan2(args2.NumberValue, args1.NumberValue));
 		}
+
 		public Operand VisitFIXED_fun(mathParser.FIXED_funContext context)
 		{
 			var exprs = context.expr();
@@ -739,8 +777,7 @@ namespace ToolGood.Algorithm.Internals
 			return Operand.Create(s.ToString(cultureInfo));
 		}
 
-		#endregion
-
+		#endregion trigonometric functions
 
 		#region rounding
 
@@ -754,6 +791,7 @@ namespace ToolGood.Algorithm.Internals
 			var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function ROUND parameter 2 is error!"); if (args2.IsError) { return args2; } }
 			return Operand.Create((double)Math.Round((decimal)args1.NumberValue, args2.IntValue, MidpointRounding.AwayFromZero));
 		}
+
 		public Operand VisitROUNDDOWN_fun(mathParser.ROUNDDOWN_funContext context)
 		{
 			var exprs = context.expr();
@@ -769,6 +807,7 @@ namespace ToolGood.Algorithm.Internals
 			b = ((double)(int)(b * a)) / a;
 			return Operand.Create(b);
 		}
+
 		public Operand VisitROUNDUP_fun(mathParser.ROUNDUP_funContext context)
 		{
 			var exprs = context.expr();
@@ -783,6 +822,7 @@ namespace ToolGood.Algorithm.Internals
 			if (b > 0) return Operand.Create(t);
 			return Operand.Create(-t);
 		}
+
 		public Operand VisitCEILING_fun(mathParser.CEILING_funContext context)
 		{
 			var exprs = context.expr();
@@ -800,6 +840,7 @@ namespace ToolGood.Algorithm.Internals
 			var d = Math.Ceiling(a / b) * b;
 			return Operand.Create(d);
 		}
+
 		public Operand VisitFLOOR_fun(mathParser.FLOOR_funContext context)
 		{
 			var exprs = context.expr();
@@ -816,6 +857,7 @@ namespace ToolGood.Algorithm.Internals
 			var d = Math.Floor(a / b) * b;
 			return Operand.Create(d);
 		}
+
 		public Operand VisitEVEN_fun(mathParser.EVEN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function EVEN parameter is error!"); if (args1.IsError) { return args1; } }
@@ -827,6 +869,7 @@ namespace ToolGood.Algorithm.Internals
 			z++;
 			return Operand.Create(z);
 		}
+
 		public Operand VisitODD_fun(mathParser.ODD_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function ODD parameter is error!"); if (args1.IsError) { return args1; } }
@@ -837,6 +880,7 @@ namespace ToolGood.Algorithm.Internals
 			z++;
 			return Operand.Create(z);
 		}
+
 		public Operand VisitMROUND_fun(mathParser.MROUND_funContext context)
 		{
 			var exprs = context.expr();
@@ -850,15 +894,18 @@ namespace ToolGood.Algorithm.Internals
 			var r = Math.Round(b / a, 0, MidpointRounding.AwayFromZero) * a;
 			return Operand.Create(r);
 		}
-		#endregion
+
+		#endregion rounding
 
 		#region RAND
+
 		public Operand VisitRAND_fun(mathParser.RAND_funContext context)
 		{
 			var tick = DateTime.Now.Ticks;
 			Random rand = new Random((int)(tick & 0xffffffffL) | (int)(tick >> 32));
 			return Operand.Create(rand.NextDouble());
 		}
+
 		public Operand VisitRANDBETWEEN_fun(mathParser.RANDBETWEEN_funContext context)
 		{
 			var exprs = context.expr();
@@ -869,9 +916,11 @@ namespace ToolGood.Algorithm.Internals
 			Random rand = new Random((int)(tick & 0xffffffffL) | (int)(tick >> 32));
 			return Operand.Create(rand.NextDouble() * (args2.NumberValue - args1.NumberValue) + args1.NumberValue);
 		}
-		#endregion
 
-		#region  power logarithm factorial
+		#endregion RAND
+
+		#region power logarithm factorial
+
 		public Operand VisitFACT_fun(mathParser.FACT_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function FACT parameter is error!"); if (args1.IsError) { return args1; } }
@@ -885,6 +934,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(d);
 		}
+
 		public Operand VisitFACTDOUBLE_fun(mathParser.FACTDOUBLE_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function FACTDOUBLE parameter is error!"); if (args1.IsError) { return args1; } }
@@ -898,6 +948,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(d);
 		}
+
 		public Operand VisitPOWER_fun(mathParser.POWER_funContext context)
 		{
 			var exprs = context.expr();
@@ -906,17 +957,20 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(Math.Pow(args1.NumberValue, args2.NumberValue));
 		}
+
 		public Operand VisitEXP_fun(mathParser.EXP_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function EXP parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(Math.Exp(args1.NumberValue));
 		}
+
 		public Operand VisitLN_fun(mathParser.LN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function LN parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Log(args1.NumberValue));
 		}
+
 		public Operand VisitLOG_fun(mathParser.LOG_funContext context)
 		{
 			var exprs = context.expr();
@@ -928,11 +982,13 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Log(args1.NumberValue, 10));
 		}
+
 		public Operand VisitLOG10_fun(mathParser.LOG10_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function LOG10 parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Log(args1.NumberValue, 10));
 		}
+
 		public Operand VisitMULTINOMIAL_fun(mathParser.MULTINOMIAL_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -953,6 +1009,7 @@ namespace ToolGood.Algorithm.Internals
 			var r = F_base_Factorial(sum) / n;
 			return Operand.Create(r);
 		}
+
 		public Operand VisitPRODUCT_fun(mathParser.PRODUCT_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -970,11 +1027,13 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(d);
 		}
+
 		public Operand VisitSQRTPI_fun(mathParser.SQRTPI_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function SQRTPI parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(Math.Sqrt(args1.NumberValue * Math.PI));
 		}
+
 		public Operand VisitSUMSQ_fun(mathParser.SUMSQ_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -992,6 +1051,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(d);
 		}
+
 		private int F_base_Factorial(int a)
 		{
 			if (a == 0) { return 1; }
@@ -1002,9 +1062,10 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return r;
 		}
-		#endregion
 
-		#endregion
+		#endregion power logarithm factorial
+
+		#endregion math
 
 		#region string
 
@@ -1014,12 +1075,14 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(F_base_ToDBC(args1.TextValue));
 		}
+
 		public Operand VisitJIS_fun(mathParser.JIS_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function JIS parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(F_base_ToSBC(args1.TextValue));
 		}
+
 		public Operand VisitCHAR_fun(mathParser.CHAR_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function CHAR parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1027,6 +1090,7 @@ namespace ToolGood.Algorithm.Internals
 			char c = (char)(int)args1.NumberValue;
 			return Operand.Create(c.ToString());
 		}
+
 		public Operand VisitCLEAN_fun(mathParser.CLEAN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function CLEAN parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1041,6 +1105,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitCODE_fun(mathParser.CODE_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function CODE parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1050,6 +1115,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create((double)(int)(char)t[0]);
 		}
+
 		public Operand VisitCONCATENATE_fun(mathParser.CONCATENATE_funContext context)
 		{
 			var exprs = context.expr();
@@ -1060,6 +1126,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitEXACT_fun(mathParser.EXACT_funContext context)
 		{
 			var exprs = context.expr();
@@ -1068,6 +1135,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(args1.TextValue == args2.TextValue);
 		}
+
 		public Operand VisitFIND_fun(mathParser.FIND_funContext context)
 		{
 			var exprs = context.expr();
@@ -1082,6 +1150,7 @@ namespace ToolGood.Algorithm.Internals
 			var p2 = args2.TextValue.AsSpan(count.IntValue).IndexOf(args1.TextValue) + count.IntValue + excelIndex;
 			return Operand.Create(p2);
 		}
+
 		public Operand VisitLEFT_fun(mathParser.LEFT_funContext context)
 		{
 			var exprs = context.expr();
@@ -1093,18 +1162,21 @@ namespace ToolGood.Algorithm.Internals
 			var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function LEFT parameter 2 is error!"); if (args2.IsError) { return args2; } }
 			return Operand.Create(args1.TextValue.AsSpan(0, args2.IntValue).ToString());
 		}
+
 		public Operand VisitLEN_fun(mathParser.LEN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function LEN parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(args1.TextValue.Length);
 		}
+
 		public Operand VisitLOWER_fun(mathParser.LOWER_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function LOWER/TOLOWER parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(args1.TextValue.ToLower());
 		}
+
 		public Operand VisitMID_fun(mathParser.MID_funContext context)
 		{
 			var exprs = context.expr();
@@ -1114,6 +1186,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(args1.TextValue.AsSpan(args2.IntValue - excelIndex, args3.IntValue).ToString());
 		}
+
 		public Operand VisitPROPER_fun(mathParser.PROPER_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function PROPER parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1135,6 +1208,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitREPLACE_fun(mathParser.REPLACE_funContext context)
 		{
 			var exprs = context.expr();
@@ -1149,7 +1223,6 @@ namespace ToolGood.Algorithm.Internals
 				var newstr = args32.TextValue;
 				return Operand.Create(oldtext.Replace(old, newstr));
 			}
-
 
 			var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function REPLACE parameter 2 is error!"); if (args2.IsError) { return args2; } }
 			var args3 = this.Visit(exprs[2]); if (args3.Type != OperandType.NUMBER) { args3 = args3.ToNumber("Function REPLACE parameter 3 is error!"); if (args3.IsError) { return args3; } }
@@ -1171,6 +1244,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitREPT_fun(mathParser.REPT_funContext context)
 		{
 			var exprs = context.expr();
@@ -1185,6 +1259,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitRIGHT_fun(mathParser.RIGHT_funContext context)
 		{
 			var exprs = context.expr();
@@ -1196,12 +1271,14 @@ namespace ToolGood.Algorithm.Internals
 			var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function RIGHT parameter 2 is error!"); if (args2.IsError) { return args2; } }
 			return Operand.Create(args1.TextValue.AsSpan(args1.TextValue.Length - args2.IntValue, args2.IntValue).ToString());
 		}
+
 		public Operand VisitRMB_fun(mathParser.RMB_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function RMB parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(F_base_ToChineseRMB(args1.NumberValue));
 		}
+
 		public Operand VisitSEARCH_fun(mathParser.SEARCH_funContext context)
 		{
 			var exprs = context.expr();
@@ -1216,6 +1293,7 @@ namespace ToolGood.Algorithm.Internals
 			var p2 = args2.TextValue.AsSpan(args3.IntValue).IndexOf(args1.TextValue, StringComparison.OrdinalIgnoreCase) + args3.IntValue + excelIndex;
 			return Operand.Create(p2);
 		}
+
 		public Operand VisitSUBSTITUTE_fun(mathParser.SUBSTITUTE_funContext context)
 		{
 			var exprs = context.expr();
@@ -1257,6 +1335,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitT_fun(mathParser.T_funContext context)
 		{
 			var args1 = this.Visit(context.expr());
@@ -1265,6 +1344,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create("");
 		}
+
 		public Operand VisitTEXT_fun(mathParser.TEXT_funContext context)
 		{
 			var exprs = context.expr();
@@ -1283,16 +1363,19 @@ namespace ToolGood.Algorithm.Internals
 			args1 = args1.ToText("Function TEXT parameter 1 is error!"); if (args1.IsError) { return args1; }
 			return Operand.Create(args1.TextValue.ToString());
 		}
+
 		public Operand VisitTRIM_fun(mathParser.TRIM_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function TRIM parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(args1.TextValue.AsSpan().Trim().ToString());
 		}
+
 		public Operand VisitUPPER_fun(mathParser.UPPER_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function UPPER/TOUPPER parameter is error!"); if (args1.IsError) { return args1; } }
 			return Operand.Create(args1.TextValue.ToUpper());
 		}
+
 		public Operand VisitVALUE_fun(mathParser.VALUE_funContext context)
 		{
 			var args1 = this.Visit(context.expr());
@@ -1321,6 +1404,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return sb.ToString();
 		}
+
 		private String F_base_ToDBC(String input)
 		{
 			ValueStringBuilder sb = new ValueStringBuilder(input.Length);
@@ -1336,13 +1420,15 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return sb.ToString();
 		}
+
 		private string F_base_ToChineseRMB(double x)
 		{
 			string s = x.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A", cultureInfo);
 			string d = Regex.Replace(s, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}", RegexOptions.Compiled);
 			return Regex.Replace(d, ".", m => "负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟万亿兆京垓秭穰"[m.Value[0] - '-'].ToString(), RegexOptions.Compiled);
 		}
-		#endregion
+
+		#endregion string
 
 		#region MyDate time
 
@@ -1355,6 +1441,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Error("Function DATEVALUE parameter is error!");
 		}
+
 		public Operand VisitTIMEVALUE_fun(mathParser.TIMEVALUE_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function TIMEVALUE parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1364,6 +1451,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Error("Function TIMEVALUE parameter is error!");
 		}
+
 		public Operand VisitDATE_fun(mathParser.DATE_funContext context)
 		{
 			var exprs = context.expr();
@@ -1390,6 +1478,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(d);
 		}
+
 		public Operand VisitTIME_fun(mathParser.TIME_funContext context)
 		{
 			var exprs = context.expr();
@@ -1405,14 +1494,17 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(d);
 		}
+
 		public Operand VisitNOW_fun(mathParser.NOW_funContext context)
 		{
 			return Operand.Create(new MyDate(DateTime.Now));
 		}
+
 		public Operand VisitTODAY_fun(mathParser.TODAY_funContext context)
 		{
 			return Operand.Create(new MyDate(DateTime.Today));
 		}
+
 		public Operand VisitYEAR_fun(mathParser.YEAR_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function YEAR parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1421,6 +1513,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(args1.DateValue.Year.Value);
 		}
+
 		public Operand VisitMONTH_fun(mathParser.MONTH_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function MONTH parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1429,6 +1522,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create((int)args1.DateValue.Month.Value);
 		}
+
 		public Operand VisitDAY_fun(mathParser.DAY_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function DAY parameter is error!"); if (args1.IsError) { return args1; } }
@@ -1437,24 +1531,28 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(args1.DateValue.Day.Value);
 		}
+
 		public Operand VisitHOUR_fun(mathParser.HOUR_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function HOUR parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(args1.DateValue.Hour);
 		}
+
 		public Operand VisitMINUTE_fun(mathParser.MINUTE_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function MINUTE parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(args1.DateValue.Minute);
 		}
+
 		public Operand VisitSECOND_fun(mathParser.SECOND_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function SECOND parameter is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(args1.DateValue.Second);
 		}
+
 		public Operand VisitWEEKDAY_fun(mathParser.WEEKDAY_funContext context)
 		{
 			var exprs = context.expr();
@@ -1478,6 +1576,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create((double)(t - 1));
 		}
+
 		public Operand VisitDATEDIF_fun(mathParser.DATEDIF_funContext context)
 		{
 			var exprs = context.expr();
@@ -1490,7 +1589,9 @@ namespace ToolGood.Algorithm.Internals
 			var t = args3.TextValue.ToLower();
 
 			if (CharUtil.Equals(t, 'Y')) {
+
 				#region y
+
 				bool b = false;
 				if (startMyDate.Month < endMyDate.Month) {
 					b = true;
@@ -1502,9 +1603,12 @@ namespace ToolGood.Algorithm.Internals
 				} else {
 					return Operand.Create((endMyDate.Year - startMyDate.Year - 1));
 				}
-				#endregion
+
+				#endregion y
 			} else if (CharUtil.Equals(t, 'M')) {
+
 				#region m
+
 				bool b = false;
 				if (startMyDate.Day <= endMyDate.Day) b = true;
 				if (b) {
@@ -1512,20 +1616,26 @@ namespace ToolGood.Algorithm.Internals
 				} else {
 					return Operand.Create((endMyDate.Year * 12 + endMyDate.Month - startMyDate.Year * 12 - startMyDate.Month - 1));
 				}
-				#endregion
+
+				#endregion m
 			} else if (CharUtil.Equals(t, 'D')) {
 				return Operand.Create((endMyDate - startMyDate).Days);
 			} else if (CharUtil.Equals(t, "YD")) {
+
 				#region yd
+
 				var day = endMyDate.DayOfYear - startMyDate.DayOfYear;
 				if (endMyDate.Year > startMyDate.Year && day < 0) {
 					var days = new DateTime(startMyDate.Year, 12, 31).DayOfYear;
 					day = days + day;
 				}
 				return Operand.Create((day));
-				#endregion
+
+				#endregion yd
 			} else if (CharUtil.Equals(t, "MD")) {
+
 				#region md
+
 				var mo = endMyDate.Day - startMyDate.Day;
 				if (mo < 0) {
 					int days;
@@ -1533,22 +1643,26 @@ namespace ToolGood.Algorithm.Internals
 						days = new DateTime(startMyDate.Year + 1, 1, 1).AddDays(-1).Day;
 					} else {
 						days = new DateTime(startMyDate.Year, startMyDate.Month + 1, 1).AddDays(-1).Day;
-
 					}
 					mo += days;
 				}
 				return Operand.Create((mo));
-				#endregion
+
+				#endregion md
 			} else if (CharUtil.Equals(t, "YM")) {
+
 				#region ym
+
 				var mo = endMyDate.Month - startMyDate.Month;
 				if (endMyDate.Day < startMyDate.Day) mo--;
 				if (mo < 0) mo += 12;
 				return Operand.Create((mo));
-				#endregion
+
+				#endregion ym
 			}
 			return Operand.Error("Function DATEDIF parameter 3 is error!");
 		}
+
 		public Operand VisitDAYS360_fun(mathParser.DAYS360_funContext context)
 		{
 			var exprs = context.expr();
@@ -1606,6 +1720,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(days);
 		}
+
 		public Operand VisitEDATE_fun(mathParser.EDATE_funContext context)
 		{
 			var exprs = context.expr();
@@ -1614,6 +1729,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create((MyDate)(((DateTime)args1.DateValue).AddMonths(args2.IntValue)));
 		}
+
 		public Operand VisitEOMONTH_fun(mathParser.EOMONTH_funContext context)
 		{
 			var exprs = context.expr();
@@ -1624,6 +1740,7 @@ namespace ToolGood.Algorithm.Internals
 			dt = new DateTime(dt.Year, dt.Month, 1).AddDays(-1);
 			return Operand.Create(dt);
 		}
+
 		public Operand VisitNETWORKDAYS_fun(mathParser.NETWORKDAYS_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1648,6 +1765,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(days);
 		}
+
 		public Operand VisitWORKDAY_fun(mathParser.WORKDAY_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1655,7 +1773,6 @@ namespace ToolGood.Algorithm.Internals
 
 			var args1 = args[0]; if (args1.Type != OperandType.DATE) { args1 = args1.ToMyDate("Function WORKDAY parameter 1 is error!"); if (args1.IsError) { return args1; } }
 			var args2 = args[1]; if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function WORKDAY parameter 2 is error!"); if (args2.IsError) { return args2; } }
-
 
 			var startMyDate = (DateTime)args1.DateValue;
 			var days = args2.IntValue;
@@ -1673,6 +1790,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(startMyDate);
 		}
+
 		public Operand VisitWEEKNUM_fun(mathParser.WEEKNUM_funContext context)
 		{
 			var exprs = context.expr();
@@ -1691,7 +1809,7 @@ namespace ToolGood.Algorithm.Internals
 			return Operand.Create(week);
 		}
 
-		#endregion
+		#endregion MyDate time
 
 		#region sum
 
@@ -1706,6 +1824,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(list.Max());
 		}
+
 		public Operand VisitMEDIAN_fun(mathParser.MEDIAN_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1718,6 +1837,7 @@ namespace ToolGood.Algorithm.Internals
 			list = list.OrderBy(q => q).ToList();
 			return Operand.Create(list[list.Count / 2]);
 		}
+
 		public Operand VisitMIN_fun(mathParser.MIN_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1729,6 +1849,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(list.Min());
 		}
+
 		public Operand VisitQUARTILE_fun(mathParser.QUARTILE_funContext context)
 		{
 			var exprs = context.expr();
@@ -1745,6 +1866,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.Quartile(list.ToArray(), quant));
 		}
+
 		public Operand VisitMODE_fun(mathParser.MODE_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1753,7 +1875,6 @@ namespace ToolGood.Algorithm.Internals
 			List<double> list = new List<double>();
 			var o = F_base_GetList(args, list);
 			if (o == false) { return Operand.Error("Function MODE parameter error!"); }
-
 
 			Dictionary<double, int> dict = new Dictionary<double, int>();
 			for (int i = 0; i < list.Count; i++) {
@@ -1766,6 +1887,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(dict.OrderByDescending(q => q.Value).First().Key);
 		}
+
 		public Operand VisitLARGE_fun(mathParser.LARGE_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1774,16 +1896,15 @@ namespace ToolGood.Algorithm.Internals
 			var args1 = args[0]; if (args1.Type != OperandType.ARRARY) { args1 = args1.ToArray("Function LARGE parameter 1 is error!"); if (args1.IsError) { return args1; } }
 			var args2 = args[1]; if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function LARGE parameter 2 is error!"); if (args2.IsError) { return args2; } }
 
-
 			List<double> list = new List<double>();
 			var o = F_base_GetList(args, list);
 			if (o == false) { return Operand.Error("Function LARGE parameter error!"); }
-
 
 			list = list.OrderByDescending(q => q).ToList();
 			var quant = args2.IntValue;
 			return Operand.Create(list[args2.IntValue - excelIndex]);
 		}
+
 		public Operand VisitSMALL_fun(mathParser.SMALL_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1800,6 +1921,7 @@ namespace ToolGood.Algorithm.Internals
 			var quant = args2.IntValue;
 			return Operand.Create(list[args2.IntValue - excelIndex]);
 		}
+
 		public Operand VisitPERCENTILE_fun(mathParser.PERCENTILE_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1815,6 +1937,7 @@ namespace ToolGood.Algorithm.Internals
 			var k = args2.NumberValue;
 			return Operand.Create(ExcelFunctions.Percentile(list.ToArray(), k));
 		}
+
 		public Operand VisitPERCENTRANK_fun(mathParser.PERCENTRANK_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1836,6 +1959,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Round(v, d, MidpointRounding.AwayFromZero));
 		}
+
 		public Operand VisitAVERAGE_fun(mathParser.AVERAGE_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1847,7 +1971,6 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(list.Average());
 		}
-
 
 		public Operand VisitAVERAGEIF_fun(mathParser.AVERAGEIF_funContext context)
 		{
@@ -1889,6 +2012,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sum / count);
 		}
+
 		public Operand VisitGEOMEAN_fun(mathParser.GEOMEAN_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1907,6 +2031,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Pow(sum, 1.0 / list.Count));
 		}
+
 		public Operand VisitHARMEAN_fun(mathParser.HARMEAN_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1928,6 +2053,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(list.Count / sum);
 		}
+
 		public Operand VisitCOUNT_fun(mathParser.COUNT_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1939,6 +2065,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(list.Count);
 		}
+
 		public Operand VisitCOUNTIF_fun(mathParser.COUNTIF_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -1966,6 +2093,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(count);
 		}
+
 		private Tuple<string, double> sumifMatch(string s)
 		{
 			var c = s[0];
@@ -2032,6 +2160,7 @@ namespace ToolGood.Algorithm.Internals
 			double sum = list.Sum();
 			return Operand.Create(sum);
 		}
+
 		public Operand VisitSUMIF_fun(mathParser.SUMIF_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2068,6 +2197,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sum);
 		}
+
 		public Operand VisitAVEDEV_fun(mathParser.AVEDEV_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2110,6 +2240,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Sqrt(sum / (list.Count - 1)));
 		}
+
 		public Operand VisitSTDEVP_fun(mathParser.STDEVP_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2130,6 +2261,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(Math.Sqrt(sum / (list.Count)));
 		}
+
 		public Operand VisitDEVSQ_fun(mathParser.DEVSQ_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2149,6 +2281,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sum);
 		}
+
 		public Operand VisitVAR_fun(mathParser.VAR_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2172,6 +2305,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create((list.Count * sum - sum2 * sum2) / list.Count / (list.Count - 1));
 		}
+
 		public Operand VisitVARP_fun(mathParser.VARP_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2191,6 +2325,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sum / list.Count);
 		}
+
 		public Operand VisitNORMDIST_fun(mathParser.NORMDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2205,6 +2340,7 @@ namespace ToolGood.Algorithm.Internals
 			var b = args4.BooleanValue;
 			return Operand.Create(ExcelFunctions.NormDist(num, avg, STDEV, b));
 		}
+
 		public Operand VisitNORMINV_fun(mathParser.NORMINV_funContext context)
 		{
 			var exprs = context.expr();
@@ -2218,6 +2354,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(ExcelFunctions.NormInv(num, avg, STDEV));
 		}
+
 		public Operand VisitNORMSDIST_fun(mathParser.NORMSDIST_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function NORMSDIST parameter 1 error!"); if (args1.IsError) { return args1; } }
@@ -2225,6 +2362,7 @@ namespace ToolGood.Algorithm.Internals
 			var k = args1.NumberValue;
 			return Operand.Create(ExcelFunctions.NormSDist(k));
 		}
+
 		public Operand VisitNORMSINV_fun(mathParser.NORMSINV_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function NORMSINV parameter 1 error!"); if (args1.IsError) { return args1; } }
@@ -2232,6 +2370,7 @@ namespace ToolGood.Algorithm.Internals
 			var k = args1.NumberValue;
 			return Operand.Create(ExcelFunctions.NormSInv(k));
 		}
+
 		public Operand VisitBETADIST_fun(mathParser.BETADIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2249,6 +2388,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(ExcelFunctions.BetaDist(x, alpha, beta));
 		}
+
 		public Operand VisitBETAINV_fun(mathParser.BETAINV_funContext context)
 		{
 			var exprs = context.expr();
@@ -2264,6 +2404,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.BetaInv(probability, alpha, beta));
 		}
+
 		public Operand VisitBINOMDIST_fun(mathParser.BINOMDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2277,6 +2418,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.BinomDist(args1.IntValue, args2.IntValue, args3.NumberValue, args4.BooleanValue));
 		}
+
 		public Operand VisitEXPONDIST_fun(mathParser.EXPONDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2290,6 +2432,7 @@ namespace ToolGood.Algorithm.Internals
 
 			return Operand.Create(ExcelFunctions.ExponDist(args1.NumberValue, args2.NumberValue, args3.BooleanValue));
 		}
+
 		public Operand VisitFDIST_fun(mathParser.FDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2305,6 +2448,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.FDist(x, degreesFreedom, degreesFreedom2));
 		}
+
 		public Operand VisitFINV_fun(mathParser.FINV_funContext context)
 		{
 			var exprs = context.expr();
@@ -2320,6 +2464,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.FInv(probability, degreesFreedom, degreesFreedom2));
 		}
+
 		public Operand VisitFISHER_fun(mathParser.FISHER_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function FISHER parameter error!"); if (args1.IsError) { return args1; } }
@@ -2331,6 +2476,7 @@ namespace ToolGood.Algorithm.Internals
 			var n = 0.5 * Math.Log((1 + x) / (1 - x));
 			return Operand.Create(n);
 		}
+
 		public Operand VisitFISHERINV_fun(mathParser.FISHERINV_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function FISHERINV parameter error!"); if (args1.IsError) { return args1; } }
@@ -2339,6 +2485,7 @@ namespace ToolGood.Algorithm.Internals
 			var n = (Math.Exp(2 * x) - 1) / (Math.Exp(2 * x) + 1);
 			return Operand.Create(n);
 		}
+
 		public Operand VisitGAMMADIST_fun(mathParser.GAMMADIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2346,7 +2493,6 @@ namespace ToolGood.Algorithm.Internals
 			var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function GAMMADIST parameter 2 error!"); if (args2.IsError) return args2; }
 			var args3 = this.Visit(exprs[2]); if (args3.Type != OperandType.NUMBER) { args3 = args3.ToNumber("Function GAMMADIST parameter 3 error!"); if (args3.IsError) return args3; }
 			var args4 = this.Visit(exprs[3]); if (args4.Type != OperandType.BOOLEAN) { args4 = args4.ToBoolean("Function GAMMADIST parameter 4 error!"); if (args4.IsError) return args4; }
-
 
 			var x = args1.NumberValue;
 			var alpha = args2.NumberValue;
@@ -2357,6 +2503,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.GammaDist(x, alpha, beta, cumulative));
 		}
+
 		public Operand VisitGAMMAINV_fun(mathParser.GAMMAINV_funContext context)
 		{
 			var exprs = context.expr();
@@ -2372,12 +2519,14 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.GammaInv(probability, alpha, beta));
 		}
+
 		public Operand VisitGAMMALN_fun(mathParser.GAMMALN_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function GAMMALN parameter error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(ExcelFunctions.GAMMALN(args1.NumberValue));
 		}
+
 		public Operand VisitHYPGEOMDIST_fun(mathParser.HYPGEOMDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2395,6 +2544,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.HypgeomDist(k, draws, success, population));
 		}
+
 		public Operand VisitLOGINV_fun(mathParser.LOGINV_funContext context)
 		{
 			var exprs = context.expr();
@@ -2407,6 +2557,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.LogInv(args1.NumberValue, args2.NumberValue, args3.NumberValue));
 		}
+
 		public Operand VisitLOGNORMDIST_fun(mathParser.LOGNORMDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2419,6 +2570,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.LognormDist(args1.NumberValue, args2.NumberValue, args3.NumberValue));
 		}
+
 		public Operand VisitNEGBINOMDIST_fun(mathParser.NEGBINOMDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2435,6 +2587,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.NegbinomDist(k, r, p));
 		}
+
 		public Operand VisitPOISSON_fun(mathParser.POISSON_funContext context)
 		{
 			var exprs = context.expr();
@@ -2450,6 +2603,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.POISSON(k, lambda, state));
 		}
+
 		public Operand VisitTDIST_fun(mathParser.TDIST_funContext context)
 		{
 			var exprs = context.expr();
@@ -2465,6 +2619,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.TDist(x, degreesFreedom, tails));
 		}
+
 		public Operand VisitTINV_fun(mathParser.TINV_funContext context)
 		{
 			var exprs = context.expr();
@@ -2478,6 +2633,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(ExcelFunctions.TInv(probability, degreesFreedom));
 		}
+
 		public Operand VisitWEIBULL_fun(mathParser.WEIBULL_funContext context)
 		{
 			var exprs = context.expr();
@@ -2520,6 +2676,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return count;
 		}
+
 		private double F_base_sumif(List<double> dbs, double d, List<double> sumdbs)
 		{
 			double sum = 0;
@@ -2531,6 +2688,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return sum;
 		}
+
 		private double F_base_sumif(List<double> dbs, string s, double d, List<double> sumdbs)
 		{
 			double sum = 0;
@@ -2541,6 +2699,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return sum;
 		}
+
 		private bool F_base_compare(double a, double b, string ss)
 		{
 			if (ss.Length == 1) {
@@ -2585,6 +2744,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return true;
 		}
+
 		private bool F_base_GetList(Operand args, List<double> list)
 		{
 			if (args.IsError) { return false; }
@@ -2621,7 +2781,6 @@ namespace ToolGood.Algorithm.Internals
 			return true;
 		}
 
-
 		private bool F_base_GetList(List<Operand> args, List<string> list)
 		{
 			for (int j = 0; j < args.Count; j++) {
@@ -2641,7 +2800,7 @@ namespace ToolGood.Algorithm.Internals
 			return true;
 		}
 
-		#endregion
+		#endregion sum
 
 		#region csharp
 
@@ -2655,6 +2814,7 @@ namespace ToolGood.Algorithm.Internals
 			var b = Regex.Replace(args1.TextValue, args2.TextValue, args3.TextValue);
 			return Operand.Create(b);
 		}
+
 		public Operand VisitISREGEX_fun(mathParser.ISREGEX_funContext context)
 		{
 			var exprs = context.expr();
@@ -2708,6 +2868,7 @@ namespace ToolGood.Algorithm.Internals
 			var args4 = this.Visit(exprs[3]); if (args4.Type != OperandType.TEXT) { args4 = args4.ToText("Function INDEXOF parameter 4 is error!"); if (args4.IsError) { return args4; } }
 			return Operand.Create(text.IndexOf(args2.TextValue, args3.IntValue, args4.IntValue) + excelIndex);
 		}
+
 		public Operand VisitLASTINDEXOF_fun(mathParser.LASTINDEXOF_funContext context)
 		{
 			var exprs = context.expr();
@@ -2725,12 +2886,14 @@ namespace ToolGood.Algorithm.Internals
 			var args4 = this.Visit(exprs[3]); if (args4.Type != OperandType.TEXT) { args4 = args4.ToText("Function LASTINDEXOF parameter 4 is error!"); if (args4.IsError) { return args4; } }
 			return Operand.Create(text.LastIndexOf(args2.TextValue, args3.IntValue, args4.IntValue) + excelIndex);
 		}
+
 		public Operand VisitSPLIT_fun(mathParser.SPLIT_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
 			for (int i = 0; i < exprs.Length; i++) { var a = this.Visit(exprs[i]); if (a.Type != OperandType.TEXT) { a = a.ToText($"Function SPLIT parameter {i + 1} is error!"); if (a.IsError) { return a; } } args.Add(a); }
 			return Operand.Create(args[0].TextValue.Split(args[1].TextValue.ToArray()));
 		}
+
 		public Operand VisitJOIN_fun(mathParser.JOIN_funContext context)
 		{
 			var exprs = context.expr(); var args = new List<Operand>(exprs.Length);
@@ -2763,6 +2926,7 @@ namespace ToolGood.Algorithm.Internals
 				return Operand.Create(string.Join(args1.TextValue, list));
 			}
 		}
+
 		public Operand VisitSUBSTRING_fun(mathParser.SUBSTRING_funContext context)
 		{
 			var exprs = context.expr();
@@ -2776,6 +2940,7 @@ namespace ToolGood.Algorithm.Internals
 			var args3 = this.Visit(exprs[2]); if (args3.Type != OperandType.NUMBER) { args3 = args3.ToNumber("Function SUBSTRING parameter 3 is error!"); if (args3.IsError) { return args3; } }
 			return Operand.Create(text.AsSpan(args2.IntValue - excelIndex, args3.IntValue).ToString());
 		}
+
 		public Operand VisitSTARTSWITH_fun(mathParser.STARTSWITH_funContext context)
 		{
 			var exprs = context.expr();
@@ -2789,6 +2954,7 @@ namespace ToolGood.Algorithm.Internals
 			var args3 = this.Visit(exprs[2]); if (args3.Type != OperandType.BOOLEAN) { args3 = args3.ToBoolean("Function STARTSWITH parameter 3 is error!"); if (args3.IsError) { return args3; } }
 			return Operand.Create(text.AsSpan().StartsWith(args2.TextValue.AsSpan(), args3.BooleanValue ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
 		}
+
 		public Operand VisitENDSWITH_fun(mathParser.ENDSWITH_funContext context)
 		{
 			var exprs = context.expr();
@@ -2802,18 +2968,21 @@ namespace ToolGood.Algorithm.Internals
 			var args3 = this.Visit(exprs[2]); if (args3.Type != OperandType.BOOLEAN) { args3 = args3.ToBoolean("Function ENDSWITH parameter 3 is error!"); if (args3.IsError) { return args3; } }
 			return Operand.Create(text.AsSpan().EndsWith(args2.TextValue.AsSpan(), args3.BooleanValue ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
 		}
+
 		public Operand VisitISNULLOREMPTY_fun(mathParser.ISNULLOREMPTY_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function ISNULLOREMPTY parameter 1 is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(string.IsNullOrEmpty(args1.TextValue));
 		}
+
 		public Operand VisitISNULLORWHITESPACE_fun(mathParser.ISNULLORWHITESPACE_funContext context)
 		{
 			var args1 = this.Visit(context.expr()); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function ISNULLORWHITESPACE parameter 1 is error!"); if (args1.IsError) { return args1; } }
 
 			return Operand.Create(string.IsNullOrWhiteSpace(args1.TextValue));
 		}
+
 		public Operand VisitREMOVESTART_fun(mathParser.REMOVESTART_funContext context)
 		{
 			var exprs = context.expr();
@@ -2833,6 +3002,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return args1;
 		}
+
 		public Operand VisitREMOVEEND_fun(mathParser.REMOVEEND_funContext context)
 		{
 			var exprs = context.expr();
@@ -2852,7 +3022,8 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return args1;
 		}
-		#endregion
+
+		#endregion csharp
 
 		#region Lookup
 
@@ -2910,13 +3081,15 @@ namespace ToolGood.Algorithm.Internals
 			return Operand.Error("Function LOOKUP not find!");
 		}
 
-		#endregion
+		#endregion Lookup
 
 		#region getValue
+
 		public Operand VisitBracket_fun(mathParser.Bracket_funContext context)
 		{
 			return this.Visit(context.expr());
 		}
+
 		public Operand VisitNUM_fun(mathParser.NUM_funContext context)
 		{
 			var d = double.Parse(context.num().GetText(), NumberStyles.Any, cultureInfo);
@@ -2927,11 +3100,13 @@ namespace ToolGood.Algorithm.Internals
 			d = NumberUnitTypeHelper.TransformationUnit(d, dict[unit], DistanceUnit, AreaUnit, VolumeUnit, MassUnit);
 			return Operand.Create(d);
 		}
+
 		public Operand VisitNum(mathParser.NumContext context)
 		{
 			var d = double.Parse(context.GetText(), NumberStyles.Any, cultureInfo);
 			return Operand.Create(d);
 		}
+
 		public Operand VisitUnit(mathParser.UnitContext context)
 		{
 			string text = context.GetText();
@@ -2962,10 +3137,12 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Create(sb.ToString());
 		}
+
 		public Operand VisitNULL_fun(mathParser.NULL_funContext context)
 		{
 			return Operand.CreateNull();
 		}
+
 		public Operand VisitPARAMETER_fun(mathParser.PARAMETER_funContext context)
 		{
 			ITerminalNode node = context.PARAMETER();
@@ -2980,7 +3157,7 @@ namespace ToolGood.Algorithm.Internals
 				}
 				return GetParameter(str.AsSpan(1, str.Length - 2).ToString());
 			}
-			//防止 多重引用 
+			//防止 多重引用
 			if (context.expr() != null) {
 				var p = this.Visit(context.expr()); if (p.Type != OperandType.TEXT) { p = p.ToText("Function PARAMETER first parameter is error!"); if (p.IsError) return p; }
 
@@ -2991,13 +3168,12 @@ namespace ToolGood.Algorithm.Internals
 			return Operand.Error("Function PARAMETER first parameter is error!");
 		}
 
-
 		public Operand VisitParameter2(mathParser.Parameter2Context context)
 		{
 			return Operand.Create(context.children[0].GetText());
 		}
 
-		#endregion
+		#endregion getValue
 
 		public Operand VisitJSON_fun(mathParser.JSON_funContext context)
 		{
@@ -3011,6 +3187,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.Error("Function JSON parameter is error!");
 		}
+
 		public Operand VisitArrayJson_fun(mathParser.ArrayJson_funContext context)
 		{
 			OperandKeyValueList result = new OperandKeyValueList(null, excelIndex);
@@ -3058,6 +3235,7 @@ namespace ToolGood.Algorithm.Internals
 			keyValue.Value = Visit(context.expr());
 			return new OperandKeyValue(keyValue);
 		}
+
 		public Operand VisitGetJsonValue_fun(mathParser.GetJsonValue_funContext context)
 		{
 			var exprs = context.expr();
@@ -3154,6 +3332,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 			return Operand.False;
 		}
+
 		public Operand VisitERROR_fun(mathParser.ERROR_funContext context)
 		{
 			if (context.expr() == null) { return Operand.Error(""); }

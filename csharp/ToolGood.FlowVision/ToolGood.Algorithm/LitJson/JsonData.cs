@@ -2,177 +2,178 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-
 namespace ToolGood.Algorithm.LitJson
 {
-    class JsonData : IJsonWrapper, IEnumerable
-    {
-        #region Fields
-        private IList<JsonData> inst_array;
-        private bool inst_boolean;
-        private double inst_double;
-        internal IDictionary<string, JsonData> inst_object;
-        private string inst_string;
-        private JsonType type;
-        //private IList<KeyValuePair<string, JsonData>> object_list;
-        #endregion
+	internal class JsonData : IJsonWrapper, IEnumerable
+	{
+		#region Fields
 
+		private IList<JsonData> inst_array;
+		private bool inst_boolean;
+		private double inst_double;
+		internal IDictionary<string, JsonData> inst_object;
+		private string inst_string;
+		private JsonType type;
+		//private IList<KeyValuePair<string, JsonData>> object_list;
 
-        #region Properties
-        public int Count { get { return EnsureCollection().Count; } }
-        public bool IsArray { get { return type == JsonType.Array; } }
-        public bool IsBoolean { get { return type == JsonType.Boolean; } }
-        public bool IsDouble { get { return type == JsonType.Double; } }
-        public bool IsObject { get { return type == JsonType.Object; } }
-        public bool IsString { get { return type == JsonType.String; } }
-        public bool IsNull { get { return type == JsonType.Null; } }
-        #endregion
+		#endregion Fields
 
+		#region Properties
 
+		public int Count { get { return EnsureCollection().Count; } }
+		public bool IsArray { get { return type == JsonType.Array; } }
+		public bool IsBoolean { get { return type == JsonType.Boolean; } }
+		public bool IsDouble { get { return type == JsonType.Double; } }
+		public bool IsObject { get { return type == JsonType.Object; } }
+		public bool IsString { get { return type == JsonType.String; } }
+		public bool IsNull { get { return type == JsonType.Null; } }
 
-        #region Public Indexers
-        public JsonData this[string prop_name] {
-            get {
-                EnsureDictionary();
-                JsonData data;
-                if (inst_object.TryGetValue(prop_name, out data)) {
-                    return data;
-                }
-                return null;
-            }
-        }
+		#endregion Properties
 
-        public JsonData this[int index] {
-            get {
-                EnsureCollection();
+		#region Public Indexers
 
-                if (type == JsonType.Array)
-                    return inst_array[index];
-                return null;
-                //return object_list[index].Value;
-            }
-        }
-        #endregion
+		public JsonData this[string prop_name] {
+			get
+			{
+				EnsureDictionary();
+				JsonData data;
+				if (inst_object.TryGetValue(prop_name, out data)) {
+					return data;
+				}
+				return null;
+			}
+		}
 
+		public JsonData this[int index] {
+			get
+			{
+				EnsureCollection();
 
-        #region Constructors
-        public JsonData()
-        {
-        }
+				if (type == JsonType.Array)
+					return inst_array[index];
+				return null;
+				//return object_list[index].Value;
+			}
+		}
 
-        #endregion
+		#endregion Public Indexers
 
+		#region Constructors
 
+		public JsonData()
+		{
+		}
 
-        #region IJsonWrapper Methods
+		#endregion Constructors
 
-        void IJsonWrapper.SetBoolean(bool val)
-        {
-            type = JsonType.Boolean;
-            inst_boolean = val;
-        }
+		#region IJsonWrapper Methods
 
-        void IJsonWrapper.SetDouble(double val)
-        {
-            type = JsonType.Double;
-            inst_double = val;
-        }
+		void IJsonWrapper.SetBoolean(bool val)
+		{
+			type = JsonType.Boolean;
+			inst_boolean = val;
+		}
 
-        void IJsonWrapper.SetString(string val)
-        {
-            type = JsonType.String;
-            inst_string = val;
-        }
-        void IJsonWrapper.SetNull()
-        {
-            type = JsonType.Null;
-        }
+		void IJsonWrapper.SetDouble(double val)
+		{
+			type = JsonType.Double;
+			inst_double = val;
+		}
 
-        void IJsonWrapper.Add(IJsonWrapper val)
-        {
-            EnsureList().Add((val as JsonData));
-        }
+		void IJsonWrapper.SetString(string val)
+		{
+			type = JsonType.String;
+			inst_string = val;
+		}
 
-        void IJsonWrapper.Set(string key, IJsonWrapper val)
-        {
-            JsonData data = val as JsonData;
-            EnsureDictionary()[key] = data;
-            //KeyValuePair<string, JsonData> entry = new KeyValuePair<string, JsonData>((string)key, data);
-            //object_list.Add(entry);
-        }
+		void IJsonWrapper.SetNull()
+		{
+			type = JsonType.Null;
+		}
 
-        #endregion
+		void IJsonWrapper.Add(IJsonWrapper val)
+		{
+			EnsureList().Add((val as JsonData));
+		}
 
+		void IJsonWrapper.Set(string key, IJsonWrapper val)
+		{
+			JsonData data = val as JsonData;
+			EnsureDictionary()[key] = data;
+			//KeyValuePair<string, JsonData> entry = new KeyValuePair<string, JsonData>((string)key, data);
+			//object_list.Add(entry);
+		}
 
+		#endregion IJsonWrapper Methods
 
-        #region Private Methods
-        private ICollection EnsureCollection()
-        {
-            if (type == JsonType.Array) return (ICollection)inst_array;
-            return (ICollection)inst_object;
-        }
+		#region Private Methods
 
-        private IDictionary EnsureDictionary()
-        {
-            if (type == JsonType.Object) return (IDictionary)inst_object;
-            type = JsonType.Object;
-            inst_object = new Dictionary<string, JsonData>();
-            //object_list = new List<KeyValuePair<string, JsonData>>();
-            return (IDictionary)inst_object;
-        }
+		private ICollection EnsureCollection()
+		{
+			if (type == JsonType.Array) return (ICollection)inst_array;
+			return (ICollection)inst_object;
+		}
 
-        private IList EnsureList()
-        {
-            if (type == JsonType.Array) return (IList)inst_array;
-            type = JsonType.Array;
-            inst_array = new List<JsonData>();
-            return (IList)inst_array;
-        }
+		private IDictionary EnsureDictionary()
+		{
+			if (type == JsonType.Object) return (IDictionary)inst_object;
+			type = JsonType.Object;
+			inst_object = new Dictionary<string, JsonData>();
+			//object_list = new List<KeyValuePair<string, JsonData>>();
+			return (IDictionary)inst_object;
+		}
 
-        #endregion
+		private IList EnsureList()
+		{
+			if (type == JsonType.Array) return (IList)inst_array;
+			type = JsonType.Array;
+			inst_array = new List<JsonData>();
+			return (IList)inst_array;
+		}
 
-        void IJsonWrapper.SetJsonType(JsonType type)
-        {
-            if (this.type == type)
-                return;
+		#endregion Private Methods
 
-            switch (type) {
-                case JsonType.None:
-                    break;
+		void IJsonWrapper.SetJsonType(JsonType type)
+		{
+			if (this.type == type)
+				return;
 
-                case JsonType.Object:
-                    inst_object = new Dictionary<string, JsonData>();
-                    //object_list = new List<KeyValuePair<string, JsonData>>();
-                    break;
+			switch (type) {
+				case JsonType.None:
+					break;
 
-                case JsonType.Array:
-                    inst_array = new List<JsonData>();
-                    break;
+				case JsonType.Object:
+					inst_object = new Dictionary<string, JsonData>();
+					//object_list = new List<KeyValuePair<string, JsonData>>();
+					break;
 
-                case JsonType.String:
-                    inst_string = default(String);
-                    break;
+				case JsonType.Array:
+					inst_array = new List<JsonData>();
+					break;
 
-                case JsonType.Double:
-                    inst_double = default(Double);
-                    break;
+				case JsonType.String:
+					inst_string = default(String);
+					break;
 
-                case JsonType.Boolean:
-                    inst_boolean = default(Boolean);
-                    break;
-            }
+				case JsonType.Double:
+					inst_double = default(Double);
+					break;
 
-            this.type = type;
-        }
+				case JsonType.Boolean:
+					inst_boolean = default(Boolean);
+					break;
+			}
 
-        public IEnumerator GetEnumerator()
-        {
-            return EnsureList().GetEnumerator();
-        }
+			this.type = type;
+		}
 
+		public IEnumerator GetEnumerator()
+		{
+			return EnsureList().GetEnumerator();
+		}
 
-        public bool BooleanValue { get { return inst_boolean; } }
-        public double NumberValue { get { return inst_double; } }
-        public string StringValue { get { return inst_string; } }
-    }
+		public bool BooleanValue { get { return inst_boolean; } }
+		public double NumberValue { get { return inst_double; } }
+		public string StringValue { get { return inst_string; } }
+	}
 }

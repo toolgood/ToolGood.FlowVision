@@ -7,80 +7,76 @@
 
 namespace UnitConversion.Base
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 
-    public sealed class UnitFactorSynonyms
-    {
-        public UnitFactorSynonyms() { }
-        public UnitFactorSynonyms(params string[] items)
-        {
-            _synonyms.AddRange(items);
-        }
+	public sealed class UnitFactorSynonyms
+	{
+		public UnitFactorSynonyms()
+		{ }
 
-        List<string> _synonyms = new List<string>();
+		public UnitFactorSynonyms(params string[] items)
+		{
+			_synonyms.AddRange(items);
+		}
 
-        /// <summary>
-        /// The list of synonyms this object holds
-        /// </summary>
-        public IEnumerable<string> Synonyms
-        {
-            get
-            {
-                return _synonyms.AsEnumerable();
-            }
-        }
+		private List<string> _synonyms = new List<string>();
 
+		/// <summary>
+		/// The list of synonyms this object holds
+		/// </summary>
+		public IEnumerable<string> Synonyms {
+			get
+			{
+				return _synonyms.AsEnumerable();
+			}
+		}
 
-        // ** INTERNAL HELPERS **
+		// ** INTERNAL HELPERS **
 
-        // Append new syonym to the list
-        internal void AddSynonym(string synonym)
-        {
-            if (Contains(synonym))
-            {
-                throw new UnitAlreadyExistsException(synonym);
-            }
-            _synonyms.Add(synonym);
-        }
+		// Append new syonym to the list
+		internal void AddSynonym(string synonym)
+		{
+			if (Contains(synonym)) {
+				throw new UnitAlreadyExistsException(synonym);
+			}
+			_synonyms.Add(synonym);
+		}
 
-        // Find if some synonym of a given UnitFactor is included in this UnitFactor
-        internal bool Contains(UnitFactorSynonyms synonyms)
-        {
-            foreach (var syn in synonyms.Synonyms)
-            {
-                if (this.Contains(syn))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+		// Find if some synonym of a given UnitFactor is included in this UnitFactor
+		internal bool Contains(UnitFactorSynonyms synonyms)
+		{
+			foreach (var syn in synonyms.Synonyms) {
+				if (this.Contains(syn)) {
+					return true;
+				}
+			}
+			return false;
+		}
 
-        // Find if some synonym is included in this UnitFactor
-        internal bool Contains(string synonym)
-        {
-            return _synonyms.Contains(synonym, StringComparer.CurrentCultureIgnoreCase);
-        }
+		// Find if some synonym is included in this UnitFactor
+		internal bool Contains(string synonym)
+		{
+			return _synonyms.Contains(synonym, StringComparer.CurrentCultureIgnoreCase);
+		}
 
+		// ** OVERRIDES **
 
-        // ** OVERRIDES **
-        
-        public override int GetHashCode()
-        {
-            return _synonyms.GetHashCode();
-        }
+		public override int GetHashCode()
+		{
+			return _synonyms.GetHashCode();
+		}
 
-        public override string ToString()
-        {
-            return String.Join(", ", _synonyms);
-        }
+		public override string ToString()
+		{
+			return String.Join(", ", _synonyms);
+		}
 
-        // Allow strings to be interpreted as a UnitDictionaryKey
-        public static implicit operator UnitFactorSynonyms(string synonym)
-        {
-            return new UnitFactorSynonyms(synonym);
-        }
-    }
+		// Allow strings to be interpreted as a UnitDictionaryKey
+		public static implicit operator UnitFactorSynonyms(string synonym)
+		{
+			return new UnitFactorSynonyms(synonym);
+		}
+	}
 }

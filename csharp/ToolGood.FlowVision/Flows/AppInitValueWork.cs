@@ -1,43 +1,40 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ToolGood.FlowVision.Flows
 {
-    public sealed class AppInitValueWork
-    {
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// 输入类型
-        /// </summary>
-        public InputType InputType { get; set; }// 输入类型
+	public sealed class AppInitValueWork
+	{
+		/// <summary>
+		/// 名称
+		/// </summary>
+		public string Name { get; set; }
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public List<SettingFormulaItemWork> Conditions { get; set; }
+		/// <summary>
+		/// 输入类型
+		/// </summary>
+		public InputType InputType { get; set; }// 输入类型
 
-        /// <summary>
-        /// 抛出错误
-        /// </summary>
-        public bool IsThrowError { get; set; }
+		[System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+		public List<SettingFormulaItemWork> Conditions { get; set; }
 
-        /// <summary>
-        /// 错误信息
-        /// </summary>
-        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string ErrorMessage { get; set; }
+		/// <summary>
+		/// 抛出错误
+		/// </summary>
+		public bool IsThrowError { get; set; }
 
-        internal void Init(ProjectWork work)
-        {
-            for (int i = 0; i < Conditions.Count; i++) {
-                var item = Conditions[i];
-                item.Init(work);
-            }
-        }
- 
+		/// <summary>
+		/// 错误信息
+		/// </summary>
+		[System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+		public string ErrorMessage { get; set; }
 
-    }
+		internal void Init(ProjectWork work)
+		{
+			for (int i = 0; i < Conditions.Count; i++) {
+				var item = Conditions[i];
+				item.Init(work);
+			}
+		}
+	}
 }

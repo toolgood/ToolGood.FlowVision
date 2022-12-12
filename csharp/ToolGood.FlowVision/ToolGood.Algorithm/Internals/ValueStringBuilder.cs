@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 
 namespace ToolGood.Algorithm.Internals
 {
-
 	public ref struct ValueStringBuilder
 	{
 		private char[] _arrayToReturnToPool;
@@ -107,7 +106,9 @@ namespace ToolGood.Algorithm.Internals
 		}
 
 		public ReadOnlySpan<char> AsSpan() => _chars.Slice(0, _pos);
+
 		public ReadOnlySpan<char> AsSpan(int start) => _chars.Slice(start, _pos - start);
+
 		public ReadOnlySpan<char> AsSpan(int start, int length) => _chars.Slice(start, length);
 
 		public bool TryCopyTo(Span<char> destination, out int charsWritten)
@@ -150,7 +151,7 @@ namespace ToolGood.Algorithm.Internals
 			int remaining = _pos - index;
 			_chars.Slice(index, remaining).CopyTo(_chars.Slice(index + count));
 			s
-                .AsSpan()
+				.AsSpan()
 				.CopyTo(_chars.Slice(index));
 			_pos += count;
 		}
@@ -196,7 +197,7 @@ namespace ToolGood.Algorithm.Internals
 			}
 
 			s
-                .AsSpan()
+				.AsSpan()
 				.CopyTo(_chars.Slice(pos));
 			_pos += s.Length;
 		}
@@ -240,7 +241,6 @@ namespace ToolGood.Algorithm.Internals
 			value.CopyTo(_chars.Slice(_pos));
 			_pos += value.Length;
 		}
-
 
 		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		//public void AppendSpanFormattable<T>(T value, string format = null, IFormatProvider provider = null)

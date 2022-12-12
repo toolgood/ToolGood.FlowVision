@@ -19,6 +19,7 @@ namespace ToolGood.FlowVision.Flows
 		/// 名称
 		/// </summary>
 		public string Name { get; set; }
+
 		public string Code { get; set; }
 
 		public int ExcelIndex { get; set; }
@@ -35,7 +36,6 @@ namespace ToolGood.FlowVision.Flows
 		public Dictionary<string, AppWork> AppList { get; set; }
 
 		private Dictionary<string, ProgContext> ProgList = new Dictionary<string, ProgContext>();
-
 
 		internal ProgContext CreateProgContext(string exp)
 		{
@@ -76,7 +76,7 @@ namespace ToolGood.FlowVision.Flows
 		public static ProjectWork ParseJsonWithRsa(byte[] bytes)
 		{
 			var publicKey = "<RSAKeyValue><Modulus>u3W3xI6mH9tr3A+sNZVhyIbQWFhePbPWdFeTtM39yR7kO4Akp6Dsb1NYKpKxSGjIwDv1TC6/IUwOgOYYSVa0pgfIujHPrYFO/LlDk6kPAyHluLimKFkHkze5FsY7YAqd2mExqdJ4Zfb1pXgIrVFgOs4o69p9vyBV6kWS0FBOnyyUK92bRYxeqS1raRfM3GUlIEaQW5ZIuJxQtFrfwSnsfDVhkp8rvFVt7I5aqawWeoJZu+/HZqQO/gz+BJ7ntlUWoPgfe13/U3kIOHMTc/Deczb5x3DeBv9XrwJ5+DrzrJV8jTdhiYeNcBNBYaKoHGS15chxt6no4sIDZYsI2N4ciQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
-	
+
 			using (var ms = new MemoryStream(bytes)) {
 				using (var br = new BinaryReader(ms)) {
 					var length = br.ReadInt32();
@@ -129,7 +129,5 @@ namespace ToolGood.FlowVision.Flows
 			}
 			return work;
 		}
-
 	}
-
 }

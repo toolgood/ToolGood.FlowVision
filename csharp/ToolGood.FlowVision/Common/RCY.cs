@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ToolGood.FlowVision.Common
 {
@@ -10,10 +7,10 @@ namespace ToolGood.FlowVision.Common
 	/// Author : Lin ZhiJun
 	/// NickName : ToolGood
 	/// Email : toolgood@qq.com
-	/// 
+	///
 	/// See https://github.com/toolgood/RCY
 	/// </summary>
-	static class RCY
+	internal static class RCY
 	{
 		private const int keyLen = 256;
 
@@ -32,13 +29,13 @@ namespace ToolGood.FlowVision.Common
 
 			return encrypt(data, pass);
 		}
-		private unsafe static byte[] encrypt(byte[] data, byte[] pass)
+
+		private static unsafe byte[] encrypt(byte[] data, byte[] pass)
 		{
 			byte[] mBox = GetKey(pass, keyLen);
 			byte[] output = new byte[data.Length];
 			int i = 0, j = 0;
 			var length = data.Length;
-
 
 			fixed (byte* _mBox = &mBox[0])
 			fixed (byte* _data = &data[0])
@@ -57,8 +54,6 @@ namespace ToolGood.FlowVision.Common
 
 			return output;
 		}
-
-
 
 		private static unsafe byte[] GetKey(byte[] pass, int kLen)
 		{

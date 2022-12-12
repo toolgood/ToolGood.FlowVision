@@ -1,9 +1,8 @@
 ﻿namespace ToolGood.FlowVision.Flows
 {
-    public enum CheckType
-    {
-        Add,
-        Replace
-    }
-
+	public enum CheckType
+	{
+		Add,
+		Replace
+	}
 }
