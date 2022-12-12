@@ -43,9 +43,10 @@ public class AppTest {
         map.put("aaa","123");
         EvaluateJs("""
                 var tt= getValue("aaa");
-                setValue("tt",ttt);
+                setValue("tt",tt);
                 var b= hasKey("aaa");
                 setValue("b",b);
+                error("aaa")
                 """);
 
     }
@@ -63,7 +64,7 @@ public class AppTest {
         bindings.put("getValue", (Function<String, Object>) this::js_getValue);
         bindings.put("hasKey", (Function<String, Boolean>) this::js_hasKey);
         bindings.put("setValue", (BiConsumer<String, Object>) this::js_setValue);
-        bindings.put("Error", (Consumer<String>) this::js_Error);
+        bindings.put("error", (Consumer<String>) this::js_Error);
         jsEngine.eval(script);
         if (js_error != null) throw new Exception(js_error);
     }

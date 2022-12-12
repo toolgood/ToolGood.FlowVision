@@ -850,14 +850,14 @@ public final class FlowEngine implements IFlowEngine {
 
     private void EvaluateJs(String script) throws Exception {
         ScriptEngineManager engineManager = new ScriptEngineManager();
-        ScriptEngine jsEngine = engineManager.getEngineByName("graal.js");
+        ScriptEngine jsEngine = engineManager.getEngineByName("nashorn");
 
         Bindings bindings = jsEngine.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put("getDatas", (Supplier<String>) this::js_getDatas);
         bindings.put("getValue", (Function<String, Object>) this::js_getValue);
         bindings.put("hasKey", (Function<String, Boolean>) this::js_hasKey);
         bindings.put("setValue", (BiConsumer<String, Object>) this::js_setValue);
-        bindings.put("Error", (Consumer<String>) this::js_Error);
+        bindings.put("error", (Consumer<String>) this::js_Error);
         jsEngine.eval(script);
         if (js_error != null) throw new Exception(js_error);
     }
