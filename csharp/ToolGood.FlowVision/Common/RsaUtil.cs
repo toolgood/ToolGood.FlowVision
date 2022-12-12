@@ -393,7 +393,9 @@ namespace ToolGood.FlowVision.Common
 		{
 			var bytes = Encoding.Default.GetBytes(certString);
 			X509Certificate2 c1 = new X509Certificate2(bytes);
+#pragma warning disable SYSLIB0027 // 类型或成员已过时
 			string keyPublic = c1.PublicKey.Key.ToXmlString(false);  // 公钥
+#pragma warning restore SYSLIB0027 // 类型或成员已过时
 			return LoadXmlString(keyPublic);
 		}
 
@@ -401,7 +403,9 @@ namespace ToolGood.FlowVision.Common
 		{
 			var bytes = Encoding.Default.GetBytes(certString);
 			X509Certificate2 c1 = new X509Certificate2(bytes);
+#pragma warning disable SYSLIB0028 // 类型或成员已过时
 			string keyPublic = c1.PrivateKey.ToXmlString(true);  // 公钥
+#pragma warning restore SYSLIB0028 // 类型或成员已过时
 			return LoadXmlString(keyPublic);
 		}
 
