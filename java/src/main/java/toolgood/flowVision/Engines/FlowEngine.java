@@ -3,7 +3,7 @@ package toolgood.flowVision.Engines;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.joda.time.DateTime;
-import toolgood.algorithm.Enums.OperandType;
+import toolgood.algorithm.Enums.*;
 import toolgood.algorithm.Operand;
 import toolgood.algorithm.internals.AntlrCharStream;
 import toolgood.algorithm.internals.AntlrErrorListener;
@@ -265,19 +265,19 @@ public final class FlowEngine implements IFlowEngine {
         }
 
         if (DistanceConverter.Exists(oldSrcUnit, oldTarUnit)) {
-            var c = new DistanceConverter(oldSrcUnit, oldTarUnit);
+            DistanceConverter c = new DistanceConverter(oldSrcUnit, oldTarUnit);
             return c.LeftToRight(src);
         }
         if (MassConverter.Exists(oldSrcUnit, oldTarUnit)) {
-            var c = new MassConverter(oldSrcUnit, oldTarUnit);
+            MassConverter c = new MassConverter(oldSrcUnit, oldTarUnit);
             return c.LeftToRight(src);
         }
         if (AreaConverter.Exists(oldSrcUnit, oldTarUnit)) {
-            var c = new AreaConverter(oldSrcUnit, oldTarUnit);
+            AreaConverter c = new AreaConverter(oldSrcUnit, oldTarUnit);
             return c.LeftToRight(src);
         }
         if (VolumeConverter.Exists(oldSrcUnit, oldTarUnit)) {
-            var c = new VolumeConverter(oldSrcUnit, oldTarUnit);
+            VolumeConverter c = new VolumeConverter(oldSrcUnit, oldTarUnit);
             return c.LeftToRight(src);
         }
         throw new Exception("输入项[" + name + "]单位不同，无法从[" + oldSrcUnit + "]转成[" + oldTarUnit + "]");
@@ -490,7 +490,7 @@ public final class FlowEngine implements IFlowEngine {
         if (node.CurrWork instanceof ISettingFormulaNodeWork work) {
 
             for (int i = 0; i < work.SettingFormula().size(); i++) {
-                var item = work.SettingFormula().get(i);
+                SettingFormulaWork item = work.SettingFormula().get(i);
                 if (_tempNames.add(item.Name)) {
                     _progDict.put(item.Name, item);
                     _outputNumDict.put(item.Name, node);
@@ -549,7 +549,7 @@ public final class FlowEngine implements IFlowEngine {
     private void RemoveSettingFormulaToDict(TreeNode node) {
         if (node.CurrWork instanceof ISettingFormulaNodeWork work) {
             for (int i = 0; i < work.SettingFormula().size(); i++) {
-                var item = work.SettingFormula().get(i);
+                SettingFormulaWork item = work.SettingFormula().get(i);
                 _tempNames.remove(item.Name);
                 _progDict.remove(item.Name);
                 _outputNumDict.remove(item.Name);
@@ -562,7 +562,7 @@ public final class FlowEngine implements IFlowEngine {
         }
         if (node.CurrWork instanceof CustomFlowWork custom) {
             for (int i = 0; i < custom.Names.size(); i++) {
-                var name = custom.Names.get(i);
+                String name = custom.Names.get(i);
                 _tempNames.remove(name);
                 _scriptDict.remove(name);
                 _outputNumDict.remove(name);
@@ -696,7 +696,7 @@ public final class FlowEngine implements IFlowEngine {
         parser.removeErrorListeners();
         parser.addErrorListener(antlrErrorListener);
 
-        var context = parser.prog();
+        mathParser.ProgContext context = parser.prog();
         parser = null;
         tokens = null;
         lexer = null;
@@ -716,7 +716,12 @@ public final class FlowEngine implements IFlowEngine {
             return null;
         };
         visitor.excelIndex = Project.ExcelIndex;
-        var result = visitor.visit(context);
+        visitor.DistanceUnit = DistanceUnitType.intToEnum(Project.Distance);
+        visitor.AreaUnit = AreaUnitType.intToEnum(Project.Area);
+        visitor.VolumeUnit = VolumeUnitType.intToEnum(Project.Volume);
+        visitor.MassUnit = MassUnitType.intToEnum(Project.Mass);
+
+        Operand result = visitor.visit(context);
         visitor = null;
         return result;
     }
@@ -735,7 +740,7 @@ public final class FlowEngine implements IFlowEngine {
     }
 
     public Operand Evaluate(mathParser.ProgContext context) {
-        var visitor = new MathVisitor();
+        MathVisitor visitor = new MathVisitor();
         visitor.GetParameter = f -> {
             try {
                 return GetTempParameter(f);
@@ -744,7 +749,12 @@ public final class FlowEngine implements IFlowEngine {
             return null;
         };
         visitor.excelIndex = Project.ExcelIndex;
-        var result = visitor.visit(context);
+        visitor.DistanceUnit = DistanceUnitType.intToEnum(Project.Distance);
+        visitor.AreaUnit = AreaUnitType.intToEnum(Project.Area);
+        visitor.VolumeUnit = VolumeUnitType.intToEnum(Project.Volume);
+        visitor.MassUnit = MassUnitType.intToEnum(Project.Mass);
+
+        Operand result = visitor.visit(context);
         visitor = null;
         return result;
     }
@@ -901,7 +911,7 @@ public final class FlowEngine implements IFlowEngine {
         } else if (value.Type() == OperandType.NULL) {
             return null;
         } else if (value.Type() == OperandType.ARRARY) {
-            var list = new Object[value.ArrayValue().size()];
+            Object[] list = new Object[value.ArrayValue().size()];
             for (int i = 0; i < value.ArrayValue().size(); i++) {
                 Operand op = value.ArrayValue().get(i);
                 if (op.Type() == OperandType.BOOLEAN) {

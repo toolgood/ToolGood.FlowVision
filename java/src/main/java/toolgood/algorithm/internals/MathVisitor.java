@@ -2913,7 +2913,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     @Override
     public Operand visitPARAM_fun(PARAM_funContext context) {
-        var exprs = context.expr();
+        List<ExprContext> exprs = context.expr();
         Operand args1 = this.visit(exprs.get(0));
         if (args1.Type() != OperandType.TEXT) {
             args1 = args1.ToText();
@@ -4139,7 +4139,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             keyValue.Index = Integer.parseInt(context.NUM().getText());
         }
         if (context.STRING() != null) {
-            var opd = context.STRING().getText();
+            String opd = context.STRING().getText();
             StringBuilder sb = new StringBuilder(opd.length() - 2);
             int index = 1;
             while (index < opd.length() - 1) {
@@ -4443,9 +4443,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            var range = false;
+            boolean range = false;
             if (args.size() == 3) {
-                var t = args.get(2).ToBoolean("Function LOOKUP parameter 3 is error!");
+                Operand t = args.get(2).ToBoolean("Function LOOKUP parameter 3 is error!");
                 if (t.IsError()) {
                     return t;
                 }

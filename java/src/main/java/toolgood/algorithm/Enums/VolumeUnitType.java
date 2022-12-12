@@ -31,4 +31,21 @@ public enum VolumeUnitType {
     public int getValue() {
         return value;
     }
+
+    public static VolumeUnitType intToEnum(int value) {
+        switch (value) {
+            case 21:
+                return MM3;
+            case 22:
+                return CM3;
+            case 23:
+                return DM3;
+            case 24:
+                return M3;
+            case 25:
+                return KM3;
+            default:
+                return null;
+        }
+    }
 }

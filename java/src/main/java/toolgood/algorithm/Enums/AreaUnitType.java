@@ -1,5 +1,7 @@
 package toolgood.algorithm.Enums;
 
+import toolgood.flowVision.Flows.Enums.CellType;
+
 public enum AreaUnitType {
     /// <summary>
     /// 平方毫米
@@ -30,5 +32,22 @@ public enum AreaUnitType {
 
     public int getValue() {
         return value;
+    }
+
+    public static AreaUnitType intToEnum(int value) {
+        switch (value) {
+            case 11:
+                return MM2;
+            case 12:
+                return CM2;
+            case 13:
+                return DM2;
+            case 14:
+                return M2;
+            case 15:
+                return KM2;
+            default:
+                return null;
+        }
     }
 }

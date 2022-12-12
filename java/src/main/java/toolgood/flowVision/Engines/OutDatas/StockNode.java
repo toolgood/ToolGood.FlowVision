@@ -29,7 +29,7 @@ public class StockNode {
 
         ChannelNode temp = Nodes.get(0);
         for (int i = 1; i < Nodes.size(); i++) {
-            var channelNode = Nodes.get(i);
+            ChannelNode channelNode = Nodes.get(i);
             if (temp != null) {
                 if (channelNode.Node.Layer() < temp.Node.Layer()) {
                     temp = channelNode;
