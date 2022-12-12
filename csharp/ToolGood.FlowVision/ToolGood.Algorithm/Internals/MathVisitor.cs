@@ -901,8 +901,12 @@ namespace ToolGood.Algorithm.Internals
 
 		public Operand VisitRAND_fun(mathParser.RAND_funContext context)
 		{
+#if NETSTANDARD2_1
 			var tick = DateTime.Now.Ticks;
 			Random rand = new Random((int)(tick & 0xffffffffL) | (int)(tick >> 32));
+#else
+			Random rand=Random.Shared;
+#endif
 			return Operand.Create(rand.NextDouble());
 		}
 
@@ -912,8 +916,12 @@ namespace ToolGood.Algorithm.Internals
 			var args1 = this.Visit(exprs[0]); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function RANDBETWEEN parameter 1 is error!"); if (args1.IsError) { return args1; } }
 			var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function RANDBETWEEN parameter 2 is error!"); if (args2.IsError) { return args2; } }
 
+#if NETSTANDARD2_1
 			var tick = DateTime.Now.Ticks;
 			Random rand = new Random((int)(tick & 0xffffffffL) | (int)(tick >> 32));
+#else
+			Random rand=Random.Shared;
+#endif
 			return Operand.Create(rand.NextDouble() * (args2.NumberValue - args1.NumberValue) + args1.NumberValue);
 		}
 
