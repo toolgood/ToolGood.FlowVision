@@ -549,12 +549,12 @@ public abstract class Operand {
         }
 
         public boolean HasKey(int key) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 if (item.Index == key) {
                     return true;
                 }
             }
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 if (item.Key.equals("" + key)) {
                     return true;
                 }
@@ -563,12 +563,12 @@ public abstract class Operand {
         }
 
         public Operand GetValue(int key) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 if (item.Index == key) {
                     return item.Value;
                 }
             }
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 if (item.Key.equals("" + key)) {
                     return item.Value;
                 }
@@ -577,7 +577,7 @@ public abstract class Operand {
         }
 
         public boolean HasKey(String key) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 if (item.Key.equals("" + key)) {
                     return true;
                 }
@@ -586,7 +586,7 @@ public abstract class Operand {
         }
 
         public Operand GetValue(String key) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 if (item.Key.equals(key)) {
                     return item.Value;
                 }
@@ -596,7 +596,7 @@ public abstract class Operand {
 
 
         public boolean ContainsValue(int value) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 Operand op = item.Value;
                 if (op.TextValue().equals(value + "")) {
                     return true;
@@ -606,7 +606,7 @@ public abstract class Operand {
         }
 
         public boolean ContainsValue(String value) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 Operand op = item.Value;
                 if (op.TextValue().equals(value)) {
                     return true;
@@ -616,7 +616,7 @@ public abstract class Operand {
         }
 
         public boolean ContainsValue(Operand value) {
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 Operand op = item.Value;
                 if (value.Type() != op.Type()) {
                     continue;
@@ -637,7 +637,7 @@ public abstract class Operand {
 
         public Operand TryGetValueFloor(double key, boolean range_lookup) {
             Operand value = null;
-            for (var item : TextList) {
+            for (KeyValue item : TextList) {
                 try {
                     double num = Double.parseDouble(item.Key);
                     Double t = Math.round(key - num * 1000000000d) / 1000000000d;
