@@ -75,7 +75,8 @@ public class ProjectWork {
         if (jsonObject.containsKey("factoryList")) {
             JSONObject formulaList = (JSONObject) jsonObject.get("factoryList");
             for (Map.Entry<String, Object> item : formulaList.entrySet()) {
-                if (item.getValue() instanceof JSONObject jsonObject1) {
+                if (item.getValue() instanceof JSONObject) {
+                    JSONObject jsonObject1 = (JSONObject) item.getValue();
                     FactoryWork work = FactoryWork.parse(jsonObject1);
                     if (work != null) {
                         projectWork.FactoryList.put(item.getKey(), work);
@@ -87,7 +88,8 @@ public class ProjectWork {
         if (jsonObject.containsKey("factoryMachineList")) {
             JSONObject formulaList = (JSONObject) jsonObject.get("factoryMachineList");
             for (Map.Entry<String, Object> item : formulaList.entrySet()) {
-                if (item.getValue() instanceof JSONObject jsonObject1) {
+                if (item.getValue() instanceof JSONObject) {
+                    JSONObject jsonObject1 = (JSONObject) item.getValue();
                     FactoryMachineWork work = FactoryMachineWork.parse(jsonObject1);
                     if (work != null) {
                         projectWork.FactoryMachineList.put(item.getKey(), work);
@@ -99,7 +101,8 @@ public class ProjectWork {
         if (jsonObject.containsKey("factoryProcedureList")) {
             JSONObject formulaList = (JSONObject) jsonObject.get("factoryProcedureList");
             for (Map.Entry<String, Object> item : formulaList.entrySet()) {
-                if (item.getValue() instanceof JSONObject jsonObject1) {
+                if (item.getValue() instanceof JSONObject) {
+                    JSONObject jsonObject1 = (JSONObject) item.getValue();
                     FactoryProcedureWork work = FactoryProcedureWork.parse(jsonObject1);
                     if (work != null) {
                         projectWork.FactoryProcedureList.put(item.getKey(), work);
@@ -112,7 +115,8 @@ public class ProjectWork {
         if (jsonObject.containsKey("appList")) {
             JSONObject formulaList = (JSONObject) jsonObject.get("appList");
             for (Map.Entry<String, Object> item : formulaList.entrySet()) {
-                if (item.getValue() instanceof JSONObject jsonObject1) {
+                if (item.getValue() instanceof JSONObject) {
+                    JSONObject jsonObject1 = (JSONObject) item.getValue();
                     AppWork work = AppWork.parse(jsonObject1);
                     if (work != null) {
                         projectWork.AppList.put(item.getKey(), work);

@@ -33,8 +33,9 @@ public class JumpFlowWork extends NodeWork implements ISettingFormulaNodeWork, I
         if (jsonObject.containsKey("nextNodeIds")) {
             JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
             for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
-                if (kv.getValue() instanceof JSONArray array) {
+                if (kv.getValue() instanceof JSONArray) {
                     List<String> list = new ArrayList<>();
+                    JSONArray array = (JSONArray) kv.getValue();
                     for (Object obj : array) {
                         list.add(obj.toString());
                     }
@@ -49,7 +50,8 @@ public class JumpFlowWork extends NodeWork implements ISettingFormulaNodeWork, I
         result.SettingFormula = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("settingFormula");
         for (Object s : array) {
-            if (s instanceof JSONObject jsonObject1) {
+            if (s instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) s;
                 SettingFormulaWork work = SettingFormulaWork.parse(jsonObject1);
                 if (work != null) {
                     result.SettingFormula.add(work);

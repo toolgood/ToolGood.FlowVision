@@ -25,7 +25,8 @@ public class FactoryProcedureWork {
         result.Items = new HashMap<>();
         JSONObject allNodeWork = jsonObject.getJSONObject("items");
         for (Map.Entry<String, Object> item : allNodeWork.entrySet()) {
-            if (item.getValue() instanceof JSONObject jsonObject1) {
+            if (item.getValue() instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) item.getValue();
                 FactoryProcedureItemWork work = FactoryProcedureItemWork.parse(jsonObject1);
                 result.Items.put(item.getKey(), work);
             }

@@ -71,7 +71,8 @@ public class TreeNode {
         }
         if (CurrWork.NodeType == CellType.End) {
             OutputNum = engine.GetNum().NumberValue();
-            if (CurrWork instanceof ProcedureFlowWork procedure) {
+            if (CurrWork instanceof ProcedureFlowWork) {
+                ProcedureFlowWork procedure = (ProcedureFlowWork) CurrWork;
                 OutputNum = GetNumber(procedure.NumberType, OutputNum.doubleValue());
             }
             InputNum = OutputNum;
@@ -91,12 +92,14 @@ public class TreeNode {
         }
         engine.SetOutputNum(Operand.Create(OutputNum));
         if (InputNum == null) {
-            if (CurrWork instanceof IInputFormulaNodeWork work) {
+            if (CurrWork instanceof IInputFormulaNodeWork) {
+                IInputFormulaNodeWork work = (IInputFormulaNodeWork) CurrWork;
                 InputNum = work.EvaluateInputNum(engine);
             } else {
                 InputNum = OutputNum;
             }
-            if (CurrWork instanceof ProcedureFlowWork procedure) {
+            if (CurrWork instanceof ProcedureFlowWork) {
+                ProcedureFlowWork procedure = (ProcedureFlowWork) CurrWork;
                 InputNum = GetNumber(procedure.NumberType, InputNum);
             }
         }

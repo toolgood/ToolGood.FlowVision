@@ -37,7 +37,8 @@ public class AppTest {
         IFlowEngine flowEngine2 = new FlowEngine(project);
         flowEngine2.BuildTreeNode("Flow", "Project1", "{\"数量\":800}");
         flowEngine2.EvaluateInputNum();
-        var t2 = flowEngine2.TryEvaluate("总价", 0);
+        var t2 = flowEngine2.TryEvaluate("总价+50", 0);
+
     }
 
     @Test

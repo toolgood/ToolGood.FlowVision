@@ -21,7 +21,8 @@ public class AppInitValueWork {
         result.Conditions = new ArrayList<>();
         JSONArray conditions = jsonObject.getJSONArray("conditions");
         for (Object item : conditions) {
-            if (item instanceof JSONObject jsonObject1) {
+            if (item instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) item;
                 SettingFormulaItemWork itemWork = SettingFormulaItemWork.parse(jsonObject1);
                 if (itemWork != null) {
                     result.Conditions.add(itemWork);

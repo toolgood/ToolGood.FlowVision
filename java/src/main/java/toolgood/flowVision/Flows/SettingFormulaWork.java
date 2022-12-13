@@ -27,7 +27,8 @@ public class SettingFormulaWork {
         result.Conditions = new ArrayList<>();
         JSONArray array2 = jsonObject.getJSONArray("conditions");
         for (Object s : array2) {
-            if (s instanceof JSONObject jsonObject1) {
+            if (s instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) s;
                 SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
                 if (work != null) {
                     result.Conditions.add(work);

@@ -44,8 +44,9 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         if (jsonObject.containsKey("nextNodeIds")) {
             JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
             for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
-                if (kv.getValue() instanceof JSONArray array) {
+                if (kv.getValue() instanceof JSONArray) {
                     List<String> list = new ArrayList<>();
+                    JSONArray array = (JSONArray) kv.getValue();
                     for (Object obj : array) {
                         list.add(obj.toString());
                     }
@@ -65,7 +66,8 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         result.SettingFormula = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("settingFormula");
         for (Object s : array) {
-            if (s instanceof JSONObject jsonObject1) {
+            if (s instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) s;
                 SettingFormulaWork work = SettingFormulaWork.parse(jsonObject1);
                 if (work != null) {
                     result.SettingFormula.add(work);
@@ -75,7 +77,8 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         result.InputFormula = new ArrayList<>();
         JSONArray array2 = jsonObject.getJSONArray("inputFormula");
         for (Object s : array2) {
-            if (s instanceof JSONObject jsonObject1) {
+            if (s instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) s;
                 SettingFormulaItemWork work = SettingFormulaItemWork.parse(jsonObject1);
                 if (work != null) {
                     result.InputFormula.add(work);
@@ -85,9 +88,11 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
         result.Machines = new HashMap<>();
         JSONArray array3 = jsonObject.getJSONArray("machines");
         for (Object s : array3) {
-            if (s instanceof JSONObject jsonObject1) {
+            if (s instanceof JSONObject) {
+                JSONObject jsonObject1 = (JSONObject) s;
                 for (Map.Entry<String, Object> item : jsonObject1.entrySet()) {
-                    if (item.getValue() instanceof JSONArray jsonArray) {
+                    if (item.getValue() instanceof JSONArray) {
+                        JSONArray jsonArray = (JSONArray) item.getValue();
                         List<ProcedureFlowMachineInfo> list = new ArrayList<>();
                         for (Object o : jsonArray) {
                             ProcedureFlowMachineInfo info = ProcedureFlowMachineInfo.parse((JSONObject) o);

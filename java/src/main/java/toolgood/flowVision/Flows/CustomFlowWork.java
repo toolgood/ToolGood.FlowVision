@@ -30,8 +30,9 @@ public class CustomFlowWork extends NodeWork {
         if (jsonObject.containsKey("nextNodeIds")) {
             JSONObject nextNodeIds = jsonObject.getJSONObject("nextNodeIds");
             for (Map.Entry<String, Object> kv : nextNodeIds.entrySet()) {
-                if (kv.getValue() instanceof JSONArray array) {
+                if (kv.getValue() instanceof JSONArray ) {
                     List<String> list = new ArrayList<>();
+                    JSONArray array = (JSONArray) kv.getValue();
                     for (Object obj : array) {
                         list.add(obj.toString());
                     }
