@@ -345,7 +345,8 @@ public final class FlowEngine implements IFlowEngine {
                 continue;
             }
             TreeNode treeNode;
-            if (nextNode instanceof ProcedureFlowWork procedureWork) { // 工艺
+            if (nextNode instanceof ProcedureFlowWork) { // 工艺
+                ProcedureFlowWork procedureWork = (ProcedureFlowWork) nextNode;
                 if (procedureWork.CheckWithoutFactory(this)) {
                     if (procedureWork.FactoryProcedure.Items.containsKey(factoryCode)) {
                         FactoryProcedureItemWork factoryProcedureItemWork = procedureWork.FactoryProcedure.Items.get(factoryCode);
@@ -396,7 +397,8 @@ public final class FlowEngine implements IFlowEngine {
                         errorMessage = SetError(nextNode, "工艺[{nextNode.Label}]厂区无相关工艺", errorLayer);
                     }
                 }
-            } else if (nextNode instanceof ErrorFlowWork error) {
+            } else if (nextNode instanceof ErrorFlowWork) {
+                ErrorFlowWork error = (ErrorFlowWork) nextNode;
                 if (error.Check(this, factoryCode)) {
                     errorMessage = SetError(nextNode, error.ErrorMessage, errorLayer);
                     currTreeNode.SetError(channel);
@@ -424,12 +426,14 @@ public final class FlowEngine implements IFlowEngine {
                     outStatus.push("END");
                     continue;
                 }// 结束
-                if (nextNode instanceof StatusFlowWork status) {
+                if (nextNode instanceof StatusFlowWork) {
+                    StatusFlowWork status = (StatusFlowWork) nextNode;
                     outStatus.push(status.Status);
                 }
                 stock.Push(treeNode, null, -1);// 下一个节点
                 continue;
-            } else if (nextNode instanceof StatusFlowWork status) { // 必须在 nextNode.Check(this, factoryCode) 之后
+            } else if (nextNode instanceof StatusFlowWork) { // 必须在 nextNode.Check(this, factoryCode) 之后
+                StatusFlowWork status = (StatusFlowWork) nextNode;
                 if (status.CheckStatus(this)) {
                     if (temp.containsKey(nextNode.Id)) {
                         treeNode = temp.get(nextNode.Id);
@@ -478,15 +482,16 @@ public final class FlowEngine implements IFlowEngine {
     }
 
     private void AddSettingFormulaToDict(TreeNode node) throws Exception {
-        if (node.CurrWork instanceof StartFlowWork start) {
+        if (node.CurrWork instanceof StartFlowWork) {
+            StartFlowWork start = (StartFlowWork) node.CurrWork;
             for (int i = 0; i < start.SettingFormula.size(); i++) {
                 SettingFormulaWork item = start.SettingFormula.get(i);
                 _startFormulaDict.put(item.Name, item);
             }
             return;
         }
-        if (node.CurrWork instanceof ISettingFormulaNodeWork work) {
-
+        if (node.CurrWork instanceof ISettingFormulaNodeWork) {
+            ISettingFormulaNodeWork work = (ISettingFormulaNodeWork) node.CurrWork;
             for (int i = 0; i < work.SettingFormula().size(); i++) {
                 SettingFormulaWork item = work.SettingFormula().get(i);
                 if (_tempNames.add(item.Name)) {
@@ -497,7 +502,8 @@ public final class FlowEngine implements IFlowEngine {
                 }
             }
         }
-        if (node.CurrWork instanceof IInputNameNodeWork inputNameNodeWork) {
+        if (node.CurrWork instanceof IInputNameNodeWork) {
+            IInputNameNodeWork inputNameNodeWork = (IInputNameNodeWork) node.CurrWork;
             if (inputNameNodeWork.InputName() == null || inputNameNodeWork.InputName().equals("")) {
             } else if (_tempNames.add(inputNameNodeWork.InputName())) {
                 _inputNumDict.put(inputNameNodeWork.InputName(), node);
@@ -505,7 +511,8 @@ public final class FlowEngine implements IFlowEngine {
                 throw new Exception(GetDuplicateNameErrorMessage(inputNameNodeWork.InputName(), node.Id(), node.CurrWork.Label));
             }
         }
-        if (node.CurrWork instanceof CustomFlowWork custom) {
+        if (node.CurrWork instanceof CustomFlowWork) {
+            CustomFlowWork custom = (CustomFlowWork) node.CurrWork;
             for (int i = 0; i < custom.Names.size(); i++) {
                 String name = custom.Names.get(i);
                 if (_tempNames.add(name)) {
@@ -545,7 +552,8 @@ public final class FlowEngine implements IFlowEngine {
     }
 
     private void RemoveSettingFormulaToDict(TreeNode node) {
-        if (node.CurrWork instanceof ISettingFormulaNodeWork work) {
+        if (node.CurrWork instanceof ISettingFormulaNodeWork) {
+            ISettingFormulaNodeWork work = (ISettingFormulaNodeWork) node.CurrWork;
             for (int i = 0; i < work.SettingFormula().size(); i++) {
                 SettingFormulaWork item = work.SettingFormula().get(i);
                 _tempNames.remove(item.Name);
@@ -554,11 +562,13 @@ public final class FlowEngine implements IFlowEngine {
                 _tempdict.remove(item.Name);
             }
         }
-        if (node.CurrWork instanceof IInputNameNodeWork inputNameNodeWork) {
+        if (node.CurrWork instanceof IInputNameNodeWork) {
+            IInputNameNodeWork inputNameNodeWork = (IInputNameNodeWork) node.CurrWork;
             _tempNames.remove(inputNameNodeWork.InputName());
             _inputNumDict.remove(inputNameNodeWork.InputName());
         }
-        if (node.CurrWork instanceof CustomFlowWork custom) {
+        if (node.CurrWork instanceof CustomFlowWork) {
+            CustomFlowWork custom = (CustomFlowWork) node.CurrWork;
             for (int i = 0; i < custom.Names.size(); i++) {
                 String name = custom.Names.get(i);
                 _tempNames.remove(name);
@@ -583,7 +593,8 @@ public final class FlowEngine implements IFlowEngine {
             String key = keys.get(i);
             TreeNode treeNode = _inputNumDict.get(key);
             treeNode.EvaluateInputNum(this);
-            if (treeNode.CurrWork instanceof IInputNameNodeWork work) {
+            if (treeNode.CurrWork instanceof IInputNameNodeWork) {
+                IInputNameNodeWork work = (IInputNameNodeWork) treeNode.CurrWork;
                 if (work.InputName() != null && work.InputName().equals("") == false) {
                     _tempdict.put(work.InputName(), Operand.Create(treeNode.InputNum.doubleValue()));
                 }
@@ -868,15 +879,20 @@ public final class FlowEngine implements IFlowEngine {
         if (js_error != null) {
         } else if (value == null) {
             _tempdict.put(name, Operand.CreateNull());
-        } else if (value instanceof Integer numInt) {
+        } else if (value instanceof Integer) {
+            Integer numInt = (Integer) value;
             _tempdict.put(name, Operand.Create(numInt));
-        } else if (value instanceof Double numDouble) {
+        } else if (value instanceof Double) {
+            Double numDouble = (Double) value;
             _tempdict.put(name, Operand.Create(numDouble));
-        } else if (value instanceof Boolean numBool) {
+        } else if (value instanceof Boolean) {
+            Boolean numBool = (Boolean) value;
             _tempdict.put(name, Operand.Create(numBool));
-        } else if (value instanceof String str) {
+        } else if (value instanceof String) {
+            String str = (String) value;
             _tempdict.put(name, Operand.Create(str));
-        } else if (value instanceof DateTime date) {
+        } else if (value instanceof DateTime) {
+            DateTime date = (DateTime) value;
             _tempdict.put(name, Operand.Create(date));
         } else {
             js_error = "setValue is error!";
