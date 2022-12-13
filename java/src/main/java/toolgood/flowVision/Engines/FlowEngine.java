@@ -577,7 +577,10 @@ public final class FlowEngine implements IFlowEngine {
             }
         }
         if (_tempdictCount.containsKey(node.CurrWork.Id)) {
-            List<String> keys = _tempdict.keySet().stream().toList();
+            List<String> keys = new ArrayList<>();
+            for (String key : _tempdict.keySet()) {
+                keys.add(key);
+            }
             while (keys.size() > _tempdictCount.get(node.CurrWork.Id)) {
                 String key = keys.get(keys.size() - 1);
                 keys.remove(keys.size() - 1);
@@ -587,7 +590,10 @@ public final class FlowEngine implements IFlowEngine {
     }
 
     public void EvaluateInputNum() throws Exception {
-        List<String> keys = _inputNumDict.keySet().stream().toList();
+        List<String> keys = new ArrayList<>();
+        for (String key : _inputNumDict.keySet()) {
+            keys.add(key);
+        }
 
         for (int i = keys.size() - 1; i >= 0; i--) {
             String key = keys.get(i);

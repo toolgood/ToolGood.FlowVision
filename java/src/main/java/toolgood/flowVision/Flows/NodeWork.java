@@ -44,7 +44,11 @@ public abstract class NodeWork {
     }
 
     public List<String> GetChannels() {
-        return NextNodes.keySet().stream().toList();
+        List<String> result = new ArrayList<>();
+        for (String key : NextNodes.keySet()) {
+            result.add(key);
+        }
+        return result;
     }
 
     public void Init(ProjectWork work, AppWork app) {
