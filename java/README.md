@@ -71,6 +71,14 @@
 ```
 
 ## 类库使用
+``` xml
+<dependency>
+  <groupId>io.github.toolgood</groupId>
+  <artifactId>toolgood-flowVision</artifactId>
+  <version>1.0.0.1</version>
+</dependency>
+```
+
 ``` java
         // 使用的是快速上手 案例 生成导出的文件
         ProjectWork project = ProjectWork.LoadJson("dict/项目_20221207133837.json");
