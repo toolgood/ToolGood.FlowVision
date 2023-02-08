@@ -4,7 +4,7 @@
       <TargetFrameworks>netstandard2.1;net6.0;net7.0</TargetFrameworks>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <Version>1.0.0.1</Version>
+    <Version>1.0.0.2</Version>
     <Title>ToolGood.FlowVision</Title>
     <Authors>ToolGood</Authors>
     <Company>ToolGood</Company>
@@ -28,12 +28,12 @@
 
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
-    <PackageReference Include="Jint" Version="3.0.0-beta-2044" />
+    <PackageReference Include="Jint" Version="3.0.0-beta-2046" />
   </ItemGroup>
 
 
     <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
-        <PackageReference Include="System.Text.Json" Version="7.0.0" />
+        <PackageReference Include="System.Text.Json" Version="7.0.1" />
     </ItemGroup>
 
 
