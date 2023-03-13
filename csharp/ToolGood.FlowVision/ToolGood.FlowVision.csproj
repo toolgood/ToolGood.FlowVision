@@ -27,13 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
-    <PackageReference Include="Jint" Version="3.0.0-beta-2046" />
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.12.0" />
+    <PackageReference Include="Jint" Version="3.0.0-beta-2047" />
   </ItemGroup>
 
 
     <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
-        <PackageReference Include="System.Text.Json" Version="7.0.1" />
+        <PackageReference Include="System.Text.Json" Version="7.0.2" />
     </ItemGroup>
 
 
