@@ -1,6 +1,6 @@
 package toolgood.flowVision.Engines.OutDatas;
 
-import toolgood.algorithm.Operand;
+import toolgood.algorithm2.Operand;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
 import toolgood.flowVision.Flows.Enums.InputNumberType;

@@ -2,8 +2,8 @@ package toolgood.flowVision.Flows;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import toolgood.algorithm.Operand;
-import toolgood.algorithm.math.mathParser;
+import toolgood.algorithm2.Operand;
+import toolgood.algorithm2.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
 import toolgood.flowVision.Flows.Enums.CellType;
 import toolgood.flowVision.Flows.Enums.InputType;

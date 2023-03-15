@@ -31,13 +31,13 @@ public class AppTest {
         IFlowEngine flowEngine = new FlowEngine(project);
         flowEngine.BuildTreeNode("Flow", "Project1", "{\"数量\":80}");
         flowEngine.EvaluateInputNum();
-        var t = flowEngine.TryEvaluate("总价", 0);
+        double t = flowEngine.TryEvaluate("总价", 0);
 
         project = ProjectWork.LoadJsonUsedRsa("dict/第一个项目_20221211121522.data");
         IFlowEngine flowEngine2 = new FlowEngine(project);
         flowEngine2.BuildTreeNode("Flow", "Project1", "{\"数量\":800}");
         flowEngine2.EvaluateInputNum();
-        var t2 = flowEngine2.TryEvaluate("总价+50", 0);
+        double t2 = flowEngine2.TryEvaluate("总价+50", 0);
 
     }
 
