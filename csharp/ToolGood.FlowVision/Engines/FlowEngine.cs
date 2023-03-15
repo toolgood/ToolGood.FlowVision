@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ToolGood.Algorithm;
-using ToolGood.Algorithm.Enums;
-using ToolGood.Algorithm.Internals;
-using ToolGood.Algorithm.LitJson;
+using ToolGood.Algorithm2;
+using ToolGood.Algorithm2.Enums;
+using ToolGood.Algorithm2.Internals;
+using ToolGood.Algorithm2.LitJson;
 using ToolGood.FlowVision.Engines.OutDatas;
 using ToolGood.FlowVision.Engines.Parameters;
 using ToolGood.FlowVision.Flows;
 using UnitConversion;
-using static ToolGood.Algorithm.mathParser;
+using static ToolGood.Algorithm2.mathParser;
 
 namespace ToolGood.FlowVision.Engines
 {
