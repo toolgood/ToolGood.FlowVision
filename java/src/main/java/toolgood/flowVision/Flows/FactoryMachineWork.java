@@ -1,7 +1,7 @@
 package toolgood.flowVision.Flows;
 
 import com.alibaba.fastjson2.JSONObject;
-import toolgood.algorithm.math.mathParser;
+import toolgood.algorithm2.math.mathParser;
 import toolgood.flowVision.Engines.FlowEngine;
 
 public class FactoryMachineWork {
