@@ -17,6 +17,7 @@ import toolgood.algorithm2.mathNet.ExcelFunctions;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -124,7 +125,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            return Operand.Create(firstValue.NumberValue() * secondValue.NumberValue());
+            return Operand.Create(firstValue.NumberValue().multiply(secondValue.NumberValue()));
         } else if (CharUtil.Equals(t, "/")) {
             if (firstValue.Type() == OperandType.DATE) {
                 return Operand.Create(firstValue.DateValue().DIV(secondValue.NumberValue()));
@@ -138,10 +139,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            if (secondValue.NumberValue() == 0) {
+            if (secondValue.NumberValue() == new BigDecimal(0)) {
                 return Operand.Error("Function '" + t + "' parameter 2 is error!");
             }
-            return Operand.Create(firstValue.NumberValue() / secondValue.NumberValue());
+            return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue()));
         } else if (CharUtil.Equals(t, "%")) {
             firstValue = firstValue.ToNumber("% fun right value");
             if (firstValue.IsError()) {
@@ -151,10 +152,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            if (secondValue.NumberValue() == 0) {
+            if (secondValue.NumberValue() == new BigDecimal(0)) {
                 return Operand.Error("Div 0 is error!");
             }
-            return Operand.Create(firstValue.NumberValue() % secondValue.NumberValue());
+            return Operand.Create(firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue())[1]);
         }
         return Operand.Error("Function '" + t + "' parameter is error!");
     }
@@ -240,7 +241,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            return Operand.Create(firstValue.NumberValue() + secondValue.NumberValue());
+            return Operand.Create(firstValue.NumberValue().add(secondValue.NumberValue()));
         } else if (CharUtil.Equals(t, "-")) {
             if (firstValue.Type() == OperandType.DATE && secondValue.Type() == OperandType.DATE) {
                 return Operand.Create(firstValue.DateValue().SUB(secondValue.DateValue()));
@@ -265,7 +266,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            return Operand.Create(firstValue.NumberValue() - secondValue.NumberValue());
+            return Operand.Create(firstValue.NumberValue().subtract(secondValue.NumberValue()));
         }
         return Operand.Error("Function '" + t + "' parameter is error!");
     }
@@ -381,15 +382,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Create(r != 0);
     }
 
-    private int Compare(final double t1, final double t2) {
-
-        final double b = round(t1 - t2, 12);
-        if (b == 0) {
-            return 0;
-        } else if (b > 0) {
-            return 1;
-        }
-        return -1;
+    private int Compare(final BigDecimal t1, final BigDecimal t2) {
+        return t1.compareTo(t2);
     }
 
     public Operand visitAndOr_fun(final AndOr_funContext context) {
@@ -635,7 +629,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(Math.abs(firstValue.NumberValue()));
+        return Operand.Create(Math.abs(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitQUOTIENT_fun(final QUOTIENT_funContext context) {
@@ -652,10 +646,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        if (secondValue.NumberValue() == 0) {
+        if (secondValue.NumberValue() == new BigDecimal(0)) {
             return Operand.Error("Function QUOTIENT div 0 error!");
         }
-        return Operand.Create((double) (int) (firstValue.NumberValue() / secondValue.NumberValue()));
+        return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue()).intValue());
     }
 
     public Operand visitMOD_fun(final MOD_funContext context) {
@@ -672,10 +666,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        if (secondValue.NumberValue() == 0) {
+        if (secondValue.NumberValue() == new BigDecimal(0)) {
             return Operand.Error("Function MOD div 0 error!");
         }
-        return Operand.Create((int) (firstValue.NumberValue() % secondValue.NumberValue()));
+        return Operand.Create((firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue())[1].intValue()));
 
     }
 
@@ -685,7 +679,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(sign(firstValue.NumberValue()));
+        return Operand.Create(sign(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitSQRT_fun(final SQRT_funContext context) {
@@ -694,7 +688,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(Math.sqrt(firstValue.NumberValue()));
+        return Operand.Create(Math.sqrt(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitTRUNC_fun(final TRUNC_funContext context) {
@@ -702,7 +696,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create((int) (firstValue.NumberValue()));
+        return Operand.Create((int) (firstValue.NumberValue()).intValue());
     }
 
     public Operand visitINT_fun(final INT_funContext context) {
@@ -710,7 +704,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create((int) (firstValue.NumberValue()));
+        return Operand.Create((int) (firstValue.NumberValue()).intValue());
     }
 
     public Operand visitGCD_fun(final GCD_funContext context) {
@@ -806,7 +800,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(firstValue.NumberValue() / 100.0);
+        return Operand.Create(firstValue.NumberValue().divide(new BigDecimal(100)));
     }
 
     private int F_base_gcd(List<Double> list) {
@@ -874,8 +868,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double z = firstValue.NumberValue();
-        final double r = (z / Math.PI * 180);
+        final BigDecimal z = firstValue.NumberValue();
+        final BigDecimal r = (z.divide(new BigDecimal(Math.PI)).multiply(new BigDecimal(180)));
         return Operand.Create(r);
     }
 
@@ -885,7 +879,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double r = firstValue.NumberValue() / 180 * Math.PI;
+        final BigDecimal r = firstValue.NumberValue().divide(new BigDecimal(180)).divide(new BigDecimal(Math.PI));
         return Operand.Create(r);
     }
 
@@ -894,7 +888,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.cos(firstValue.NumberValue()));
+        return Operand.Create(Math.cos(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitCOSH_fun(final COSH_funContext context) {
@@ -903,7 +897,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(Math.cosh(firstValue.NumberValue()));
+        return Operand.Create(Math.cosh(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitSIN_fun(final SIN_funContext context) {
@@ -911,7 +905,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.sin(firstValue.NumberValue()));
+        return Operand.Create(Math.sin(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitSINH_fun(final SINH_funContext context) {
@@ -919,7 +913,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.sinh(firstValue.NumberValue()));
+        return Operand.Create(Math.sinh(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitTAN_fun(final TAN_funContext context) {
@@ -927,7 +921,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.tan(firstValue.NumberValue()));
+        return Operand.Create(Math.tan(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitTANH_fun(final TANH_funContext context) {
@@ -935,7 +929,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.tanh(firstValue.NumberValue()));
+        return Operand.Create(Math.tanh(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitACOS_fun(final ACOS_funContext context) {
@@ -943,11 +937,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        final double x = firstValue.NumberValue();
-        if (x < -1 && x > 1) {
+        final BigDecimal x = firstValue.NumberValue();
+        if (x.doubleValue() < -1 && x.doubleValue() > 1) {
             return Operand.Error("Function ACOS parameter is error!");
         }
-        return Operand.Create(Math.acos(x));
+        return Operand.Create(Math.acos(x.doubleValue()));
     }
 
     public Operand visitACOSH_fun(final ACOSH_funContext context) {
@@ -956,11 +950,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double z = firstValue.NumberValue();
-        if (z < 1) {
+        final BigDecimal z = firstValue.NumberValue();
+        if (z.doubleValue() < 1) {
             return Operand.Error("Function ACOSH parameter is error!");
         }
-        final double r = Math.log(z + Math.pow(z * z - 1, 0.5));
+        final double r = Math.log(z.doubleValue() + Math.pow(z.doubleValue() * z.doubleValue() - 1, 0.5));
         return Operand.Create(r);
     }
 
@@ -969,7 +963,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        final double x = firstValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
         if (x < -1 && x > 1) {
             return Operand.Error("Function ASIN parameter is error!");
         }
@@ -981,7 +975,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        final double x = firstValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
         final double d = Math.log(x + Math.sqrt(x * x + 1));
         return Operand.Create(d);
     }
@@ -992,7 +986,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(Math.atan(firstValue.NumberValue()));
+        return Operand.Create(Math.atan(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitATANH_fun(final ATANH_funContext context) {
@@ -1000,7 +994,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        final double x = firstValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
         if (x >= 1 || x <= -1) {
             return Operand.Error("Function ATANH parameter is error!");
         }
@@ -1022,7 +1016,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        return Operand.Create(Math.atan2(secondValue.NumberValue(), firstValue.NumberValue()));
+        return Operand.Create(Math.atan2(secondValue.NumberValue().doubleValue(), firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitFIXED_fun(final FIXED_funContext context) {
@@ -1048,7 +1042,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double s = round(firstValue.NumberValue(), num);
+        final double s = round(firstValue.NumberValue().doubleValue(), num);
         boolean no = false;
         if (args.size() == 3) {
             final Operand thirdValue = args.get(2).ToBoolean("Function FIXED parameter 3 is error!");
@@ -1085,10 +1079,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         if (args.size() == 1) {
-            return Operand.Create(Math.round(firstValue.NumberValue()));
+            return Operand.Create(Math.round(firstValue.NumberValue().doubleValue()));
         }
         final Operand secondValue = args.get(1);
-        return Operand.Create(round(firstValue.NumberValue(), secondValue.IntValue()));
+        return Operand.Create(round(firstValue.NumberValue().doubleValue(), secondValue.IntValue()));
     }
 
     public Operand visitROUNDDOWN_fun(final ROUNDDOWN_funContext context) {
@@ -1104,11 +1098,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
-        if (firstValue.NumberValue() == 0.0) {
+        if (firstValue.NumberValue() == new BigDecimal(0) ){
             return firstValue;
         }
         final double a = Math.pow(10, secondValue.IntValue());
-        double b = firstValue.NumberValue();
+        double b = firstValue.NumberValue().doubleValue();
 
         b = ((double) (int) (b * a)) / a;
         return Operand.Create(b);
@@ -1127,11 +1121,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
-        if (firstValue.NumberValue() == 0.0) {
+        if (firstValue.NumberValue() == new BigDecimal(0)){
             return firstValue;
         }
         final double a = Math.pow(10, secondValue.IntValue());
-        final double b = firstValue.NumberValue();
+        final double b = firstValue.NumberValue().doubleValue();
 
         final double t = (Math.ceil(Math.abs(b) * a)) / a;
         if (b > 0)
@@ -1152,18 +1146,18 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         if (args.size() == 1)
-            return Operand.Create(Math.ceil(firstValue.NumberValue()));
+            return Operand.Create(Math.ceil(firstValue.NumberValue().doubleValue()));
 
         final Operand secondValue = args.get(1);
-        final double b = secondValue.NumberValue();
-        if (b == 0) {
+        final BigDecimal b = secondValue.NumberValue();
+        if (b == new BigDecimal(0)) {
             return Operand.Create(0);
         }
-        if (b < 0) {
+        if (b.doubleValue() < 0) {
             return Operand.Error("Function CEILING parameter 2 is error!");
         }
-        final double a = firstValue.NumberValue();
-        final double d = Math.ceil(a / b) * b;
+        final double a = firstValue.NumberValue().doubleValue();
+        final double d = Math.ceil(a / b.doubleValue()) * b.doubleValue();
         return Operand.Create(d);
     }
 
@@ -1180,17 +1174,17 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         if (args.size() == 1)
-            return Operand.Create(Math.floor(firstValue.NumberValue()));
+            return Operand.Create(Math.floor(firstValue.NumberValue().doubleValue()));
 
         final Operand secondValue = args.get(1);
-        final double b = secondValue.NumberValue();
+        final double b = secondValue.NumberValue().doubleValue();
         if (b >= 1) {
             return Operand.Create(firstValue.IntValue());
         }
         if (b <= 0) {
             return Operand.Error("Function FLOOR parameter 2 is error!");
         }
-        final double a = firstValue.NumberValue();
+        final double a = firstValue.NumberValue().doubleValue();
         final double d = Math.floor(a / b) * b;
         return Operand.Create(d);
     }
@@ -1201,7 +1195,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        double z = firstValue.NumberValue();
+        double z = firstValue.NumberValue().doubleValue();
         if (z % 2 == 0) {
             return firstValue;
         }
@@ -1219,7 +1213,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        double z = firstValue.NumberValue();
+        double z = firstValue.NumberValue().doubleValue();
         if (z % 2 == 1) {
             return firstValue;
         }
@@ -1263,11 +1257,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        final double a = secondValue.NumberValue();
+        final double a = secondValue.NumberValue().doubleValue();
         if (a <= 0) {
             return Operand.Error("Function MROUND parameter 2 is error!");
         }
-        final double b = firstValue.NumberValue();
+        final double b = firstValue.NumberValue().doubleValue();
         final double r = round(b / a, 0) * a;
         return Operand.Create(r);
     }
@@ -1295,7 +1289,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final long tick = DateTime.now().getMillis();
         final Random rand = new Random((int) (tick & 0xffffffffL) | (int) (tick >> 32));
         return Operand.Create(
-                rand.nextDouble() * (secondValue.NumberValue() - firstValue.NumberValue()) + firstValue.NumberValue());
+                rand.nextDouble() * (secondValue.NumberValue().doubleValue() - firstValue.NumberValue().doubleValue()) + firstValue.NumberValue().doubleValue());
     }
 
     public Operand visitFACT_fun(final FACT_funContext context) {
@@ -1346,7 +1340,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        return Operand.Create(Math.pow(firstValue.NumberValue(), secondValue.NumberValue()));
+        return Operand.Create(Math.pow(firstValue.NumberValue().doubleValue(), secondValue.NumberValue().doubleValue()));
     }
 
     public Operand visitEXP_fun(final EXP_funContext context) {
@@ -1355,7 +1349,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(Math.exp(firstValue.NumberValue()));
+        return Operand.Create(Math.exp(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitLN_fun(final LN_funContext context) {
@@ -1363,7 +1357,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.log(firstValue.NumberValue()));
+        return Operand.Create(Math.log(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitLOG_fun(final LOG_funContext context) {
@@ -1378,9 +1372,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         if (args.size() > 1) {
-            return Operand.Create(log(args.get(0).NumberValue(), args.get(1).NumberValue()));
+            return Operand.Create(log(args.get(0).NumberValue().doubleValue(), args.get(1).NumberValue().doubleValue()));
         }
-        return Operand.Create(Math.log10(args.get(0).NumberValue()));
+        return Operand.Create(Math.log10(args.get(0).NumberValue().doubleValue()));
     }
 
     public Operand visitLOG10_fun(final LOG10_funContext context) {
@@ -1388,7 +1382,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.log10(firstValue.NumberValue()));
+        return Operand.Create(Math.log10(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitMULTINOMIAL_fun(final MULTINOMIAL_funContext context) {
@@ -1446,7 +1440,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create(Math.sqrt(firstValue.NumberValue() * Math.PI));
+        return Operand.Create(Math.sqrt(firstValue.NumberValue().doubleValue() * Math.PI));
     }
 
     public Operand visitSUMSQ_fun(final SUMSQ_funContext context) {
@@ -1508,7 +1502,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final char c = (char) (int) firstValue.NumberValue();
+        final char c = (char) (int) firstValue.NumberValue().intValue();
         return Operand.Create(((Character) c).toString());
     }
 
@@ -1805,8 +1799,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-
-        return Operand.Create(F_base_ToChineseRMB(BigDecimal.valueOf(firstValue.NumberValue())));
+        return Operand.Create(F_base_ToChineseRMB(firstValue.NumberValue()));
     }
 
     public Operand visitSEARCH_fun(final SEARCH_funContext context) {
@@ -2792,7 +2785,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return Operand.Error("Function PERCENTILE parameter error!");
         }
 
-        final double k = secondValue.NumberValue();
+        final double k = secondValue.NumberValue().doubleValue();
         try {
             return Operand.Create(ExcelFunctions.Percentile(list, k));
         } catch (final Exception e) {
@@ -2825,7 +2818,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return Operand.Error("Function PERCENTRANK parameter error!");
         }
 
-        final double k = secondValue.NumberValue();
+        final double k = secondValue.NumberValue().doubleValue();
         final double v = ExcelFunctions.PercentRank(list, k);
         int d = 3;
         if (args.size() == 3) {
@@ -2887,8 +2880,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         double sum;
         int count;
         if (args.get(1).Type() == OperandType.NUMBER) {
-            count = F_base_countif(list, args.get(1).NumberValue());
-            sum = count * args.get(1).NumberValue();
+            count = F_base_countif(list, args.get(1).NumberValue().doubleValue());
+            sum = count * args.get(1).NumberValue().doubleValue();
         } else {
             try {
                 final Double d = Double.parseDouble(args.get(1).TextValue().trim());
@@ -3029,7 +3022,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         int count;
         if (args.get(1).Type() == OperandType.NUMBER) {
-            count = F_base_countif(list, args.get(1).NumberValue());
+            count = F_base_countif(list, args.get(1).NumberValue().doubleValue());
         } else {
             try {
                 final Double d = Double.parseDouble(args.get(1).TextValue().trim());
@@ -3109,7 +3102,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         double sum;
         if (args.get(1).Type() == OperandType.NUMBER) {
-            sum = F_base_countif(list, args.get(1).NumberValue()) * args.get(1).NumberValue();
+            sum = F_base_countif(list, args.get(1).NumberValue().doubleValue()) * args.get(1).NumberValue().doubleValue();
         } else {
             if (Pattern.compile("^-?(\\d+)(\\.\\d+)?$").matcher(args.get(1).TextValue().trim()).find()) {
                 sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
@@ -3312,9 +3305,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (fourthValue.IsError())
             return fourthValue;
 
-        final double num = firstValue.NumberValue();
-        final double avg = secondValue.NumberValue();
-        final double STDEV = thirdValue.NumberValue();
+        final double num = firstValue.NumberValue().doubleValue();
+        final double avg = secondValue.NumberValue().doubleValue();
+        final double STDEV = thirdValue.NumberValue().doubleValue();
         final boolean b = fourthValue.BooleanValue();
         return Operand.Create(ExcelFunctions.NormDist(num, avg, STDEV, b));
     }
@@ -3330,9 +3323,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double num = args.get(0).NumberValue();
-        final double avg = args.get(1).NumberValue();
-        final double STDEV = args.get(2).NumberValue();
+        final double num = args.get(0).NumberValue().doubleValue();
+        final double avg = args.get(1).NumberValue().doubleValue();
+        final double STDEV = args.get(2).NumberValue().doubleValue();
         return Operand.Create(ExcelFunctions.NormInv(num, avg, STDEV));
     }
 
@@ -3342,7 +3335,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double k = firstValue.NumberValue();
+        final double k = firstValue.NumberValue().doubleValue();
         return Operand.Create(ExcelFunctions.NormSDist(k));
     }
 
@@ -3352,7 +3345,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double k = firstValue.NumberValue();
+        final double k = firstValue.NumberValue().doubleValue();
         return Operand.Create(ExcelFunctions.NormSInv(k));
     }
 
@@ -3367,9 +3360,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double x = args.get(0).NumberValue();
-        final double alpha = args.get(1).NumberValue();
-        final double beta = args.get(2).NumberValue();
+        final double x = args.get(0).NumberValue().doubleValue();
+        final double alpha = args.get(1).NumberValue().doubleValue();
+        final double beta = args.get(2).NumberValue().doubleValue();
 
         if (alpha < 0.0 || beta < 0.0) {
             return Operand.Error("Function BETADIST parameter error!");
@@ -3389,9 +3382,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double probability = args.get(0).NumberValue();
-        final double alpha = args.get(1).NumberValue();
-        final double beta = args.get(2).NumberValue();
+        final double probability = args.get(0).NumberValue().doubleValue();
+        final double alpha = args.get(1).NumberValue().doubleValue();
+        final double beta = args.get(2).NumberValue().doubleValue();
         if (alpha < 0.0 || beta < 0.0 || probability < 0.0 || probability > 1.0) {
             return Operand.Error("Function BETAINV parameter error!");
         }
@@ -3426,11 +3419,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (fourthValue.IsError())
             return fourthValue;
 
-        if (!(thirdValue.NumberValue() >= 0.0 && thirdValue.NumberValue() <= 1.0 && secondValue.NumberValue() >= 0)) {
+        if (!(thirdValue.NumberValue().doubleValue() >= 0.0 && thirdValue.NumberValue().doubleValue() <= 1.0 && secondValue.NumberValue().doubleValue() >= 0)) {
             return Operand.Error("Function BINOMDIST parameter error!");
         }
         return Operand.Create(ExcelFunctions.BinomDist(firstValue.IntValue(), secondValue.IntValue(),
-                thirdValue.NumberValue(), fourthValue.BooleanValue()));
+                thirdValue.NumberValue().doubleValue(), fourthValue.BooleanValue()));
     }
 
     public Operand visitEXPONDIST_fun(final EXPONDIST_funContext context) {
@@ -3453,11 +3446,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (thirdValue.IsError())
             return thirdValue;
 
-        if (firstValue.NumberValue() < 0.0) {
+        if (firstValue.NumberValue().doubleValue() < 0.0) {
             return Operand.Error("Function EXPONDIST parameter error!");
         }
 
-        return Operand.Create(ExcelFunctions.ExponDist(firstValue.NumberValue(), secondValue.NumberValue(),
+        return Operand.Create(ExcelFunctions.ExponDist(firstValue.NumberValue().doubleValue(), secondValue.NumberValue().doubleValue(),
                 thirdValue.BooleanValue()));
     }
 
@@ -3472,7 +3465,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double x = args.get(0).NumberValue();
+        final double x = args.get(0).NumberValue().doubleValue();
         final int degreesFreedom = args.get(1).IntValue();
         final int degreesFreedom2 = args.get(2).IntValue();
         if (degreesFreedom <= 0.0 || degreesFreedom2 <= 0.0) {
@@ -3492,7 +3485,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double probability = args.get(0).NumberValue();
+        final double probability = args.get(0).NumberValue().doubleValue();
         final int degreesFreedom = args.get(1).IntValue();
         final int degreesFreedom2 = args.get(2).IntValue();
         if (degreesFreedom <= 0.0 || degreesFreedom2 <= 0.0) {
@@ -3511,7 +3504,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double x = firstValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
         if (x >= 1 || x <= -1) {
             return Operand.Error("Function FISHER parameter error!");
         }
@@ -3525,7 +3518,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final double x = firstValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
         final double n = (Math.exp(2 * x) - 1) / (Math.exp(2 * x) + 1);
         return Operand.Create(n);
     }
@@ -3554,9 +3547,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (fourthValue.IsError())
             return fourthValue;
 
-        final double x = firstValue.NumberValue();
-        final double alpha = secondValue.NumberValue();
-        final double beta = thirdValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
+        final double alpha = secondValue.NumberValue().doubleValue();
+        final double beta = thirdValue.NumberValue().doubleValue();
         final boolean cumulative = fourthValue.BooleanValue();
         if (alpha < 0.0 || beta < 0.0) {
             return Operand.Error("Function GAMMADIST parameter error!");
@@ -3575,9 +3568,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double probability = args.get(0).NumberValue();
-        final double alpha = args.get(1).NumberValue();
-        final double beta = args.get(2).NumberValue();
+        final double probability = args.get(0).NumberValue().doubleValue();
+        final double alpha = args.get(1).NumberValue().doubleValue();
+        final double beta = args.get(2).NumberValue().doubleValue();
         if (alpha < 0.0 || beta < 0.0 || probability < 0 || probability > 1.0) {
             return Operand.Error("Function GAMMAINV parameter error!");
         }
@@ -3590,7 +3583,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(ExcelFunctions.GAMMALN(firstValue.NumberValue()));
+        return Operand.Create(ExcelFunctions.GAMMALN(firstValue.NumberValue().doubleValue()));
     }
 
     public Operand visitHYPGEOMDIST_fun(final HYPGEOMDIST_funContext context) {
@@ -3625,11 +3618,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        if (args.get(2).NumberValue() < 0.0) {
+        if (args.get(2).NumberValue().doubleValue() < 0.0) {
             return Operand.Error("Function LOGINV parameter error!");
         }
         return Operand.Create(
-                ExcelFunctions.LogInv(args.get(0).NumberValue(), args.get(1).NumberValue(), args.get(2).NumberValue()));
+                ExcelFunctions.LogInv(args.get(0).NumberValue().doubleValue(), args.get(1).NumberValue().doubleValue(), args.get(2).NumberValue().doubleValue()));
     }
 
     public Operand visitLOGNORMDIST_fun(final LOGNORMDIST_funContext context) {
@@ -3643,11 +3636,11 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        if (args.get(2).NumberValue() < 0.0) {
+        if (args.get(2).NumberValue().doubleValue() < 0.0) {
             return Operand.Error("Function LOGNORMDIST parameter error!");
         }
-        return Operand.Create(ExcelFunctions.LognormDist(args.get(0).NumberValue(), args.get(1).NumberValue(),
-                args.get(2).NumberValue()));
+        return Operand.Create(ExcelFunctions.LognormDist(args.get(0).NumberValue().doubleValue(), args.get(1).NumberValue().doubleValue(),
+                args.get(2).NumberValue().doubleValue()));
     }
 
     public Operand visitNEGBINOMDIST_fun(final NEGBINOMDIST_funContext context) {
@@ -3662,8 +3655,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         final int k = args.get(0).IntValue();
-        final double r = args.get(1).NumberValue();
-        final double p = args.get(2).NumberValue();
+        final double r = args.get(1).NumberValue().doubleValue();
+        final double p = args.get(2).NumberValue().doubleValue();
 
         if (!(r >= 0.0 && p >= 0.0 && p <= 1.0)) {
             return Operand.Error("Function NEGBINOMDIST parameter error!");
@@ -3692,7 +3685,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return thirdValue;
 
         final int k = firstValue.IntValue();
-        final double lambda = secondValue.NumberValue();
+        final double lambda = secondValue.NumberValue().doubleValue();
         final boolean state = thirdValue.BooleanValue();
         if (!(lambda > 0.0)) {
             return Operand.Error("Function POISSON parameter error!");
@@ -3711,7 +3704,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double x = args.get(0).NumberValue();
+        final double x = args.get(0).NumberValue().doubleValue();
         final int degreesFreedom = args.get(1).IntValue();
         final int tails = args.get(2).IntValue();
         if (degreesFreedom <= 0.0 || tails < 1 || tails > 2) {
@@ -3735,7 +3728,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final double probability = args.get(0).NumberValue();
+        final double probability = args.get(0).NumberValue().doubleValue();
         final int degreesFreedom = args.get(1).IntValue();
         if (degreesFreedom <= 0.0) {
             return Operand.Error("Function TINV parameter error!");
@@ -3771,9 +3764,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (fourthValue.IsError())
             return fourthValue;
 
-        final double x = firstValue.NumberValue();
-        final double shape = secondValue.NumberValue();
-        final double scale = thirdValue.NumberValue();
+        final double x = firstValue.NumberValue().doubleValue();
+        final double shape = secondValue.NumberValue().doubleValue();
+        final double scale = thirdValue.NumberValue().doubleValue();
         final boolean state = fourthValue.BooleanValue();
         if (shape <= 0.0 || scale <= 0.0) {
             return Operand.Error("Function WEIBULL parameter error!");
@@ -3841,7 +3834,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     private boolean F_base_GetList_1(final List<Operand> args, final List<Double> list) {
         for (final Operand item : args) {
             if (item.Type() == OperandType.NUMBER) {
-                list.add(item.NumberValue());
+                list.add(item.NumberValue().doubleValue());
             } else if (item.Type() == OperandType.ARRARY) {
                 final boolean o = F_base_GetList_1(item.ArrayValue(), list);
                 if (o == false) {
@@ -3861,7 +3854,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 if (o.IsError()) {
                     return false;
                 }
-                list.add(o.NumberValue());
+                list.add(o.NumberValue().doubleValue());
             }
         }
         return true;
@@ -3872,7 +3865,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return false;
         }
         if (args.Type() == OperandType.NUMBER) {
-            list.add(args.NumberValue());
+            list.add(args.NumberValue().doubleValue());
         } else if (args.Type() == OperandType.ARRARY || args.Type() == OperandType.ARRARYJSON) {
             final boolean o = F_base_GetList_1(args.ArrayValue(), list);
             return o != false;
@@ -3888,7 +3881,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (o.IsError()) {
                 return false;
             }
-            list.add(o.NumberValue());
+            list.add(o.NumberValue().doubleValue());
         }
         return true;
     }
@@ -4460,7 +4453,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 }
                 range = t.BooleanValue();
             }
-            Operand operand = ((Operand.OperandKeyValueList) firstValue).TryGetValueFloor(secondValue.NumberValue(), range);
+            Operand operand = ((Operand.OperandKeyValueList) firstValue).TryGetValueFloor(secondValue.NumberValue().doubleValue(), range);
             if (operand != null) {
                 return operand;
             }

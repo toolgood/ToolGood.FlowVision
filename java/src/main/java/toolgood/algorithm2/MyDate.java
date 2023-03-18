@@ -3,6 +3,7 @@ package toolgood.algorithm2;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -53,6 +54,23 @@ public class MyDate {
         Hour = dTime.getHourOfDay();
         Minute = dTime.getMinuteOfHour();
         Second = dTime.getSecondOfMinute();
+    }
+
+    public MyDate(BigDecimal num) {
+        int days = num.intValue();
+        if (days > 365) {
+            LocalDate start = LocalDate.of(1900, 1, 1);
+            start = start.plusDays(days - 2);
+            Year = start.getYear();
+            Month = start.getMonthValue();
+            Day = start.getDayOfMonth();
+        } else {
+            Day = days;
+        }
+        BigDecimal d = num.subtract(new BigDecimal(days));
+        Hour = d.multiply(new BigDecimal(24)).intValue();
+        Minute = d.multiply(new BigDecimal(24)).subtract(new BigDecimal(Hour)).multiply(new BigDecimal(60)).intValue();
+        Second= d.multiply(new BigDecimal(24)).subtract(new BigDecimal(Hour)).multiply(new BigDecimal(60)).subtract(new BigDecimal(Minute)).multiply(new BigDecimal(60)).intValue();
     }
 
     public MyDate(double num) {
@@ -328,5 +346,24 @@ public class MyDate {
     public MyDate DIV(Double num) {
         return new MyDate(this.ToNumber() / num);
     }
+
+
+    public MyDate ADD(BigDecimal num) {
+        return new MyDate(this.ToNumber() + num.doubleValue());
+    }
+
+
+    public MyDate SUB(BigDecimal num) {
+        return new MyDate(this.ToNumber() - num.doubleValue());
+    }
+
+    public MyDate MUL(BigDecimal num) {
+        return new MyDate(this.ToNumber() * num.doubleValue());
+    }
+
+    public MyDate DIV(BigDecimal num) {
+        return new MyDate(this.ToNumber() / num.doubleValue());
+    }
+
 
 }

@@ -22,27 +22,27 @@ public abstract class Operand {
     }
 
     public static Operand Create(final short obj) {
-        return new OperandNumber((double) obj);
+        return new OperandNumber(new BigDecimal(obj));
     }
 
     public static Operand Create(final int obj) {
-        return new OperandNumber((double) obj);
+        return new OperandNumber(new BigDecimal(obj));
     }
 
     public static Operand Create(final long obj) {
-        return new OperandNumber((double) obj);
+        return new OperandNumber(new BigDecimal(obj));
     }
 
     public static Operand Create(final float obj) {
-        return new OperandNumber((double) obj);
+        return new OperandNumber(new BigDecimal(obj));
     }
 
     public static Operand Create(final double obj) {
-        return new OperandNumber(obj);
+        return new OperandNumber(new BigDecimal(obj));
     }
 
     public static Operand Create(final BigDecimal obj) {
-        return new OperandNumber(obj.doubleValue());
+        return new OperandNumber(obj);
     }
 
     public static Operand Create(final String obj) {
@@ -115,8 +115,8 @@ public abstract class Operand {
         return OperandType.ERROR;
     }
 
-    public double NumberValue() {
-        return 0.0;
+    public BigDecimal NumberValue() {
+        return null;
     }
 
     public int IntValue() {
@@ -162,8 +162,8 @@ public abstract class Operand {
         }
         if (Type() == OperandType.TEXT) {
             try {
-                Double d = Double.parseDouble(TextValue());
-                return Create(d);
+                BigDecimal b=new BigDecimal(TextValue());
+                return Create(b);
             } catch (Exception e) {
             }
         }
@@ -182,7 +182,7 @@ public abstract class Operand {
             return this;
         }
         if (Type() == OperandType.NUMBER) {
-            return (NumberValue() != 0) ? True : False;
+            return (NumberValue() != new BigDecimal(0)) ? True : False;
         }
         if (Type() == OperandType.DATE) {
             return (DateValue().ToNumber() != 0) ? True : False;
@@ -216,7 +216,7 @@ public abstract class Operand {
             return this;
         }
         if (Type() == OperandType.NUMBER) {
-            String str = ((Double) NumberValue()).toString();
+            String str = NumberValue().toString();
             if (str.contains(".")) {
                 str = Pattern.compile("(\\.)?0+$").matcher(str).replaceAll("");
             }
@@ -455,9 +455,9 @@ public abstract class Operand {
         }
     }
 
-    static class OperandNumber extends OperandT<Double> {
+    static class OperandNumber extends OperandT<BigDecimal> {
 
-        public OperandNumber(Double obj) {
+        public OperandNumber(BigDecimal obj) {
             super(obj);
         }
 
@@ -468,11 +468,11 @@ public abstract class Operand {
 
         @Override
         public int IntValue() {
-            return (int) (double) Value;
+            return  Value.intValue();
         }
 
         @Override
-        public double NumberValue() {
+        public BigDecimal NumberValue() {
             return Value;
         }
 

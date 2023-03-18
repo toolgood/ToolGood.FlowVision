@@ -30,6 +30,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -118,7 +119,7 @@ public final class FlowEngine implements IFlowEngine {
                 }
                 if (item.UseDefaultValue) {
                     if (item.InputType == InputType.Number) {
-                        _inputDict.put(item.InputName, Operand.Create(Double.parseDouble(item.DefaultValue)));
+                        _inputDict.put(item.InputName, Operand.Create(new BigDecimal(item.DefaultValue)));
                     } else if (item.InputType == InputType.String) {
                         _inputDict.put(item.InputName, Operand.Create(item.DefaultValue));
                     } else if (item.InputType == InputType.Bool) {
@@ -137,7 +138,7 @@ public final class FlowEngine implements IFlowEngine {
                             throw new Exception("[" + item.InputName + "]必填！");
                         }
                         if (item.UseDefaultValue) {
-                            _inputDict.put(item.InputName, Operand.Create(Double.parseDouble(item.DefaultValue)));
+                            _inputDict.put(item.InputName, Operand.Create(new BigDecimal(item.DefaultValue)));
                         }
                         continue;
                     } else {
@@ -651,7 +652,7 @@ public final class FlowEngine implements IFlowEngine {
             if (obj.IsError()) {
                 return def;
             }
-            return obj.NumberValue();
+            return obj.NumberValue().doubleValue();
         } catch (Exception ex) {
         }
         return def;

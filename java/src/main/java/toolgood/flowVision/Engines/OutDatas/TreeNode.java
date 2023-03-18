@@ -10,6 +10,7 @@ import toolgood.flowVision.Flows.Interfaces.IInputFormulaNodeWork;
 import toolgood.flowVision.Flows.NodeWork;
 import toolgood.flowVision.Flows.ProcedureFlowWork;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +23,8 @@ public class TreeNode {
     public NodeWork CurrWork;
     public FactoryMachineWork MachineItem;
     public FactoryProcedureItemWork ProcedureItem;
-    public Double InputNum;
-    public Double OutputNum;
+    public BigDecimal InputNum;
+    public BigDecimal OutputNum;
 
     public TreeNode(NodeWork work, FactoryMachineWork factoryMachineItem, FactoryProcedureItemWork factoryProcedureItem) {
         CurrWork = work;
@@ -73,17 +74,17 @@ public class TreeNode {
             OutputNum = engine.GetNum().NumberValue();
             if (CurrWork instanceof ProcedureFlowWork) {
                 ProcedureFlowWork procedure = (ProcedureFlowWork) CurrWork;
-                OutputNum = GetNumber(procedure.NumberType, OutputNum.doubleValue());
+                OutputNum =new BigDecimal( GetNumber(procedure.NumberType, OutputNum.doubleValue()));
             }
             InputNum = OutputNum;
             return;
         }
         if (OutputNum == null) {
-            double num = 0;
+            BigDecimal num = new BigDecimal(0);
             for (TreeNode nextNode : NextNodes.values()) {
                 nextNode.EvaluateInputNum(engine);
                 if (nextNode.IsSubsidiaryCount() == false) {
-                    if (num < nextNode.InputNum) {
+                    if (num.compareTo(nextNode.InputNum) ==-1) {
                         num = nextNode.InputNum;
                     }
                 }
@@ -100,7 +101,7 @@ public class TreeNode {
             }
             if (CurrWork instanceof ProcedureFlowWork) {
                 ProcedureFlowWork procedure = (ProcedureFlowWork) CurrWork;
-                InputNum = GetNumber(procedure.NumberType, InputNum);
+                InputNum =new BigDecimal(GetNumber(procedure.NumberType, InputNum.doubleValue())) ;
             }
         }
         engine.ClearOutputNum();

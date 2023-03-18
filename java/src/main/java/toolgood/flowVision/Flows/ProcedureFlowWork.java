@@ -12,6 +12,7 @@ import toolgood.flowVision.Flows.Interfaces.IInputFormulaNodeWork;
 import toolgood.flowVision.Flows.Interfaces.IInputNameNodeWork;
 import toolgood.flowVision.Flows.Interfaces.ISettingFormulaNodeWork;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -225,7 +226,7 @@ public class ProcedureFlowWork extends NodeWork implements ISettingFormulaNodeWo
     }
 
     @Override
-    public double EvaluateInputNum(FlowEngine engine) throws Exception {
+    public BigDecimal EvaluateInputNum(FlowEngine engine) throws Exception {
         if (InputFormula == null || InputFormula.size() == 0) {
             return engine.GetOutputNum().NumberValue();
         }
