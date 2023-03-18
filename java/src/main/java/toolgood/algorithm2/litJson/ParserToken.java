@@ -29,10 +29,9 @@ public enum ParserToken {
     Epsilon(0x10018);
 
 
-    public int value;
-
+    public int value;  
     // 构造方法  
-    ParserToken(int index) {
-        this.value = index;
-    }
+    private ParserToken( int index) {  
+         this.value = index;  
+    }  
 }

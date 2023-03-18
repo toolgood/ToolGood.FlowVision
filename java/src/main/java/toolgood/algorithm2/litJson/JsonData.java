@@ -1,19 +1,21 @@
 package toolgood.algorithm2.litJson;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JsonData implements IJsonWrapper {
 
     public ArrayList<JsonData> inst_array;
-    public Map<String, JsonData> inst_object;
     private boolean inst_boolean;
-    private double inst_double;
+    private BigDecimal inst_double;
+    public Map<String, JsonData> inst_object;
     private String inst_string;
     private JsonType type;
     // private IList<KeyValuePair<string, JsonData>> object_list;
-
-    public JsonData() {
-    }
 
     public int Count() {
         return EnsureCollection().size();
@@ -58,12 +60,15 @@ public class JsonData implements IJsonWrapper {
         return null;
     }
 
+    public JsonData() {
+    }
+
     public void SetBoolean(final boolean val) {
         type = JsonType.Boolean;
         inst_boolean = val;
     }
 
-    public void SetDouble(final double val) {
+    public void SetDouble(final BigDecimal val) {
         type = JsonType.Double;
         inst_double = val;
     }
@@ -89,10 +94,10 @@ public class JsonData implements IJsonWrapper {
         // object_list.Add(entry);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes") 
     private Collection EnsureCollection() {
         if (type == JsonType.Array)
-            return inst_array;
+            return (Collection) inst_array;
         return (Collection) inst_object;
     }
 
@@ -134,7 +139,7 @@ public class JsonData implements IJsonWrapper {
                 break;
 
             case Double:
-                inst_double = 0;
+                inst_double = new BigDecimal(0);
                 break;
 
             case Boolean:
@@ -145,12 +150,13 @@ public class JsonData implements IJsonWrapper {
         this.type = type;
     }
 
+ 
 
     public boolean BooleanValue() {
         return inst_boolean;
     }
 
-    public double NumberValue() {
+    public BigDecimal NumberValue() {
         return inst_double;
     }
 

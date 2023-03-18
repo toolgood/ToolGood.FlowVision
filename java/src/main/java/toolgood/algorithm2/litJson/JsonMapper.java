@@ -1,7 +1,10 @@
 package toolgood.algorithm2.litJson;
 
+import java.math.BigDecimal;
+
 public class JsonMapper {
-    private static JsonData ReadValue(JsonReader reader) throws JsonException {
+    private static JsonData ReadValue(JsonReader reader) throws JsonException
+    {
         reader.Read();
 
         if (reader.Token() == JsonToken.ArrayEnd) return null;
@@ -9,20 +12,21 @@ public class JsonMapper {
         JsonData instance = new JsonData();
 
         if (reader.Token() == JsonToken.String) {
-            instance.SetString((String) reader.Value());
+            instance.SetString((String)reader.Value());
             return instance;
         }
 
         if (reader.Token() == JsonToken.Double) {
-            instance.SetDouble((double) reader.Value());
+            instance.SetDouble((BigDecimal)reader.Value());
             return instance;
         }
 
         if (reader.Token() == JsonToken.Boolean) {
-            instance.SetBoolean((boolean) reader.Value());
+            instance.SetBoolean((boolean)reader.Value());
             return instance;
         }
-        if (reader.Token() == JsonToken.Null) {
+        if (reader.Token() == JsonToken.Null)
+        {
             instance.SetNull();
             return instance;
         }
@@ -34,7 +38,7 @@ public class JsonMapper {
             while (true) {
                 JsonData item = ReadValue(reader);
                 if (item == null && reader.Token() == JsonToken.ArrayEnd) break;
-                instance.Add(item);
+                instance.Add((IJsonWrapper)item);
             }
         } else if (reader.Token() == JsonToken.ObjectStart) {
             instance.SetJsonType(JsonType.Object);
@@ -44,8 +48,8 @@ public class JsonMapper {
 
                 if (reader.Token() == JsonToken.ObjectEnd) break;
 
-                String property = (String) reader.Value();
-                instance.Set(property, ReadValue(reader));
+                String property = (String)reader.Value();
+                instance.Set(property,(IJsonWrapper) ReadValue(reader));
             }
 
         }
@@ -54,8 +58,9 @@ public class JsonMapper {
     }
 
 
-    public static JsonData ToObject(String json) throws JsonException {
+    public static JsonData ToObject(String json) throws JsonException
+    {
         JsonReader reader = new JsonReader(json);
-        return ReadValue(reader);
+        return (JsonData)ReadValue(reader) ;
     }
 }
