@@ -15,6 +15,7 @@ import toolgood.algorithm2.math.mathVisitor;
 import toolgood.algorithm2.mathNet.ExcelFunctions;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -58,7 +59,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Operand visitMulDiv_fun(final MulDiv_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
+            final Operand aa = item.accept(this);
             if (aa.IsError()) {
                 return aa;
             }
@@ -139,10 +140,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            if (secondValue.NumberValue() == new BigDecimal(0)) {
+            if (secondValue.NumberValue().compareTo(new BigDecimal(0)) == 0) {
                 return Operand.Error("Function '" + t + "' parameter 2 is error!");
             }
-            return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue()));
+            return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue(), MathContext.DECIMAL32));
         } else if (CharUtil.Equals(t, "%")) {
             firstValue = firstValue.ToNumber("% fun right value");
             if (firstValue.IsError()) {
@@ -152,10 +153,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            if (secondValue.NumberValue() == new BigDecimal(0)) {
+            if (secondValue.NumberValue().compareTo(new BigDecimal(0)) == 0) {
                 return Operand.Error("Div 0 is error!");
             }
-            return Operand.Create(firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue())[1]);
+            return Operand.Create(firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue(), MathContext.DECIMAL32)[1]);
         }
         return Operand.Error("Function '" + t + "' parameter is error!");
     }
@@ -163,7 +164,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Operand visitAddSub_fun(final AddSub_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
+            final Operand aa = item.accept(this);
             if (aa.IsError()) {
                 return aa;
             }
@@ -274,7 +275,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Operand visitJudge_fun(final Judge_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
+            final Operand aa = item.accept(this);
             if (aa.IsError()) {
                 return aa;
             }
@@ -323,7 +324,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 if (secondValue.IsError()) {
                     return secondValue;
                 }
-                r = Compare(firstValue.NumberValue(), secondValue.NumberValue());
+                r = firstValue.NumberValue().compareTo(secondValue.NumberValue());
             }
         } else if ((firstValue.Type() == OperandType.DATE && secondValue.Type() == OperandType.TEXT)
                 || (secondValue.Type() == OperandType.DATE && firstValue.Type() == OperandType.TEXT)
@@ -353,8 +354,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             // r = String.Compare(firstValue.TextValue(), secondValue.TextValue(), true);
         } else if (firstValue.Type() == OperandType.TEXT || secondValue.Type() == OperandType.TEXT
                 || firstValue.Type() == OperandType.JSON || secondValue.Type() == OperandType.JSON
-                || firstValue.Type() == OperandType.ARRARY || secondValue.Type() == OperandType.ARRARY
-                || firstValue.Type() == OperandType.ARRARYJSON || secondValue.Type() == OperandType.ARRARYJSON) {
+                || firstValue.Type() == OperandType.ARRARY || secondValue.Type() == OperandType.ARRARY) {
             return Operand.Error("两个类型无法比较");
         } else {
             firstValue = firstValue.ToNumber("Function '" + type + "' parameter 1 is error!");
@@ -365,8 +365,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-
-            r = Compare(firstValue.NumberValue(), secondValue.NumberValue());
+            r = firstValue.NumberValue().compareTo(secondValue.NumberValue());
         }
         if (CharUtil.Equals(type, "<")) {
             return Operand.Create(r == -1);
@@ -649,7 +648,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (secondValue.NumberValue() == new BigDecimal(0)) {
             return Operand.Error("Function QUOTIENT div 0 error!");
         }
-        return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue()).intValue());
+        return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue(),MathContext.DECIMAL32).intValue());
     }
 
     public Operand visitMOD_fun(final MOD_funContext context) {
@@ -879,7 +878,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final BigDecimal r = firstValue.NumberValue().divide(new BigDecimal(180)).divide(new BigDecimal(Math.PI));
+        final BigDecimal r = firstValue.NumberValue().divide(new BigDecimal(180),MathContext.DECIMAL32).multiply(new BigDecimal(Math.PI),MathContext.DECIMAL32);
         return Operand.Create(r);
     }
 
@@ -3835,7 +3834,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         for (final Operand item : args) {
             if (item.Type() == OperandType.NUMBER) {
                 list.add(item.NumberValue().doubleValue());
-            } else if (item.Type() == OperandType.ARRARY) {
+            } else if (item.Type() == OperandType.ARRARY||item.Type() == OperandType.ARRARYJSON) {
                 final boolean o = F_base_GetList_1(item.ArrayValue(), list);
                 if (o == false) {
                     return false;
