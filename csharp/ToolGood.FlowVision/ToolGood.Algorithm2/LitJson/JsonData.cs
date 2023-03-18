@@ -10,7 +10,7 @@ namespace ToolGood.Algorithm2.LitJson
 
 		private IList<JsonData> inst_array;
 		private bool inst_boolean;
-		private double inst_double;
+		private decimal inst_double;
 		internal IDictionary<string, JsonData> inst_object;
 		private string inst_string;
 		private JsonType type;
@@ -74,7 +74,7 @@ namespace ToolGood.Algorithm2.LitJson
 			inst_boolean = val;
 		}
 
-		void IJsonWrapper.SetDouble(double val)
+		void IJsonWrapper.SetDouble(decimal val)
 		{
 			type = JsonType.Double;
 			inst_double = val;
@@ -156,7 +156,7 @@ namespace ToolGood.Algorithm2.LitJson
 					break;
 
 				case JsonType.Double:
-					inst_double = default(Double);
+					inst_double = default(decimal);
 					break;
 
 				case JsonType.Boolean:
@@ -173,7 +173,7 @@ namespace ToolGood.Algorithm2.LitJson
 		}
 
 		public bool BooleanValue { get { return inst_boolean; } }
-		public double NumberValue { get { return inst_double; } }
+		public decimal NumberValue { get { return inst_double; } }
 		public string StringValue { get { return inst_string; } }
 	}
 }
