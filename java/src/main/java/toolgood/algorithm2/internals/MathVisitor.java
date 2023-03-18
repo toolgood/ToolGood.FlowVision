@@ -381,10 +381,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Create(r != 0);
     }
 
-    private int Compare(final BigDecimal t1, final BigDecimal t2) {
-        return t1.compareTo(t2);
-    }
-
     public Operand visitAndOr_fun(final AndOr_funContext context) {
         // 程序 && and || or 与 excel的 AND(x,y) OR(x,y) 有区别
         // 在excel内 AND(x,y) OR(x,y) 先报错，
@@ -668,7 +664,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (secondValue.NumberValue() == new BigDecimal(0)) {
             return Operand.Error("Function MOD div 0 error!");
         }
-        return Operand.Create((firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue())[1].intValue()));
+        return Operand.Create((firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue(),MathContext.DECIMAL32)[1].intValue()));
 
     }
 
@@ -799,7 +795,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(firstValue.NumberValue().divide(new BigDecimal(100)));
+        return Operand.Create(firstValue.NumberValue().divide(new BigDecimal(100),MathContext.DECIMAL32));
     }
 
     private int F_base_gcd(List<Double> list) {
@@ -850,11 +846,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 int preIndex = i - gap;
                 while (preIndex >= 0 && array.get(preIndex) > temp) {
                     array.set(preIndex + gap, array.get(preIndex));
-                    // array[preIndex + gap] = array[preIndex];
                     preIndex -= gap;
                 }
                 array.set(preIndex + gap, temp);
-                // array[preIndex + gap] = temp;
             }
             gap /= 2;
         }
@@ -868,7 +862,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         final BigDecimal z = firstValue.NumberValue();
-        final BigDecimal r = (z.divide(new BigDecimal(Math.PI)).multiply(new BigDecimal(180)));
+        final BigDecimal r = z.divide(new BigDecimal(Math.PI),MathContext.DECIMAL32).multiply(new BigDecimal(180));
         return Operand.Create(r);
     }
 
@@ -1962,10 +1956,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return Operand.Create(d);
         } catch (final Exception e) {
         }
-        // if (double.TryParse(firstValue.TextValue(), NumberStyles.Any, cultureInfo,
-        // out double d)) {
-        // return Operand.Create(d);
-        // }
         return Operand.Error("Function VALUE parameter is error!");
     }
 
@@ -1975,10 +1965,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             final char c = input.charAt(i);// [i];
             if (c == ' ') {
                 sb.setCharAt(i, (char) 12288);
-                // sb[i] = (char) 12288;
             } else if (c < 127) {
                 sb.setCharAt(i, (char) (c + 65248));
-                // sb[i] = (char) (c + 65248);
             }
         }
         return sb.toString();
@@ -2598,7 +2586,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         list = ShellSort(list);
-        // list = list.OrderBy(q => q).ToList();
         return Operand.Create(list.get(list.size() / 2));
     }
 
@@ -2693,7 +2680,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
         }
         return Operand.Create(maxValue);
-        // return Operand.Create(dict.OrderByDescending(q => q.Value).First().Key);
     }
 
     public Operand visitLARGE_fun(final LARGE_funContext context) {
@@ -2722,8 +2708,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         list = ShellSort(list);
-        // list = list.OrderByDescending(q => q).ToList();
-        // int quant = secondValue.IntValue();
         return Operand.Create(list.get(list.size() - 1 - (secondValue.IntValue() - excelIndex)));
     }
 
@@ -2753,10 +2737,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         list = ShellSort(list);
-        // list = list.OrderBy(q => q).ToList();
-        // int quant = secondValue.IntValue();
         return Operand.Create(list.get(secondValue.IntValue() - excelIndex));
-        // return Operand.Create(list[secondValue.IntValue() - excelIndex]);
     }
 
     public Operand visitPERCENTILE_fun(final PERCENTILE_funContext context) {
@@ -2895,19 +2876,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     return Operand.Error("Function AVERAGE parameter 2 error!");
                 }
             }
-            // if (double.TryParse(args.get(1).TextValue().trim(), NumberStyles.Any,
-            // cultureInfo, out double d)) {
-            // count = F_base_countif(list, d);
-            // sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
-            // } else {
-            // String sunif = args.get(1).TextValue().trim();
-            // if (sumifRegex.matcher(sunif)) {
-            // count = F_base_countif(list, sunif);
-            // sum = F_base_sumif(list, sunif, sumdbs);
-            // } else {
-            // return Operand.Error("Function AVERAGE parameter 2 error!");
-            // }
-            // }
         }
         return Operand.Create(sum / count);
     }
@@ -3034,17 +3002,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     return Operand.Error("Function COUNTIF parameter 2 error!");
                 }
             }
-            // if (double.TryParse(args.get(1).TextValue().trim(), NumberStyles.Any,
-            // cultureInfo, out double d)) {
-            // count = F_base_countif(list, d);
-            // } else {
-            // String sunif = args.get(1).TextValue().trim();
-            // if (sumifRegex.matcher(sunif)) {
-            // count = F_base_countif(list, sunif);
-            // } else {
-            // return Operand.Error("Function COUNTIF parameter 2 error!");
-            // }
-            // }
         }
         return Operand.Create(count);
     }
@@ -3113,17 +3070,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     return Operand.Error("Function SUMIF parameter 2 error!");
                 }
             }
-            // if (double.TryParse(args.get(1).TextValue().trim(), NumberStyles.Any,
-            // cultureInfo, out _)) {
-            // sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
-            // } else {
-            // String sunif = args.get(1).TextValue().trim();
-            // if (sumifRegex.matcher(sunif)) {
-            // sum = F_base_sumif(list, sunif, sumdbs);
-            // } else {
-            // return Operand.Error("Function SUMIF parameter 2 error!");
-            // }
-            // }
         }
         return Operand.Create(sum);
     }
@@ -3791,7 +3737,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (m.find()) {
             final Double d = Double.parseDouble(m.group(2));
             for (final double item : dbs) {
-                if (F_base_compare(item, d, s)) {
+                if (F_base_compare(item, d, m.group(1))) {
                     count++;
                 }
             }
@@ -3807,7 +3753,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             final Double d = Double.parseDouble(m.group(2));
 
             for (int i = 0; i < dbs.size(); i++) {
-                if (F_base_compare(dbs.get(i), d, s)) {
+                if (F_base_compare(dbs.get(i), d, m.group(1))) {
                     sum += sumdbs.get(i);
                 }
             }
@@ -4747,21 +4693,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         return d;
     }
-
-    private String padLeft(final String src, final int len, final char ch) {
-        final int diff = len - src.length();
-        if (diff <= 0) {
-            return src;
-        }
-
-        final char[] charr = new char[len];
-        System.arraycopy(src.toCharArray(), 0, charr, 0, src.length());
-        for (int i = src.length(); i < len; i++) {
-            charr[i] = ch;
-        }
-        return new String(charr);
-    }
-
 
     private double log(final double value, final double base) {
         return Math.log(value) / Math.log(base);
