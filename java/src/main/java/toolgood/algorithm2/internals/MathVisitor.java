@@ -351,7 +351,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 return secondValue;
             }
             r = firstValue.TextValue().compareToIgnoreCase(secondValue.TextValue());
-            // r = String.Compare(firstValue.TextValue(), secondValue.TextValue(), true);
         } else if (firstValue.Type() == OperandType.TEXT || secondValue.Type() == OperandType.TEXT
                 || firstValue.Type() == OperandType.JSON || secondValue.Type() == OperandType.JSON
                 || firstValue.Type() == OperandType.ARRARY || secondValue.Type() == OperandType.ARRARY) {
@@ -800,7 +799,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     private int F_base_gcd(List<Double> list) {
         list = ShellSort(list);
-        // list = list.OrderBy(q => q).ToList();
         int g = F_base_gcd((int) (double) list.get(1), (int) (double) list.get(0));
         for (int i = 2; i < list.size(); i++) {
             g = F_base_gcd((int) (double) list.get(i), g);
@@ -820,14 +818,14 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     private int F_base_lgm(List<Double> list) {
         for (int i = list.size() - 1; i >= 0; i--) {
-            final int item = (int) (double) list.get(i);// [i];
+            final int item = (int) (double) list.get(i);
             if (item <= 1) {
                 list.remove(i);
             }
         }
         list = ShellSort(list);
 
-        int a = (int) (double) list.get(0);// [0];
+        int a = (int) (double) list.get(0);
         for (int i = 1; i < list.size(); i++) {
             final int b = (int) (double) list.get(i);
             final int g = b > a ? F_base_gcd(b, a) : F_base_gcd(a, b);
@@ -1056,7 +1054,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             final DecimalFormat myFormatter = new DecimalFormat(f);
             return Operand.Create(myFormatter.format(s));
         }
-        // return Operand.Create(((Double)s).toString());
     }
 
     public Operand visitROUND_fun(final ROUND_funContext context) {
@@ -1962,7 +1959,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     private String F_base_ToSBC(final String input) {
         final StringBuilder sb = new StringBuilder(input);
         for (int i = 0; i < input.length(); i++) {
-            final char c = input.charAt(i);// [i];
+            final char c = input.charAt(i);
             if (c == ' ') {
                 sb.setCharAt(i, (char) 12288);
             } else if (c < 127) {
@@ -1975,7 +1972,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     private String F_base_ToDBC(final String input) {
         final StringBuilder sb = new StringBuilder(input);
         for (int i = 0; i < input.length(); i++) {
-            final char c = input.charAt(i);// [i];
+            final char c = input.charAt(i);
             if (c == 12288) {
                 sb.setCharAt(i, (char) 32);
                 continue;
@@ -3893,9 +3890,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(a);
         }
 
-        final Matcher b = Pattern.compile(args.get(0).TextValue()).matcher(args.get(1).TextValue());// .Replace(args.get(0).TextValue(),
-        // args.get(1).TextValue(),
-        // args.get(2).TextValue());
+        final Matcher b = Pattern.compile(args.get(0).TextValue()).matcher(args.get(1).TextValue());
         final String t = b.replaceAll(args.get(2).TextValue());
         return Operand.Create(t);
     }
@@ -4263,7 +4258,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         boolean b = firstValue.TextValue() == null || firstValue.TextValue().equals("");
         return Operand.Create(b);
-        // return Operand.Create(String.IsNullOrEmpty(firstValue.TextValue()));
     }
 
     public Operand visitISNULLORWHITESPACE_fun(final ISNULLORWHITESPACE_funContext context) {
@@ -4332,7 +4326,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         final String text = firstValue.TextValue();
-        // StringComparison comparison = StringComparison.Ordinal;
         if (args.size() == 3) {
             final Operand thirdValue = args.get(2).ToBoolean("Function REMOVESTART parameter 3 is error!");
             if (thirdValue.IsError()) {
@@ -4426,7 +4419,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     final Operand o = engine.Evaluate().ToBoolean(null);
                     if (o.IsError() == false) {
                         if (o.BooleanValue()) {
-                            final JsonData v = json.JsonValue().GetChild(thirdValue.TextValue());// [thirdValue.TextValue()];
+                            final JsonData v = json.JsonValue().GetChild(thirdValue.TextValue());
                             if (v != null) {
                                 if (v.IsString())
                                     return Operand.Create(v.StringValue());
@@ -4475,7 +4468,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final StringBuilder sb = new StringBuilder();
         int index = 1;
         while (index < opd.length() - 1) {
-            final char c = opd.charAt(index++);// [index++];
+            final char c = opd.charAt(index++);
             if (c == '\\') {
                 final char c2 = opd.charAt(index++);
                 if (c2 == 'n')
@@ -4585,7 +4578,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
             final int index = op.IntValue() - excelIndex;
             if (index < obj.ArrayValue().size())
-                return obj.ArrayValue().get(index);// [index];
+                return obj.ArrayValue().get(index);
             return Operand.Error("ARRARY index " + index + " greater than maximum length!");
         }
         if (obj.Type() == OperandType.ARRARYJSON) {
@@ -4610,7 +4603,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 }
                 final int index = op.IntValue() - excelIndex;
                 if (index < json.inst_array.size()) {
-                    final JsonData v = json.GetChild(index);// [op.IntValue() - excelIndex];
+                    final JsonData v = json.GetChild(index);
                     if (v.IsString())
                         return Operand.Create(v.StringValue());
                     if (v.IsBoolean())
@@ -4631,7 +4624,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 if (op.IsError()) {
                     return op;
                 }
-                final JsonData v = json.GetChild(op.TextValue());// [op.TextValue()];
+                final JsonData v = json.GetChild(op.TextValue());
                 if (v != null) {
                     if (v.IsString())
                         return Operand.Create(v.StringValue());
