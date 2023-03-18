@@ -4511,7 +4511,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     public Operand visitNUM_fun(final NUM_funContext context) {
         final String t = context.num().getText();
-        Double d = Double.parseDouble(t);
+        BigDecimal d = new BigDecimal(t);
         if (context.unit() == null) return Operand.Create(d);
         String unit = context.unit().getText().toUpperCase();
         Map<String, NumberUnitType> dict = NumberUnitTypeHelper.GetUnitTypedict();
