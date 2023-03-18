@@ -9,7 +9,8 @@ namespace UnitConversion.Base
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
+    using System.ComponentModel.Design;
+    using System.Linq;
 
 	/// <summary>
 	/// Base functionality for the rest of the project.
@@ -106,11 +107,8 @@ namespace UnitConversion.Base
 		/// </summary>
 		/// <param name="value">the Unit's value</param>
 		/// <returns>The converted value</returns>
-		public double LeftToRight(double value)
+		public decimal LeftToRight(decimal value)
 		{
-			//if (units.BaseUnit == "celsius")
-			//    return TemperatureHelper.AToB(value, UnitLeft, UnitRight);
-
 			return AToB(value, UnitLeft, UnitRight);
 		}
 
@@ -120,7 +118,7 @@ namespace UnitConversion.Base
 		/// <param name="value">the Unit's value</param>
 		/// <param name="decimals">how many decimal places to round to</param>
 		/// <returns>The converted value</returns>
-		public double LeftToRight(double value, int decimals)
+		public decimal LeftToRight(decimal value, int decimals)
 		{
 			return Math.Round(LeftToRight(value), decimals);
 		}
@@ -130,11 +128,8 @@ namespace UnitConversion.Base
 		/// </summary>
 		/// <param name="value">the Unit's value</param>
 		/// <returns>The converted value</returns>
-		public double RightToLeft(double value)
+		public decimal RightToLeft(decimal value)
 		{
-			//if (units.BaseUnit == "celsius")
-			//    return TemperatureHelper.AToB(value, UnitRight, UnitLeft);
-
 			return AToB(value, UnitRight, UnitLeft);
 		}
 
@@ -144,17 +139,17 @@ namespace UnitConversion.Base
 		/// <param name="value">the Unit's value</param>
 		/// <param name="decimals">how many decimal places to round to</param>
 		/// <returns>The converted value</returns>
-		public double RightToLeft(double value, int decimals)
+		public decimal RightToLeft(decimal value, int decimals)
 		{
 			return Math.Round(RightToLeft(value), decimals);
 		}
 
-		private double AToB(double value, string startUnit, string endUnit)
+		private decimal AToB(decimal value, string startUnit, string endUnit)
 		{
 			var startFactor = Units.FindFactor(startUnit);
 			var endFactor = Units.FindFactor(endUnit);
 			var result = (value / startFactor) * endFactor;
-			return result.CheckCloseEnoughValue();
+			return result;//.CheckCloseEnoughValue();
 		}
 
 		// ** UNITS **
@@ -187,7 +182,7 @@ namespace UnitConversion.Base
 		/// </summary>
 		/// <param name="synonyms">Object of synonyms</param>
 		/// <param name="factor"></param>
-		public void AddUnit(UnitFactorSynonyms synonyms, double factor)
+		public void AddUnit(UnitFactorSynonyms synonyms, decimal factor)
 		{
 			ValidateNewSynonym(synonyms);
 			Units.Add(synonyms, factor);
@@ -198,7 +193,7 @@ namespace UnitConversion.Base
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="factor"></param>
-		public void AddUnit(string name, double factor)
+		public void AddUnit(string name, decimal factor)
 		{
 			AddUnit((UnitFactorSynonyms)name, factor);
 		}

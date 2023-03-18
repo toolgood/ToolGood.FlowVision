@@ -10,7 +10,7 @@ namespace UnitConversion.Base
 	using System.Collections.Generic;
 	using System.Linq;
 
-	public sealed class UnitFactors : Dictionary<UnitFactorSynonyms, double>
+	public sealed class UnitFactors : Dictionary<UnitFactorSynonyms, decimal>
 	{
 		public UnitFactors(string baseUnit)
 		{
@@ -37,7 +37,7 @@ namespace UnitConversion.Base
 		}
 
 		// Get the factor for a given unit
-		internal double FindFactor(UnitFactorSynonyms synonyms)
+		internal decimal FindFactor(UnitFactorSynonyms synonyms)
 		{
 			var unit = this.FirstOrDefault(factor => factor.Key.Contains(synonyms));
 			if (unit.Key == null) {

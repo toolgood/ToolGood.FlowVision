@@ -5,15 +5,11 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolGood.FlowVision", "ToolGood.FlowVision\ToolGood.FlowVision.csproj", "{39FFA352-7C63-470A-884E-1943129BCCEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolGood.FlowVision.Test", "ToolGood.FlowVision.Test\ToolGood.FlowVision.Test.csproj", "{5D7E1C5C-F791-4C96-AE15-251CC19069BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolGood.FlowVision.Test", "ToolGood.FlowVision.Test\ToolGood.FlowVision.Test.csproj", "{5D7E1C5C-F791-4C96-AE15-251CC19069BE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_test", "_test", "{7A963895-474A-4828-B057-EE6577E2F4C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolGood.Algorithm2.Test", "ToolGood.Algorithm2.Test\ToolGood.Algorithm2.Test.csproj", "{4761608D-3D8C-47B9-BBFC-1D66E26F22E6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolGood.FlowVision.Api", "ToolGood.FlowVision.Api\ToolGood.FlowVision.Api.csproj", "{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolGood.FlowVision.Api.Test", "ToolGood.FlowVision.Api.Test\ToolGood.FlowVision.Api.Test.csproj", "{1D14BFFA-30F7-497F-BBA3-39A39DE04200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,22 +43,6 @@ Global
 		{4761608D-3D8C-47B9-BBFC-1D66E26F22E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4761608D-3D8C-47B9-BBFC-1D66E26F22E6}.Win|Any CPU.ActiveCfg = Win|Any CPU
 		{4761608D-3D8C-47B9-BBFC-1D66E26F22E6}.Win|Any CPU.Build.0 = Win|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Linux|Any CPU.ActiveCfg = Debug|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Linux|Any CPU.Build.0 = Debug|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Win|Any CPU.ActiveCfg = Debug|Any CPU
-		{E64D9F9A-FF18-48FF-99A7-2DAA81F69830}.Win|Any CPU.Build.0 = Debug|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Linux|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Linux|Any CPU.Build.0 = Debug|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Win|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200}.Win|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,7 +50,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5D7E1C5C-F791-4C96-AE15-251CC19069BE} = {7A963895-474A-4828-B057-EE6577E2F4C2}
 		{4761608D-3D8C-47B9-BBFC-1D66E26F22E6} = {7A963895-474A-4828-B057-EE6577E2F4C2}
-		{1D14BFFA-30F7-497F-BBA3-39A39DE04200} = {7A963895-474A-4828-B057-EE6577E2F4C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {79FE37E3-817A-4016-82B8-DB8D4A392A00}

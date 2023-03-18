@@ -222,7 +222,7 @@ namespace ToolGood.FlowVision.Engines
 			if (result.IsError && operand.Type == OperandType.TEXT) {
 				var m = numRegex.Match(operand.TextValue);
 				if (m.Success) {
-					if (double.TryParse(m.Groups[1].Value, NumberStyles.Any, cultureInfo, out double d)) {
+					if (decimal.TryParse(m.Groups[1].Value, NumberStyles.Any, cultureInfo, out decimal d)) {
 						var r = UnitConversion(d, m.Groups[2].Value.Trim(), appInput.Unit, appInput.InputName);
 						return Operand.Create(r);
 					}
@@ -233,7 +233,7 @@ namespace ToolGood.FlowVision.Engines
 
 		private static readonly Regex unitRegex = new Regex(@"[\s \(\)（）\[\]<>]", RegexOptions.Compiled);
 
-		private double UnitConversion(double src, string oldSrcUnit, string oldTarUnit, string name)
+		private decimal UnitConversion(decimal src, string oldSrcUnit, string oldTarUnit, string name)
 		{
 			if (string.IsNullOrWhiteSpace(oldSrcUnit)) { return src; }
 			if (string.IsNullOrWhiteSpace(oldTarUnit)) { throw new Exception($"输入项[{name}]单位不同，无法从[{oldSrcUnit}]转成[{oldTarUnit}]"); }
@@ -613,7 +613,7 @@ namespace ToolGood.FlowVision.Engines
 				if (obj.IsError) {
 					return def;
 				}
-				return obj.NumberValue;
+				return (double)obj.NumberValue;
 			} catch (Exception) {
 			}
 			return def;

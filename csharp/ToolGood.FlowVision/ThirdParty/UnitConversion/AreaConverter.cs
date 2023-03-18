@@ -17,16 +17,16 @@ namespace UnitConversion
 		private static UnitFactors units = new UnitFactors("m²")
 		{
 			{ new UnitFactorSynonyms("m²", "m2", "square metre", "centiare","平方米","平方公尺"), 1 },
-			{ new UnitFactorSynonyms("km²", "km2", "kilometre","平方千米"), 0.000001 },
+			{ new UnitFactorSynonyms("km²", "km2", "kilometre","平方千米"), 0.000001m },
 			{ new UnitFactorSynonyms("cm²", "cm2", "centimetre","平方厘米"), 10000 },
 			{ new UnitFactorSynonyms("mm²", "mm2", "millimetre","平方毫米"), 1000000 },
-			{ new UnitFactorSynonyms("ft²", "ft2", "square foot", "square feet", "sq ft","平方英尺"), 1d /  0.3048 /  0.3048 },
-			{ new UnitFactorSynonyms("yd²", "yd2", "sq yd", "square yard","平方码"), 1d /  0.9144 /  0.9144},
-			{ new UnitFactorSynonyms("a", "are"), 0.01 },
-			{ new UnitFactorSynonyms("ha", "hectare","公顷"), 0.0001 },
-			{ new UnitFactorSynonyms("in²", "in2", "sq in", "square inch","平方英寸"), 1d / 0.00064516 },
-			{ new UnitFactorSynonyms("mi²", "mi2", "sq mi", "square mile","平方英里"), 1d / 2589988.110336 },
-			{ new UnitFactorSynonyms( "亩"), 1d / 666.667 },
+			{ new UnitFactorSynonyms("ft²", "ft2", "square foot", "square feet", "sq ft","平方英尺"), 1m /  0.3048m /  0.3048m },
+			{ new UnitFactorSynonyms("yd²", "yd2", "sq yd", "square yard","平方码"), 1m /  0.9144m /  0.9144m},
+			{ new UnitFactorSynonyms("a", "are"), 0.01m },
+			{ new UnitFactorSynonyms("ha", "hectare","公顷"), 0.0001m },
+			{ new UnitFactorSynonyms("in²", "in2", "sq in", "square inch","平方英寸"), 1m / 0.00064516m },
+			{ new UnitFactorSynonyms("mi²", "mi2", "sq mi", "square mile","平方英里"), 1m / 2589988.110336m },
+			{ new UnitFactorSynonyms( "亩"), 1m / 666.667m },
 		};
 
 		public AreaConverter(string leftUnit, string rightUnit)

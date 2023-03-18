@@ -16,8 +16,8 @@ namespace ToolGood.FlowVision.Engines.OutDatas
 		public string Id { get { return CurrWork.Id; } }
 		public int Layer { get { return CurrWork.Layer; } }
 		public bool IsSubsidiaryCount { get { if (CurrWork is IInputFormulaNodeWork work) { return work.IsSubsidiaryCount; } return false; } }
-		public double? InputNum { get; set; }
-		public double? OutputNum { get; set; }
+		public decimal? InputNum { get; set; }
+		public decimal? OutputNum { get; set; }
 
 		public TreeNode(NodeWork work, FactoryMachineWork factoryMachineItem, FactoryProcedureItemWork factoryProcedureItem)
 		{
@@ -60,7 +60,7 @@ namespace ToolGood.FlowVision.Engines.OutDatas
 				return;
 			}
 			if (OutputNum == null) {
-				double num = 0;
+				decimal num = 0;
 				foreach (var nextNode in NextNodes) {
 					nextNode.Value.EvaluateInputNum(engine);
 					if (nextNode.Value.IsSubsidiaryCount == false) {
@@ -85,7 +85,7 @@ namespace ToolGood.FlowVision.Engines.OutDatas
 			engine.ClearOutputNum();
 		}
 
-		private double GetNumber(InputNumberType numberType, double n)
+		private decimal GetNumber(InputNumberType numberType, decimal n)
 		{
 			switch (numberType) {
 				case InputNumberType.Original: return n;

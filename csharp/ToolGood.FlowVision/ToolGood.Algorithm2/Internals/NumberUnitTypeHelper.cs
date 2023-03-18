@@ -47,24 +47,24 @@ namespace ToolGood.Algorithm2.Internals
 			return unitTypedict;
 		}
 
-		internal static double TransformationUnit(double src, NumberUnitType type1, DistanceUnitType distance, AreaUnitType area, VolumeUnitType volume, MassUnitType mass)
+		internal static decimal TransformationUnit(decimal src, NumberUnitType type1, DistanceUnitType distance, AreaUnitType area, VolumeUnitType volume, MassUnitType mass)
 		{
 			if (type1 == NumberUnitType.MM) {
 				switch (distance) {
 					case DistanceUnitType.MM: return src;
-					case DistanceUnitType.CM: return src * 0.1;
-					case DistanceUnitType.DM: return src * 0.01;
-					case DistanceUnitType.M: return src * 0.001;
-					case DistanceUnitType.KM: return src * 0.000001;
+					case DistanceUnitType.CM: return src * 0.1m;
+					case DistanceUnitType.DM: return src * 0.01m;
+					case DistanceUnitType.M: return src * 0.001m;
+					case DistanceUnitType.KM: return src * 0.000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.CM) {
 				switch (distance) {
 					case DistanceUnitType.MM: return src * 10;
 					case DistanceUnitType.CM: return src;
-					case DistanceUnitType.DM: return src * 0.1;
-					case DistanceUnitType.M: return src * 0.01;
-					case DistanceUnitType.KM: return src * 0.00001;
+					case DistanceUnitType.DM: return src * 0.1m;
+					case DistanceUnitType.M: return src * 0.01m;
+					case DistanceUnitType.KM: return src * 0.00001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.DM) {
@@ -72,8 +72,8 @@ namespace ToolGood.Algorithm2.Internals
 					case DistanceUnitType.MM: return src * 100;
 					case DistanceUnitType.CM: return src * 10;
 					case DistanceUnitType.DM: return src;
-					case DistanceUnitType.M: return src * 0.1;
-					case DistanceUnitType.KM: return src * 0.0001;
+					case DistanceUnitType.M: return src * 0.1m;
+					case DistanceUnitType.KM: return src * 0.0001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.M) {
@@ -82,7 +82,7 @@ namespace ToolGood.Algorithm2.Internals
 					case DistanceUnitType.CM: return src * 100;
 					case DistanceUnitType.DM: return src * 10;
 					case DistanceUnitType.M: return src;
-					case DistanceUnitType.KM: return src * 0.001;
+					case DistanceUnitType.KM: return src * 0.001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.KM) {
@@ -97,19 +97,19 @@ namespace ToolGood.Algorithm2.Internals
 			} else if (type1 == NumberUnitType.MM2) {
 				switch (area) {
 					case AreaUnitType.MM2: return src;
-					case AreaUnitType.CM2: return src * 0.01;
-					case AreaUnitType.DM2: return src * 0.0001;
-					case AreaUnitType.M2: return src * 0.000001;
-					case AreaUnitType.KM2: return src * 0.000000000001;
+					case AreaUnitType.CM2: return src * 0.01m;
+					case AreaUnitType.DM2: return src * 0.0001m;
+					case AreaUnitType.M2: return src * 0.000001m;
+					case AreaUnitType.KM2: return src * 0.000000000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.CM2) {
 				switch (area) {
 					case AreaUnitType.MM2: return src * 100;
 					case AreaUnitType.CM2: return src;
-					case AreaUnitType.DM2: return src * 0.01;
-					case AreaUnitType.M2: return src * 0.0001;
-					case AreaUnitType.KM2: return src * 0.0000000001;
+					case AreaUnitType.DM2: return src * 0.01m;
+					case AreaUnitType.M2: return src * 0.0001m;
+					case AreaUnitType.KM2: return src * 0.0000000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.DM2) {
@@ -117,8 +117,8 @@ namespace ToolGood.Algorithm2.Internals
 					case AreaUnitType.MM2: return src * 10000;
 					case AreaUnitType.CM2: return src * 100;
 					case AreaUnitType.DM2: return src;
-					case AreaUnitType.M2: return src * 0.01;
-					case AreaUnitType.KM2: return src * 0.00000001;
+					case AreaUnitType.M2: return src * 0.01m;
+					case AreaUnitType.KM2: return src * 0.00000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.M2) {
@@ -127,7 +127,7 @@ namespace ToolGood.Algorithm2.Internals
 					case AreaUnitType.CM2: return src * 10000;
 					case AreaUnitType.DM2: return src * 100;
 					case AreaUnitType.M2: return src;
-					case AreaUnitType.KM2: return src * 0.000001;
+					case AreaUnitType.KM2: return src * 0.000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.KM2) {
@@ -142,19 +142,19 @@ namespace ToolGood.Algorithm2.Internals
 			} else if (type1 == NumberUnitType.MM3) {
 				switch (volume) {
 					case VolumeUnitType.MM3: return src;
-					case VolumeUnitType.CM3: return src * 0.001;
-					case VolumeUnitType.DM3: return src * 0.000001;
-					case VolumeUnitType.M3: return src * 0.000000001;
-					case VolumeUnitType.KM3: return src * 0.000000000000000001;
+					case VolumeUnitType.CM3: return src * 0.001m;
+					case VolumeUnitType.DM3: return src * 0.000001m;
+					case VolumeUnitType.M3: return src * 0.000000001m;
+					case VolumeUnitType.KM3: return src * 0.000000000000000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.CM3) {
 				switch (volume) {
 					case VolumeUnitType.MM3: return src * 1000;
 					case VolumeUnitType.CM3: return src;
-					case VolumeUnitType.DM3: return src * 0.001;
-					case VolumeUnitType.M3: return src * 0.000001;
-					case VolumeUnitType.KM3: return src * 0.000000000000001;
+					case VolumeUnitType.DM3: return src * 0.001m;
+					case VolumeUnitType.M3: return src * 0.000001m;
+					case VolumeUnitType.KM3: return src * 0.000000000000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.DM3) {
@@ -162,8 +162,8 @@ namespace ToolGood.Algorithm2.Internals
 					case VolumeUnitType.MM3: return src * 1000000;
 					case VolumeUnitType.CM3: return src * 1000;
 					case VolumeUnitType.DM3: return src;
-					case VolumeUnitType.M3: return src * 0.001;
-					case VolumeUnitType.KM3: return src * 0.000000000001;
+					case VolumeUnitType.M3: return src * 0.001m;
+					case VolumeUnitType.KM3: return src * 0.000000000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.M3) {
@@ -172,7 +172,7 @@ namespace ToolGood.Algorithm2.Internals
 					case VolumeUnitType.CM3: return src * 1000000;
 					case VolumeUnitType.DM3: return src * 1000;
 					case VolumeUnitType.M3: return src;
-					case VolumeUnitType.KM3: return src * 0.000000001;
+					case VolumeUnitType.KM3: return src * 0.000000001m;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.KM3) {
@@ -193,15 +193,15 @@ namespace ToolGood.Algorithm2.Internals
 				}
 			} else if (type1 == NumberUnitType.KG) {
 				switch (mass) {
-					case MassUnitType.G: return src * 0.001;
+					case MassUnitType.G: return src * 0.001m;
 					case MassUnitType.KG: return src;
 					case MassUnitType.T: return src * 1000;
 					default: throw new Exception("Number unit is error!");
 				}
 			} else if (type1 == NumberUnitType.T) {
 				switch (mass) {
-					case MassUnitType.G: return src * 0.000001;
-					case MassUnitType.KG: return src * 0.001;
+					case MassUnitType.G: return src * 0.000001m;
+					case MassUnitType.KG: return src * 0.001m;
 					case MassUnitType.T: return src;
 					default: throw new Exception("Number unit is error!");
 				}

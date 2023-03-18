@@ -1,6 +1,6 @@
 ﻿namespace ToolGood.Algorithm2.Enums
 {
-	internal enum NumberUnitType
+	internal enum NumberUnitType : byte
 	{
 		MM = 1,
 		CM = 2,

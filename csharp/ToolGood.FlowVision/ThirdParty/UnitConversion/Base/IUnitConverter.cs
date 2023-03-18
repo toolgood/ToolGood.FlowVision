@@ -9,8 +9,8 @@ namespace UnitConversion.Base
 {
 	internal interface IUnitConverter
 	{
-		double LeftToRight(double value);
+        decimal LeftToRight(decimal value);
 
-		double RightToLeft(double value);
+        decimal RightToLeft(decimal value);
 	}
 }

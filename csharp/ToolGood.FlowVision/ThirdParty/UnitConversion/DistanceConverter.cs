@@ -17,15 +17,15 @@ namespace UnitConversion
 		private static UnitFactors units = new UnitFactors("m")
 		{
 			{ new UnitFactorSynonyms("m", "metre","米"), 1 },
-			{ new UnitFactorSynonyms("km", "kilometre","千米"), 0.001 },
+			{ new UnitFactorSynonyms("km", "kilometre","千米"), 0.001m },
 			{ new UnitFactorSynonyms("dm","decimetre", "分米"), 10 },
 			{ new UnitFactorSynonyms("cm", "centimetre", "厘米"), 100 },
 			{ new UnitFactorSynonyms("mm", "millimetre", "毫米"), 1000 },
-			{ new UnitFactorSynonyms("ft", "foot", "feet","英尺"), 1250d / 381 },
-			{ new UnitFactorSynonyms("yd", "yard","码"), 1250d / 1143 },
-			{ new UnitFactorSynonyms("mile","英里"), 125d / 201168 },
-			{ new UnitFactorSynonyms("in", "inch","英寸"), 5000d / 127 },
-			{ "au", 1d / 149600000000}
+			{ new UnitFactorSynonyms("ft", "foot", "feet","英尺"), 1250m / 381 },
+			{ new UnitFactorSynonyms("yd", "yard","码"), 1250m / 1143 },
+			{ new UnitFactorSynonyms("mile","英里"), 125m / 201168 },
+			{ new UnitFactorSynonyms("in", "inch","英寸"), 5000m / 127 },
+			{ "au", 1m / 149600000000}
 		};
 
 		public DistanceConverter(string leftUnit, string rightUnit)

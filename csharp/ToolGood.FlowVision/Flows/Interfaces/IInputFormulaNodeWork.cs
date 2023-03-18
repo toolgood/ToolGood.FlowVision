@@ -16,16 +16,16 @@ namespace ToolGood.FlowVision.Flows
 
 		bool IsSubsidiaryCount { get; set; }
 
-		internal double EvaluateInputNum(FlowEngine engine)
+		internal decimal EvaluateInputNum(FlowEngine engine)
 		{
 			if (InputFormula == null || InputFormula.Count == 0) {
-				return engine.GetOutputNum().NumberValue;
+				return (decimal)engine.GetOutputNum().NumberValue;
 			}
 			for (int i = 0; i < InputFormula.Count; i++) {
 				var settingFormulaItem = InputFormula[i];
 				if (settingFormulaItem.Check(engine)) {
 					var operand = settingFormulaItem.EvaluateFormula(engine, InputType.Number);
-					return operand.NumberValue;
+					return (decimal)operand.NumberValue;
 				}
 			}
 			throw new Exception("入量公式错误！");

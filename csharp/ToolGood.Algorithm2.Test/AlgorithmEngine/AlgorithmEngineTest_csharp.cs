@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ToolGood.Algorithm2;
 
 namespace ToolGood.Algorithm.Test
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PetaTest;
+using ToolGood.Algorithm2;
 
 namespace ToolGood.Algorithm
 {
@@ -66,9 +67,9 @@ namespace ToolGood.Algorithm
 
 
             var e = engine.TryEvaluate("e", 0.0);
-            Assert.AreEqual(Math.E, e);
+            Assert.AreEqual(Math.E, e,10);
             e = engine.TryEvaluate("pi", 0.0);
-            Assert.AreEqual(Math.PI, e);
+            Assert.AreEqual(Math.PI, e,10);
 
             var b = engine.TryEvaluate("true", true);
             Assert.AreEqual(true, b);
@@ -88,9 +89,9 @@ namespace ToolGood.Algorithm
             Assert.AreEqual(2, b1);
 
             var b2 = engine.TryEvaluate("pi*4", 0.0);
-            Assert.AreEqual(Math.PI * 4, b2);
+            Assert.AreEqual(Math.PI * 4, b2,10);
             b2 = engine.TryEvaluate("e*4", 0.0);
-            Assert.AreEqual(Math.E * 4, b2);
+            Assert.AreEqual(Math.E * 4, b2,10);
 
             var s = engine.TryEvaluate("'aa'&'bb'", "");
             Assert.AreEqual("aabb", s);
