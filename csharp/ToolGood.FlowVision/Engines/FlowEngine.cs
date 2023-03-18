@@ -99,7 +99,7 @@ namespace ToolGood.FlowVision.Engines
 					if (item.IsRequired) { throw new Exception($"[{item.InputName}]必填！"); }
 					if (item.UseDefaultValue) {
 						if (item.InputTypeNum == (int)InputType.Number) {
-							_inputDict[item.InputName] = Operand.Create(double.Parse(item.DefaultValue));
+							_inputDict[item.InputName] = Operand.Create(decimal.Parse(item.DefaultValue));
 						} else if (item.InputTypeNum == (int)InputType.String) {
 							_inputDict[item.InputName] = Operand.Create(item.DefaultValue);
 						} else if (item.InputTypeNum == (int)InputType.Bool) {
@@ -115,7 +115,7 @@ namespace ToolGood.FlowVision.Engines
 						if (_tempdict[item.InputName].Type == OperandType.TEXT && string.IsNullOrEmpty(_tempdict[item.InputName].TextValue)) {
 							if (item.IsRequired) { throw new Exception($"[{item.InputName}]必填！"); }
 							if (item.UseDefaultValue) {
-								_inputDict[item.InputName] = Operand.Create(double.Parse(item.DefaultValue));
+								_inputDict[item.InputName] = Operand.Create(decimal.Parse(item.DefaultValue));
 							}
 							continue;
 						} else {
