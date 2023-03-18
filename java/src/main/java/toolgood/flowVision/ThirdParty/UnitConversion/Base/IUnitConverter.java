@@ -1,7 +1,9 @@
 package toolgood.flowVision.ThirdParty.UnitConversion.Base;
 
-public interface IUnitConverter {
-    double LeftToRight(double value) throws UnitNotSupportedException;
+import java.math.BigDecimal;
 
-    double RightToLeft(double value) throws UnitNotSupportedException;
+public interface IUnitConverter {
+    BigDecimal LeftToRight(BigDecimal value) throws UnitNotSupportedException;
+
+    BigDecimal RightToLeft(BigDecimal value) throws UnitNotSupportedException;
 }

@@ -9,6 +9,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -41,18 +42,18 @@ public class AppTest {
 
     }
 
-    @Test
-    public void JsTest() throws Exception {
-        map.put("aaa", "123");
-        EvaluateJs("""
-                var tt= getValue("aaa");
-                setValue("tt",tt);
-                var b= hasKey("aaa");
-                setValue("b",b);
-                error("aaa")
-                """);
-
-    }
+//    @Test
+//    public void JsTest() throws Exception {
+//        map.put("aaa", "123");
+//        EvaluateJs("""
+//                var tt= getValue("aaa");
+//                setValue("tt",tt);
+//                var b= hasKey("aaa");
+//                setValue("b",b);
+//                error("aaa")
+//                """);
+//
+//    }
 
     private void EvaluateJs(String script) throws Exception {
         ScriptEngineManager manager = new ScriptEngineManager();

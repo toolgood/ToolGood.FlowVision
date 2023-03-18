@@ -241,8 +241,8 @@ public final class FlowEngine implements IFlowEngine {
             Matcher m = numRegex.matcher(operand.TextValue());
             if (m.find()) {
                 try {
-                    double d = Double.parseDouble(m.group(1));
-                    double r = UnitConversion(d, m.group(2).trim(), appInput.Unit, appInput.InputName);
+                    BigDecimal d = new BigDecimal(m.group(1));
+                    BigDecimal r = UnitConversion(d, m.group(2).trim(), appInput.Unit, appInput.InputName);
                     return Operand.Create(r);
                 } catch (Exception ex) {
                 }
@@ -251,7 +251,7 @@ public final class FlowEngine implements IFlowEngine {
         return result;
     }
 
-    private double UnitConversion(double src, String oldSrcUnit, String oldTarUnit, String name) throws Exception {
+    private BigDecimal UnitConversion(BigDecimal src, String oldSrcUnit, String oldTarUnit, String name) throws Exception {
         if (oldSrcUnit == null || oldSrcUnit.equals("")) {
             return src;
         }

@@ -1,8 +1,9 @@
 package toolgood.flowVision.ThirdParty.UnitConversion.Base;
 
+import java.math.BigDecimal;
 import java.util.TreeMap;
 
-public class UnitFactors extends TreeMap<UnitFactorSynonyms, Double> {
+public class UnitFactors extends TreeMap<UnitFactorSynonyms, BigDecimal> {
     public String BaseUnit;
 
     public UnitFactors(String baseUnit) {
@@ -22,12 +23,12 @@ public class UnitFactors extends TreeMap<UnitFactorSynonyms, Double> {
         return null;
     }
 
-    public double FindFactor(String synonyms) throws UnitNotSupportedException {
+    public BigDecimal FindFactor(String synonyms) throws UnitNotSupportedException {
         return FindFactor(new UnitFactorSynonyms(synonyms));
     }
 
     // Get the factor for a given unit
-    public double FindFactor(UnitFactorSynonyms synonyms) throws UnitNotSupportedException {
+    public BigDecimal FindFactor(UnitFactorSynonyms synonyms) throws UnitNotSupportedException {
         for (UnitFactorSynonyms factor : this.keySet()) {
             if (factor.Contains(synonyms)) {
                 return this.get(factor);

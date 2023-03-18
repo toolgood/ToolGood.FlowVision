@@ -1,17 +1,19 @@
 package toolgood.flowVision.ThirdParty.UnitConversion.Base;
 
+import java.math.BigDecimal;
+
 public abstract class BaseUnitConverter implements IUnitConverter {
     public String UnitLeft;
     public String UnitRight;
     protected UnitFactors Units;
 
     @Override
-    public double LeftToRight(double value) throws UnitNotSupportedException {
+    public BigDecimal LeftToRight(BigDecimal value) throws UnitNotSupportedException {
         return AToB(value, UnitLeft, UnitRight);
     }
 
     @Override
-    public double RightToLeft(double value) throws UnitNotSupportedException {
+    public BigDecimal RightToLeft(BigDecimal value) throws UnitNotSupportedException {
         return AToB(value, UnitRight, UnitLeft);
     }
 
@@ -27,11 +29,11 @@ public abstract class BaseUnitConverter implements IUnitConverter {
         UnitRight = rightUnit;
     }
 
-    private double AToB(double value, String startUnit, String endUnit) throws UnitNotSupportedException {
-        double startFactor = Units.FindFactor(startUnit);
-        double endFactor = Units.FindFactor(endUnit);
-        double result = (value / startFactor) * endFactor;
-        return ExtensionMethods.CheckCloseEnoughValue(result);
+    private BigDecimal AToB(BigDecimal value, String startUnit, String endUnit) throws UnitNotSupportedException {
+        BigDecimal startFactor = Units.FindFactor(startUnit);
+        BigDecimal endFactor = Units.FindFactor(endUnit);
+        BigDecimal result = (value.divide(startFactor)).multiply(endFactor);
+        return result;
     }
 
 
