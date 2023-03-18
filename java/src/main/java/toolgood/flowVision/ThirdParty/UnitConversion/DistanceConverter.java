@@ -11,16 +11,16 @@ public class DistanceConverter extends BaseUnitConverter {
 
     static {
         units = new UnitFactors("m");
-        units.put(new UnitFactorSynonyms(new String[]{"m", "metre", "米"}), new BigDecimal(1d));
-        units.put(new UnitFactorSynonyms(new String[]{"km", "kilometre", "千米"}), new BigDecimal(0.001d));
-        units.put(new UnitFactorSynonyms(new String[]{"dm", "decimetre", "分米"}), new BigDecimal(10d));
-        units.put(new UnitFactorSynonyms(new String[]{"cm", "centimetre", "厘米"}), new BigDecimal(100d));
-        units.put(new UnitFactorSynonyms(new String[]{"mm", "millimetre", "毫米"}), new BigDecimal(1000d));
-        units.put(new UnitFactorSynonyms(new String[]{"ft", "foot", "feet", "英尺"}), new BigDecimal(1250d / 381));
-        units.put(new UnitFactorSynonyms(new String[]{"yd", "yard", "码"}), new BigDecimal(1250d / 1143));
-        units.put(new UnitFactorSynonyms(new String[]{"mile", "英里"}), new BigDecimal(125d / 201168));
-        units.put(new UnitFactorSynonyms(new String[]{"in", "inch", "英寸"}), new BigDecimal(5000d / 127));
-        units.put(new UnitFactorSynonyms(new String[]{"au"}), new BigDecimal(1d / 149600000000d));
+        units.put(new UnitFactorSynonyms(new String[]{"m", "metre", "米"}), new BigDecimal("1"));
+        units.put(new UnitFactorSynonyms(new String[]{"km", "kilometre", "千米"}), new BigDecimal("0.001"));
+        units.put(new UnitFactorSynonyms(new String[]{"dm", "decimetre", "分米"}), new BigDecimal("10"));
+        units.put(new UnitFactorSynonyms(new String[]{"cm", "centimetre", "厘米"}), new BigDecimal("100"));
+        units.put(new UnitFactorSynonyms(new String[]{"mm", "millimetre", "毫米"}), new BigDecimal("1000"));
+        units.put(new UnitFactorSynonyms(new String[]{"ft", "foot", "feet", "英尺"}), BigDecimal.valueOf(1250d / 381));
+        units.put(new UnitFactorSynonyms(new String[]{"yd", "yard", "码"}), BigDecimal.valueOf(1250d / 1143));
+        units.put(new UnitFactorSynonyms(new String[]{"mile", "英里"}), BigDecimal.valueOf(125d / 201168));
+        units.put(new UnitFactorSynonyms(new String[]{"in", "inch", "英寸"}), BigDecimal.valueOf(5000d / 127));
+        units.put(new UnitFactorSynonyms(new String[]{"au"}), BigDecimal.valueOf(1d / 149600000000d));
 
     }
 
