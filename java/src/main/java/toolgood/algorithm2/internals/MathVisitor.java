@@ -581,7 +581,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (aa.IsError()) {
                 return aa;
             }
-            result.AddValue(((Operand.OperandKeyValue) aa).Value);
+            result.AddValue(((Operand.OperandKeyValue) aa)._value);
         }
         return result;
     }

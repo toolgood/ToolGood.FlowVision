@@ -352,7 +352,6 @@ public class MyDate {
         return new MyDate(this.ToNumber() + num.doubleValue());
     }
 
-
     public MyDate SUB(BigDecimal num) {
         return new MyDate(this.ToNumber() - num.doubleValue());
     }

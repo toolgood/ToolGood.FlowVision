@@ -316,12 +316,13 @@ public abstract class Operand {
     }
 
     static abstract class OperandT<T> extends Operand {
-        public T Value;
+        public T _value;
 
         public OperandT(final T obj) {
-            Value = obj;
+            _value = obj;
         }
     }
+
 
     static class OperandArray extends OperandT<java.util.List<Operand>> {
         public OperandArray(final List<Operand> obj) {
@@ -335,8 +336,14 @@ public abstract class Operand {
 
         @Override
         public List<Operand> ArrayValue() {
-            return Value;
+            return _value;
         }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            return this;
+        }
+
     }
 
     static class OperandBoolean extends OperandT<Boolean> {
@@ -351,7 +358,46 @@ public abstract class Operand {
 
         @Override
         public boolean BooleanValue() {
-            return Value;
+            return _value;
+        }
+
+        @Override
+        public Operand ToNumber(String errorMessage) {
+            return BooleanValue() ? One : Zero;
+        }
+
+        @Override
+        public Operand ToBoolean(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToText(String errorMessage) {
+            return Create(BooleanValue() ? "TRUE" : "FALSE");
+        }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert bool to array error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToJson(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert bool to json error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToDate(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert bool to date error!";
+            }
+            return Error(errorMessage);
         }
     }
 
@@ -367,8 +413,45 @@ public abstract class Operand {
 
         @Override
         public MyDate DateValue() {
-            return Value;
+            return _value;
         }
+
+        @Override
+        public Operand ToNumber(String errorMessage) {
+            return Create(DateValue().ToNumber());
+        }
+
+        @Override
+        public Operand ToBoolean(String errorMessage) {
+            return (((double) DateValue().ToNumber()) != 0) ? True : False;
+        }
+
+        @Override
+        public Operand ToText(String errorMessage) {
+            return Create(DateValue().toString());
+        }
+
+        @Override
+        public Operand ToDate(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert date to array error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToJson(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert date to json error!";
+            }
+            return Error(errorMessage);
+        }
+
     }
 
     static class OperandError extends Operand {
@@ -391,6 +474,37 @@ public abstract class Operand {
         public String ErrorMsg() {
             return _errorMsg;
         }
+
+        @Override
+        public Operand ToNumber(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToBoolean(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToText(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToJson(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToDate(String errorMessage) {
+            return this;
+        }
+
     }
 
     static class OperandJson extends OperandT<JsonData> {
@@ -405,13 +519,72 @@ public abstract class Operand {
 
         @Override
         public JsonData JsonValue() {
-            return Value;
+            return _value;
+        }
+
+        @Override
+        public Operand ToJson(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            if (JsonValue().IsArray()) {
+                final List<Operand> list = new ArrayList<Operand>();
+                for (JsonData v : JsonValue().inst_array) {
+                    if (v.IsString())
+                        list.add(Create(v.StringValue()));
+                    else if (v.IsBoolean())
+                        list.add(Create(v.BooleanValue()));
+                    else if (v.IsDouble())
+                        list.add(Create(v.NumberValue()));
+                    else if (v.IsNull())
+                        list.add(CreateNull());
+                    else
+                        list.add(Create(v));
+                }
+                return Create(list);
+            }
+            if (errorMessage == null) {
+                errorMessage = "Convert json to array error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToBoolean(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert json to bool error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToDate(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert json to date error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToNumber(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert json to number error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToText(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert number to string error!";
+            }
+            return Error(errorMessage);
         }
     }
 
     static class OperandNull extends Operand {
-        // public override OperandType Type => OperandType.NULL;
-        // public override bool IsNull => true;
 
         @Override
         public OperandType Type() {
@@ -423,36 +596,6 @@ public abstract class Operand {
             return true;
         }
 
-
-        @Override
-        public Operand ToArray(String errorMessage) {
-            return Error(errorMessage != null ? errorMessage : "Convert null to array error!");
-        }
-
-        @Override
-        public Operand ToBoolean(String errorMessage) {
-            return Error(errorMessage != null ? errorMessage : "Convert null to bool error!");
-        }
-
-        @Override
-        public Operand ToText(String errorMessage) {
-            return Error(errorMessage != null ? errorMessage : "Convert null to string error!");
-        }
-
-        @Override
-        public Operand ToNumber(String errorMessage) {
-            return Error(errorMessage != null ? errorMessage : "Convert null to number error!");
-        }
-
-        @Override
-        public Operand ToJson(String errorMessage) {
-            return Error(errorMessage != null ? errorMessage : "Convert null to json error!");
-        }
-
-        @Override
-        public Operand ToDate(String errorMessage) {
-            return Error(errorMessage != null ? errorMessage : "Convert null to date error!");
-        }
     }
 
     static class OperandNumber extends OperandT<BigDecimal> {
@@ -468,14 +611,63 @@ public abstract class Operand {
 
         @Override
         public int IntValue() {
-            return  Value.intValue();
+            return _value.intValue();
         }
 
         @Override
         public BigDecimal NumberValue() {
-            return Value;
+            return _value;
         }
 
+//        @Override
+//        public double DoubleValue() {
+//            return _value.doubleValue();
+//        }
+//
+//        @Override
+//        public long LongValue() {
+//            return _value.longValue();
+//        }
+
+        @Override
+        public Operand ToNumber(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToBoolean(String errorMessage) {
+            return (NumberValue().compareTo(new BigDecimal(0)) != 0) ? True : False;
+        }
+
+        @Override
+        public Operand ToText(String errorMessage) {
+            String str = ((Double) NumberValue().doubleValue()).toString();
+            if (str.contains(".")) {
+                str = Pattern.compile("(\\.)?0+$").matcher(str).replaceAll("");
+            }
+            return Create(str);
+        }
+
+        @Override
+        public Operand ToDate(String errorMessage) {
+            return Create(new MyDate(NumberValue()));
+        }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert number to array error!";
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToJson(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert number to json error!";
+            }
+            return Error(errorMessage);
+        }
     }
 
     static class OperandString extends OperandT<String> {
@@ -491,10 +683,85 @@ public abstract class Operand {
 
         @Override
         public String TextValue() {
-            return Value;
+            return _value;
+        }
+
+        @Override
+        public Operand ToNumber(String errorMessage) {
+            try {
+                BigDecimal d = new BigDecimal(TextValue());
+                return Create(d);
+            } catch (Exception e) {
+            }
+            if (errorMessage == null) {
+                return Error("Convert string to number error!");
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToText(String errorMessage) {
+            return this;
+        }
+
+        @Override
+        public Operand ToBoolean(String errorMessage) {
+            if (TextValue().toLowerCase().equals("true") || TextValue().toLowerCase().equals("yes")) {
+                return True;
+            }
+            if (TextValue().toLowerCase().equals("false") || TextValue().toLowerCase().equals("no")) {
+                return False;
+            }
+            if (TextValue().equals("1") || TextValue().equals("是") || TextValue().equals("有")) {
+                return True;
+            }
+            if (TextValue().equals("0") || TextValue().equals("否") || TextValue().equals("不是") || TextValue().equals("无") || TextValue().equals("没有")) {
+                return False;
+            }
+            if (errorMessage == null) {
+                return Error("Convert string to bool error!");
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToDate(String errorMessage) {
+            MyDate date = MyDate.parse(TextValue());
+            if (date != null) {
+                return Create(date);
+            }
+            if (errorMessage == null) {
+                return Error("Convert string to date error!");
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToJson(String errorMessage) {
+            final String txt = TextValue();
+            if ((txt.startsWith("{") && txt.endsWith("}")) || (txt.startsWith("[") && txt.endsWith("]"))) {
+                try {
+                    final JsonData json = JsonMapper.ToObject(txt);
+                    return Operand.Create(json);
+                } catch (final Exception e) {
+                }
+            }
+            if (errorMessage == null) {
+                return Error("Convert string to json error!");
+            }
+            return Error(errorMessage);
+        }
+
+        @Override
+        public Operand ToArray(String errorMessage) {
+            if (errorMessage == null) {
+                errorMessage = "Convert string to array error!";
+            }
+            return Error(errorMessage);
         }
 
     }
+
 
     public static class KeyValue {
         public Integer Index;
