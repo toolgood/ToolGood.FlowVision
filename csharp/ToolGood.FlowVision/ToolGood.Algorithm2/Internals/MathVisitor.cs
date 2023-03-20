@@ -45,7 +45,7 @@ namespace ToolGood.Algorithm2.Internals
                 } else if (DateTime.TryParse(args1.TextValue, cultureInfo, DateTimeStyles.None, out DateTime dt)) {
                     args1 = Operand.Create(new MyDate(dt));
                 } else {
-                    return Operand.Error("两个类型无法乘除");
+                    return Operand.Error("Two types cannot be multiplied or divided.");
                 }
             }
             if (args2.Type == OperandType.TEXT) {
@@ -58,7 +58,7 @@ namespace ToolGood.Algorithm2.Internals
                 } else if (DateTime.TryParse(args2.TextValue, cultureInfo, DateTimeStyles.None, out DateTime dt)) {
                     args2 = Operand.Create(new MyDate(dt));
                 } else {
-                    return Operand.Error("两个类型无法乘除");
+                    return Operand.Error("Two types cannot be multiplied or divided.");
                 }
             }
             var t = context.op.Text;
@@ -126,7 +126,7 @@ namespace ToolGood.Algorithm2.Internals
                 } else if (DateTime.TryParse(args1.TextValue, cultureInfo, DateTimeStyles.None, out DateTime dt)) {
                     args1 = Operand.Create(new MyDate(dt));
                 } else {
-                    return Operand.Error("两个类型无法加减");
+                    return Operand.Error("Two types cannot be added or subtracted.");
                 }
             }
             if (args2.Type == OperandType.TEXT) {
@@ -139,7 +139,7 @@ namespace ToolGood.Algorithm2.Internals
                 } else if (DateTime.TryParse(args2.TextValue, cultureInfo, DateTimeStyles.None, out DateTime dt)) {
                     args2 = Operand.Create(new MyDate(dt));
                 } else {
-                    return Operand.Error("两个类型无法加减");
+                    return Operand.Error("Two types cannot be added or subtracted.");
                 }
             }
             if (CharUtil.Equals(t, '+')) {
@@ -202,7 +202,7 @@ namespace ToolGood.Algorithm2.Internals
                 } else if (args1.Type == OperandType.NULL) {
                     return CharUtil.Equals(type, "=", "==", "===") ? Operand.True : Operand.False;
                 } else {
-                    return Operand.Error("两个类型无法比较");
+                    return Operand.Error("The two types cannot be compared.");
                 }
             } else if (args1.Type == OperandType.NULL || args2.Type == OperandType.NULL) {
                 return CharUtil.Equals(type, "<>", "!=", "!==") ? Operand.True : Operand.False;
@@ -222,7 +222,7 @@ namespace ToolGood.Algorithm2.Internals
                     args2 = args2.ToText();
                     r = string.CompareOrdinal(args1.TextValue, args2.TextValue);
                 } else {
-                    return Operand.Error("两个类型无法比较");
+                    return Operand.Error("The two types cannot be compared.");
                 }
             } else if (args2.Type == OperandType.TEXT) {
                 if (args1.Type == OperandType.BOOLEAN) {
@@ -240,13 +240,13 @@ namespace ToolGood.Algorithm2.Internals
                     args1 = args1.ToText();
                     r = string.CompareOrdinal(args1.TextValue, args2.TextValue);
                 } else {
-                    return Operand.Error("两个类型无法比较");
+                    return Operand.Error("The two types cannot be compared.");
                 }
             } else if (args1.Type == OperandType.JSON || args2.Type == OperandType.JSON
                   || args1.Type == OperandType.ARRARY || args2.Type == OperandType.ARRARY
                   || args1.Type == OperandType.ARRARYJSON || args2.Type == OperandType.ARRARYJSON
                   ) {
-                return Operand.Error("两个类型无法比较");
+                return Operand.Error("The two types cannot be compared.");
             } else {
                 if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber($"Function '{type}' parameter 1 is error!"); if (args1.IsError) { return args1; } }
                 if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber($"Function '{type}' parameter 2 is error!"); if (args2.IsError) { return args2; } }
@@ -499,7 +499,7 @@ namespace ToolGood.Algorithm2.Internals
             if (args2.NumberValue == 0) {
                 return Operand.Error("Function QUOTIENT div 0 error!");
             }
-            return Operand.Create((double)(int)(args1.NumberValue / args2.NumberValue));
+            return Operand.Create((int)(args1.NumberValue / args2.NumberValue));
         }
 
         public Operand VisitMOD_fun(mathParser.MOD_funContext context)
@@ -1120,7 +1120,7 @@ namespace ToolGood.Algorithm2.Internals
             var t = args1.TextValue;
             if (t.Length == 0) { return Operand.Error("Function CODE parameter is error!"); }
 
-            return Operand.Create((double)(int)(char)t[0]);
+            return Operand.Create((int)t[0]);
         }
 
         public Operand VisitCONCATENATE_fun(mathParser.CONCATENATE_funContext context)
@@ -2695,6 +2695,9 @@ namespace ToolGood.Algorithm2.Internals
                 if (item == d) {
                     sum += sumdbs[i];
                 }
+                //if (Math.Round(item, 10, MidpointRounding.AwayFromZero) == d) {
+                //	sum += item;
+                //}
             }
             return sum;
         }
