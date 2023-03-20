@@ -2104,42 +2104,42 @@ namespace ToolGood.Algorithm2.Internals
         private Tuple<string, decimal> sumifMatch(string s)
         {
             var c = s[0];
-            if (c == '>') {
-                if (s.Length > 1 && s[1] == '=') {
+            if (c == '>' || c == '＞') {
+                if (s.Length > 1 && (s[1] == '=' || s[1] == '＝')) {
                     if (decimal.TryParse(s.AsSpan(2).Trim(), out decimal d)) {
                         return Tuple.Create(">=", d);
                     }
                 } else if (decimal.TryParse(s.AsSpan(1).Trim(), out decimal d)) {
                     return Tuple.Create(">", d);
                 }
-            } else if (c == '<') {
-                if (s.Length > 1 && s[1] == '=') {
+            } else if (c == '<' || c < '＜') {
+                if (s.Length > 1 && (s[1] == '=' || s[1] == '＝')) {
                     if (decimal.TryParse(s.AsSpan(2).Trim(), out decimal d)) {
                         return Tuple.Create("<=", d);
                     }
-                } else if (s.Length > 1 && s[1] == '>') {
+                } else if (s.Length > 1 && (s[1] == '>' || s[1] == '＞')) {
                     if (decimal.TryParse(s.AsSpan(2).Trim(), out decimal d)) {
                         return Tuple.Create("!=", d);
                     }
                 } else if (decimal.TryParse(s.AsSpan(1).Trim(), out decimal d)) {
                     return Tuple.Create("<", d);
                 }
-            } else if (c == '=') {
+            } else if (c == '=' || c == '＝') {
                 var index = 1;
-                if (s.Length > 1 && s[1] == '=') {
+                if (s.Length > 1 && (s[1] == '=' || s[1] == '＝')) {
                     index = 2;
-                    if (s.Length > 2 && s[2] == '=') {
+                    if (s.Length > 2 && (s[2] == '=' || s[2] == '＝')) {
                         index = 3;
                     }
                 }
                 if (decimal.TryParse(s.AsSpan(index).Trim(), out decimal d)) {
                     return Tuple.Create("=", d);
                 }
-            } else if (c == '!') {
+            } else if (c == '!' || c == '！') {
                 var index = 1;
-                if (s.Length > 1 && s[1] == '=') {
+                if (s.Length > 1 && (s[1] == '=' || s[1] == '＝')) {
                     index = 2;
-                    if (s.Length > 2 && s[2] == '=') {
+                    if (s.Length > 2 && (s[2] == '=' || s[2] == '＝')) {
                         index = 3;
                     }
                 }
@@ -2695,9 +2695,6 @@ namespace ToolGood.Algorithm2.Internals
                 if (item == d) {
                     sum += sumdbs[i];
                 }
-                //if (Math.Round(item, 10, MidpointRounding.AwayFromZero) == d) {
-                //	sum += item;
-                //}
             }
             return sum;
         }
@@ -2716,34 +2713,19 @@ namespace ToolGood.Algorithm2.Internals
         private bool F_base_compare(decimal a, decimal b, string ss)
         {
             if (ss.Length == 1) {
-                if (CharUtil.Equals(ss, '<')) {
+                if (ss == "<") {
                     return a < b;
-                    //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) < 0;
-                } else if (CharUtil.Equals(ss, '>')) {
+                } else if (ss == ">") {
                     return a > b;
-                    //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) > 0;
-                } else /*if (CharUtil.Equals(ss, '='))*/ {
+                } else { // =
                     return a == b;
-                    //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) == 0;
                 }
-            } else if (CharUtil.Equals(ss, "<=")) {
+            } else if (ss == "<=") {
                 return a <= b;
-                //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) <= 0;
-            } else if (CharUtil.Equals(ss, ">=")) {
+            } else if (ss == ">=") {
                 return a >= b;
-                //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) >= 0;
-            } else if (CharUtil.Equals(ss, "!=")) {
-                return a != b;
-                //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) != 0;
-            } else if (CharUtil.Equals(ss, "==")) {
-                return a == b;
-                //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) == 0;
-            } else if (CharUtil.Equals(ss, "===")) {
-                return a == b;
-                //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) == 0;
             }
             return a != b;
-            //return Math.Round(a - b, 10, MidpointRounding.AwayFromZero) != 0;
         }
 
         private bool F_base_GetList(List<Operand> args, List<decimal> list)
