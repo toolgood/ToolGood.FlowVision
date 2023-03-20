@@ -53,6 +53,12 @@ expr:
 	| expr '[' expr ']'											# GetJsonValue_fun
 	| expr '[' parameter2 ']'									# GetJsonValue_fun
 	| expr '.' parameter2										# GetJsonValue_fun
+	| expr '.' ADDYEARS '(' expr ')'							# ADDYEARS_fun
+	| expr '.' ADDMONTHS '(' expr ')'							# ADDMONTHS_fun
+	| expr '.' ADDDAYS '(' expr ')'								# ADDDAYS_fun
+	| expr '.' ADDHOURS '(' expr ')'							# ADDHOURS_fun
+	| expr '.' ADDMINUTES '(' expr ')'							# ADDMINUTES_fun
+	| expr '.' ADDSECONDS '(' expr ')'							# ADDSECONDS_fun
 
 	//  
 	| '(' expr ')'												# Bracket_fun
@@ -243,6 +249,12 @@ expr:
 	| LOOKUP '(' expr ',' expr (',' expr)? ')'					# LOOKUP_fun
 	| ERROR '(' expr? ')'										# ERROR_fun
 	| PARAM '(' expr (',' expr)? ')'							# PARAM_fun
+	| ADDYEARS '(' expr ',' expr ')'							# ADDYEARS_fun
+	| ADDMONTHS '(' expr ',' expr ')'							# ADDMONTHS_fun
+	| ADDDAYS '(' expr ',' expr ')'								# ADDDAYS_fun
+	| ADDHOURS '(' expr ',' expr ')'							# ADDHOURS_fun
+	| ADDMINUTES '(' expr ',' expr ')'							# ADDMINUTES_fun
+	| ADDSECONDS '(' expr ',' expr ')'							# ADDSECONDS_fun
 	| '{' arrayJson (',' arrayJson)* ','* '}'					# ArrayJson_fun
 	| '[' PARAMETER ']'											# PARAMETER_fun
 	| '[' expr ']'												# PARAMETER_fun
@@ -437,6 +449,12 @@ parameter2:
 	| HAS
 	| UNIT
 	| PARAM
+	| ADDYEARS
+	| ADDMONTHS
+	| ADDDAYS
+	| ADDHOURS
+	| ADDMINUTES
+	| ADDSECONDS
 	| PARAMETER;
 
 SUB: '-';
@@ -653,6 +671,12 @@ LOOKUP: 'LOOKUP';
 IN: 'ISIN' | 'IN';
 HAS: 'HAS' | 'CONTAINS';
 PARAM: 'PARAM' | 'PARAMETER';
+ADDYEARS:'ADDYEARS';
+ADDMONTHS:'ADDMONTHS';
+ADDDAYS:'ADDDAYS';
+ADDHOURS:'ADDHOURS';
+ADDMINUTES:'ADDMINUTES';
+ADDSECONDS:'ADDSECONDS';
 
 PARAMETER: ([A-Z_] | FullWidthLetter) (
 		[A-Z0-9_]
