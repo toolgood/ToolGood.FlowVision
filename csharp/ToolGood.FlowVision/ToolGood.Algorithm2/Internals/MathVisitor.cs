@@ -212,7 +212,7 @@ namespace ToolGood.Algorithm2.Internals
                     if (a.IsError == false) {
                         if (CharUtil.Equals(type, "=", "==", "===")) {
                             return a.BooleanValue == args2.BooleanValue ? Operand.True : Operand.False;
-                        } else if (CharUtil.Equals(type, "<>", "!=", "!===")) {
+                        } else if (CharUtil.Equals(type, "<>", "!=", "!==")) {
                             return a.BooleanValue != args2.BooleanValue ? Operand.True : Operand.False;
                         }
                     }
@@ -230,7 +230,7 @@ namespace ToolGood.Algorithm2.Internals
                     if (a.IsError == false) {
                         if (CharUtil.Equals(type, "=", "==", "===")) {
                             return a.BooleanValue == args1.BooleanValue ? Operand.True : Operand.False;
-                        } else if (CharUtil.Equals(type, "<>", "!=", "!===")) {
+                        } else if (CharUtil.Equals(type, "<>", "!=", "!==")) {
                             return a.BooleanValue != args1.BooleanValue ? Operand.True : Operand.False;
                         }
                     }
