@@ -15,9 +15,9 @@ import toolgood.algorithm2.math.mathVisitor;
 import toolgood.algorithm2.mathNet.ExcelFunctions;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,15 +41,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public VolumeUnitType VolumeUnit = VolumeUnitType.M3;
     public MassUnitType MassUnit = MassUnitType.KG;
 
-    static int sign(final double a) {
-        if (a == 0.0) {
-            return 0;
-        }
-        if (a < 0) {
-            return -1;
-        }
-        return 1;
-    }
 
     public Operand visitProg(final ProgContext context) {
         return visit(context.expr());
@@ -58,7 +49,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Operand visitMulDiv_fun(final MulDiv_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
+            final Operand aa = item.accept(this);
             if (aa.IsError()) {
                 return aa;
             }
@@ -139,10 +130,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            if (secondValue.NumberValue() == new BigDecimal(0)) {
+            if (secondValue.NumberValue().compareTo(new BigDecimal(0)) == 0) {
                 return Operand.Error("Function '" + t + "' parameter 2 is error!");
             }
-            return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue()));
+            return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue(), MathContext.DECIMAL32));
         } else if (CharUtil.Equals(t, "%")) {
             firstValue = firstValue.ToNumber("% fun right value");
             if (firstValue.IsError()) {
@@ -152,10 +143,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-            if (secondValue.NumberValue() == new BigDecimal(0)) {
+            if (secondValue.NumberValue().compareTo(new BigDecimal(0)) == 0) {
                 return Operand.Error("Div 0 is error!");
             }
-            return Operand.Create(firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue())[1]);
+            return Operand.Create(firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue(), MathContext.DECIMAL32)[1]);
         }
         return Operand.Error("Function '" + t + "' parameter is error!");
     }
@@ -163,7 +154,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Operand visitAddSub_fun(final AddSub_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
+            final Operand aa = item.accept(this);
             if (aa.IsError()) {
                 return aa;
             }
@@ -274,7 +265,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     public Operand visitJudge_fun(final Judge_funContext context) {
         final List<Operand> args = new ArrayList<Operand>();
         for (final ExprContext item : context.expr()) {
-            final Operand aa = visit(item);
+            final Operand aa = item.accept(this);
             if (aa.IsError()) {
                 return aa;
             }
@@ -323,7 +314,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 if (secondValue.IsError()) {
                     return secondValue;
                 }
-                r = Compare(firstValue.NumberValue(), secondValue.NumberValue());
+                r = firstValue.NumberValue().compareTo(secondValue.NumberValue());
             }
         } else if ((firstValue.Type() == OperandType.DATE && secondValue.Type() == OperandType.TEXT)
                 || (secondValue.Type() == OperandType.DATE && firstValue.Type() == OperandType.TEXT)
@@ -350,7 +341,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 return secondValue;
             }
             r = firstValue.TextValue().compareToIgnoreCase(secondValue.TextValue());
-            // r = String.Compare(firstValue.TextValue(), secondValue.TextValue(), true);
         } else if (firstValue.Type() == OperandType.TEXT || secondValue.Type() == OperandType.TEXT
                 || firstValue.Type() == OperandType.JSON || secondValue.Type() == OperandType.JSON
                 || firstValue.Type() == OperandType.ARRARY || secondValue.Type() == OperandType.ARRARY
@@ -365,8 +355,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (secondValue.IsError()) {
                 return secondValue;
             }
-
-            r = Compare(firstValue.NumberValue(), secondValue.NumberValue());
+            r = firstValue.NumberValue().compareTo(secondValue.NumberValue());
         }
         if (CharUtil.Equals(type, "<")) {
             return Operand.Create(r == -1);
@@ -380,10 +369,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return Operand.Create(r == 0);
         }
         return Operand.Create(r != 0);
-    }
-
-    private int Compare(final BigDecimal t1, final BigDecimal t2) {
-        return t1.compareTo(t2);
     }
 
     public Operand visitAndOr_fun(final AndOr_funContext context) {
@@ -560,7 +545,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     public Operand visitAND_fun(final AND_funContext context) {
         int index = 1;
-        Boolean b = true;
+        boolean b = true;
         for (final ExprContext item : context.expr()) {
             final Operand a = visit(item).ToBoolean("Function AND parameter " + (index++) + " is error!");
             if (a.IsError())
@@ -588,7 +573,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     public Operand visitOR_fun(final OR_funContext context) {
         int index = 1;
-        Boolean b = false;
+        boolean b = false;
         for (final ExprContext item : context.expr()) {
             final Operand a = visit(item).ToBoolean("Function OR parameter " + (index++) + " is error!");
             if (a.IsError())
@@ -646,10 +631,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        if (secondValue.NumberValue() == new BigDecimal(0)) {
+        if (secondValue.NumberValue().equals(new BigDecimal(0))) {
             return Operand.Error("Function QUOTIENT div 0 error!");
         }
-        return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue()).intValue());
+        return Operand.Create(firstValue.NumberValue().divide(secondValue.NumberValue(), MathContext.DECIMAL32).intValue());
     }
 
     public Operand visitMOD_fun(final MOD_funContext context) {
@@ -666,10 +651,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        if (secondValue.NumberValue() == new BigDecimal(0)) {
+        if (secondValue.NumberValue().equals(new BigDecimal(0))) {
             return Operand.Error("Function MOD div 0 error!");
         }
-        return Operand.Create((firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue())[1].intValue()));
+        return Operand.Create((firstValue.NumberValue().divideAndRemainder(secondValue.NumberValue(), MathContext.DECIMAL32)[1].intValue()));
 
     }
 
@@ -679,7 +664,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(sign(firstValue.NumberValue().doubleValue()));
+        return Operand.Create(firstValue.NumberValue().compareTo(new BigDecimal(0)));
     }
 
     public Operand visitSQRT_fun(final SQRT_funContext context) {
@@ -696,7 +681,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create((int) (firstValue.NumberValue()).intValue());
+        return Operand.Create((firstValue.NumberValue()).intValue());
     }
 
     public Operand visitINT_fun(final INT_funContext context) {
@@ -704,7 +689,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (firstValue.IsError()) {
             return firstValue;
         }
-        return Operand.Create((int) (firstValue.NumberValue()).intValue());
+        return Operand.Create((firstValue.NumberValue()).intValue());
     }
 
     public Operand visitGCD_fun(final GCD_funContext context) {
@@ -717,7 +702,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function GCD parameter is error!");
@@ -736,7 +721,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function GCD parameter is error!");
@@ -800,15 +785,14 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        return Operand.Create(firstValue.NumberValue().divide(new BigDecimal(100)));
+        return Operand.Create(firstValue.NumberValue().divide(new BigDecimal(100), MathContext.DECIMAL32));
     }
 
-    private int F_base_gcd(List<Double> list) {
+    private int F_base_gcd(List<BigDecimal> list) {
         list = ShellSort(list);
-        // list = list.OrderBy(q => q).ToList();
-        int g = F_base_gcd((int) (double) list.get(1), (int) (double) list.get(0));
+        int g = F_base_gcd(list.get(1).intValue(), list.get(0).intValue());
         for (int i = 2; i < list.size(); i++) {
-            g = F_base_gcd((int) (double) list.get(i), g);
+            g = F_base_gcd(list.get(i).intValue(), g);
         }
         return g;
     }
@@ -823,39 +807,37 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return F_base_gcd(b, a % b);
     }
 
-    private int F_base_lgm(List<Double> list) {
+    private int F_base_lgm(List<BigDecimal> list) {
         for (int i = list.size() - 1; i >= 0; i--) {
-            final int item = (int) (double) list.get(i);// [i];
+            final int item = list.get(i).intValue();
             if (item <= 1) {
                 list.remove(i);
             }
         }
         list = ShellSort(list);
 
-        int a = (int) (double) list.get(0);// [0];
+        int a = list.get(0).intValue();
         for (int i = 1; i < list.size(); i++) {
-            final int b = (int) (double) list.get(i);
+            final int b = list.get(i).intValue();
             final int g = b > a ? F_base_gcd(b, a) : F_base_gcd(a, b);
             a = a / g * b;
         }
         return a;
     }
 
-    private List<Double> ShellSort(final List<Double> array) {
+    private List<BigDecimal> ShellSort(final List<BigDecimal> array) {
         final int len = array.size();
-        double temp;
+        BigDecimal temp;
         int gap = len / 2;
         while (gap > 0) {
             for (int i = gap; i < len; i++) {
                 temp = array.get(i);
                 int preIndex = i - gap;
-                while (preIndex >= 0 && array.get(preIndex) > temp) {
+                while (preIndex >= 0 && array.get(preIndex).compareTo(temp) > 0) {
                     array.set(preIndex + gap, array.get(preIndex));
-                    // array[preIndex + gap] = array[preIndex];
                     preIndex -= gap;
                 }
                 array.set(preIndex + gap, temp);
-                // array[preIndex + gap] = temp;
             }
             gap /= 2;
         }
@@ -869,7 +851,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         final BigDecimal z = firstValue.NumberValue();
-        final BigDecimal r = (z.divide(new BigDecimal(Math.PI)).multiply(new BigDecimal(180)));
+        final BigDecimal r = z.divide(new BigDecimal(Math.PI), MathContext.DECIMAL32).multiply(new BigDecimal(180));
         return Operand.Create(r);
     }
 
@@ -879,7 +861,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final BigDecimal r = firstValue.NumberValue().divide(new BigDecimal(180)).divide(new BigDecimal(Math.PI));
+        final BigDecimal r = firstValue.NumberValue().divide(new BigDecimal(180), MathContext.DECIMAL32).multiply(new BigDecimal(Math.PI), MathContext.DECIMAL32);
         return Operand.Create(r);
     }
 
@@ -938,7 +920,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
         final BigDecimal x = firstValue.NumberValue();
-        if (x.doubleValue() < -1 && x.doubleValue() > 1) {
+        if (x.doubleValue() < -1 || x.doubleValue() > 1) {
             return Operand.Error("Function ACOS parameter is error!");
         }
         return Operand.Create(Math.acos(x.doubleValue()));
@@ -964,7 +946,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
         final double x = firstValue.NumberValue().doubleValue();
-        if (x < -1 && x > 1) {
+        if (x < -1 || x > 1) {
             return Operand.Error("Function ASIN parameter is error!");
         }
         return Operand.Create(Math.asin(x));
@@ -1063,7 +1045,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             final DecimalFormat myFormatter = new DecimalFormat(f);
             return Operand.Create(myFormatter.format(s));
         }
-        // return Operand.Create(((Double)s).toString());
     }
 
     public Operand visitROUND_fun(final ROUND_funContext context) {
@@ -1098,7 +1079,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
-        if (firstValue.NumberValue() == new BigDecimal(0) ){
+        if (firstValue.NumberValue().equals(new BigDecimal(0))) {
             return firstValue;
         }
         final double a = Math.pow(10, secondValue.IntValue());
@@ -1121,7 +1102,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
-        if (firstValue.NumberValue() == new BigDecimal(0)){
+        if (firstValue.NumberValue().equals(new BigDecimal(0))) {
             return firstValue;
         }
         final double a = Math.pow(10, secondValue.IntValue());
@@ -1150,7 +1131,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         final Operand secondValue = args.get(1);
         final BigDecimal b = secondValue.NumberValue();
-        if (b == new BigDecimal(0)) {
+        if (b.equals(new BigDecimal(0))) {
             return Operand.Create(0);
         }
         if (b.doubleValue() < 0) {
@@ -1395,7 +1376,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function MULTINOMIAL parameter is error!");
@@ -1403,9 +1384,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         int sum = 0;
         int n = 1;
-        for (final Double a : list) {
-            n *= F_base_Factorial((int) (double) a);
-            sum += (int) (double) a;
+        for (final BigDecimal a : list) {
+            n *= F_base_Factorial(a.intValue());
+            sum += a.intValue();
         }
         final int r = F_base_Factorial(sum) / n;
         return Operand.Create(r);
@@ -1421,15 +1402,15 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function PRODUCT parameter is error!");
         }
 
-        double d = 1;
-        for (final double a : list) {
-            d *= a;
+        BigDecimal d = new BigDecimal(1);
+        for (final BigDecimal a : list) {
+            d = d.multiply(a);
         }
 
         return Operand.Create(d);
@@ -1453,15 +1434,15 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function SUMSQ parameter is error!");
         }
 
-        double d = 0;
-        for (final double a : list) {
-            d += a * a;
+        BigDecimal d = new BigDecimal(0);
+        for (final BigDecimal a : list) {
+            d = d.add(a.multiply(a));
         }
 
         return Operand.Create(d);
@@ -1502,7 +1483,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
 
-        final char c = (char) (int) firstValue.NumberValue().intValue();
+        final char c = (char) firstValue.NumberValue().intValue();
         return Operand.Create(((Character) c).toString());
     }
 
@@ -1562,7 +1543,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final Operand firstValue = args.get(0);
         final Operand secondValue = args.get(1);
 
-        return Operand.Create(firstValue.TextValue() == secondValue.TextValue());
+        return Operand.Create(firstValue.TextValue().equals(secondValue.TextValue()));
     }
 
     public Operand visitFIND_fun(final FIND_funContext context) {
@@ -1959,27 +1940,21 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return firstValue;
         }
         try {
-            final Double d = Double.parseDouble(firstValue.TextValue());
+            final BigDecimal d = new BigDecimal(firstValue.TextValue());
             return Operand.Create(d);
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
-        // if (double.TryParse(firstValue.TextValue(), NumberStyles.Any, cultureInfo,
-        // out double d)) {
-        // return Operand.Create(d);
-        // }
         return Operand.Error("Function VALUE parameter is error!");
     }
 
     private String F_base_ToSBC(final String input) {
         final StringBuilder sb = new StringBuilder(input);
         for (int i = 0; i < input.length(); i++) {
-            final char c = input.charAt(i);// [i];
+            final char c = input.charAt(i);
             if (c == ' ') {
                 sb.setCharAt(i, (char) 12288);
-                // sb[i] = (char) 12288;
             } else if (c < 127) {
                 sb.setCharAt(i, (char) (c + 65248));
-                // sb[i] = (char) (c + 65248);
             }
         }
         return sb.toString();
@@ -1988,10 +1963,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
     private String F_base_ToDBC(final String input) {
         final StringBuilder sb = new StringBuilder(input);
         for (int i = 0; i < input.length(); i++) {
-            final char c = input.charAt(i);// [i];
+            final char c = input.charAt(i);
             if (c == 12288) {
                 sb.setCharAt(i, (char) 32);
-                continue;
             } else if (c > 65280 && c < 65375) {
                 sb.setCharAt(i, (char) (c - 65248));
             }
@@ -2280,7 +2254,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             boolean b = false;
             if (startDate.Month < endDate.Month) {
                 b = true;
-            } else if (startDate.Month == endDate.Month) {
+            } else if (startDate.Month.equals(endDate.Month)) {
                 if (startDate.Day <= endDate.Day)
                     b = true;
             }
@@ -2573,7 +2547,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function MAX parameter error!");
@@ -2592,14 +2566,13 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        List<Double> list = new ArrayList<Double>();
+        List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function MEDIAN parameter error!");
         }
 
         list = ShellSort(list);
-        // list = list.OrderBy(q => q).ToList();
         return Operand.Create(list.get(list.size() / 2));
     }
 
@@ -2614,7 +2587,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function MIN parameter error!");
@@ -2642,7 +2615,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return secondValue;
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_2(firstValue, list);
         if (o == false) {
             return Operand.Error("Function QUARTILE parameter 1 error!");
@@ -2652,9 +2625,13 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (quant < 0 || quant > 4) {
             return Operand.Error("Function QUARTILE parameter 2 is error!");
         }
+        final List<Double> list2 = new ArrayList<Double>();
+        for (BigDecimal item : list) {
+            list2.add(item.doubleValue());
+        }
         try {
-            return Operand.Create(ExcelFunctions.Quartile(list, quant));
-        } catch (final Exception e) {
+            return Operand.Create(ExcelFunctions.Quartile(list2, quant));
+        } catch (final Exception ignored) {
         }
         return Operand.Error("Function QUARTILE is error!");
     }
@@ -2670,14 +2647,14 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function MODE parameter error!");
         }
 
-        final Map<Double, Integer> dict = new HashMap<Double, Integer>();
-        for (final double item : list) {
+        final Map<BigDecimal, Integer> dict = new HashMap<BigDecimal, Integer>();
+        for (final BigDecimal item : list) {
             if (dict.containsKey(item)) {
                 dict.put(item, dict.get(item) + 1);
             } else {
@@ -2685,8 +2662,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
         }
         int maxCount = 0;
-        double maxValue = 0;
-        for (final Double d : dict.keySet()) {
+        BigDecimal maxValue = new BigDecimal(0);
+        for (final BigDecimal d : dict.keySet()) {
             final int count = dict.get(d);
             if (count > maxCount) {
                 maxCount = count;
@@ -2694,7 +2671,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
         }
         return Operand.Create(maxValue);
-        // return Operand.Create(dict.OrderByDescending(q => q.Value).First().Key);
     }
 
     public Operand visitLARGE_fun(final LARGE_funContext context) {
@@ -2716,15 +2692,13 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return secondValue;
         }
 
-        List<Double> list = new ArrayList<Double>();
+        List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function LARGE parameter error!");
         }
 
         list = ShellSort(list);
-        // list = list.OrderByDescending(q => q).ToList();
-        // int quant = secondValue.IntValue();
         return Operand.Create(list.get(list.size() - 1 - (secondValue.IntValue() - excelIndex)));
     }
 
@@ -2747,17 +2721,14 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return secondValue;
         }
 
-        List<Double> list = new ArrayList<Double>();
+        List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function SMALL parameter error!");
         }
 
         list = ShellSort(list);
-        // list = list.OrderBy(q => q).ToList();
-        // int quant = secondValue.IntValue();
         return Operand.Create(list.get(secondValue.IntValue() - excelIndex));
-        // return Operand.Create(list[secondValue.IntValue() - excelIndex]);
     }
 
     public Operand visitPERCENTILE_fun(final PERCENTILE_funContext context) {
@@ -2779,15 +2750,19 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return secondValue;
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_2(firstValue, list);
         if (o == false) {
             return Operand.Error("Function PERCENTILE parameter error!");
         }
 
         final double k = secondValue.NumberValue().doubleValue();
+        final List<Double> list2 = new ArrayList<Double>();
+        for (BigDecimal item : list) {
+            list2.add(item.doubleValue());
+        }
         try {
-            return Operand.Create(ExcelFunctions.Percentile(list, k));
+            return Operand.Create(ExcelFunctions.Percentile(list2, k));
         } catch (final Exception e) {
         }
         return Operand.Error("Function PERCENTILE parameter error!");
@@ -2812,14 +2787,18 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             return secondValue;
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_2(firstValue, list);
         if (o == false) {
             return Operand.Error("Function PERCENTRANK parameter error!");
         }
 
         final double k = secondValue.NumberValue().doubleValue();
-        final double v = ExcelFunctions.PercentRank(list, k);
+        final List<Double> list2 = new ArrayList<Double>();
+        for (BigDecimal item : list) {
+            list2.add(item.doubleValue());
+        }
+        final double v = ExcelFunctions.PercentRank(list2, k);
         int d = 3;
         if (args.size() == 3) {
             final Operand thirdValue = args.get(2).ToNumber("Function PERCENTRANK parameter 3 is error!");
@@ -2841,7 +2820,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function AVERAGE parameter error!");
@@ -2860,15 +2839,15 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_2(args.get(0), list);
         if (o == false) {
             return Operand.Error("Function AVERAGE parameter 1 error!");
         }
 
-        List<Double> sumdbs;
+        List<BigDecimal> sumdbs;
         if (args.size() == 3) {
-            sumdbs = new ArrayList<Double>();
+            sumdbs = new ArrayList<BigDecimal>();
             final boolean o2 = F_base_GetList_2(args.get(2), sumdbs);
             if (o2 == false) {
                 return Operand.Error("Function AVERAGE parameter 3 error!");
@@ -2877,14 +2856,14 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             sumdbs = list;
         }
 
-        double sum;
+        BigDecimal sum;
         int count;
         if (args.get(1).Type() == OperandType.NUMBER) {
-            count = F_base_countif(list, args.get(1).NumberValue().doubleValue());
-            sum = count * args.get(1).NumberValue().doubleValue();
+            count = F_base_countif(list, args.get(1).NumberValue());
+            sum = args.get(1).NumberValue().multiply(new BigDecimal(count));
         } else {
             try {
-                final Double d = Double.parseDouble(args.get(1).TextValue().trim());
+                final BigDecimal d = new BigDecimal(args.get(1).TextValue().trim());
                 count = F_base_countif(list, d);
                 sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
             } catch (final Exception e) {
@@ -2896,21 +2875,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     return Operand.Error("Function AVERAGE parameter 2 error!");
                 }
             }
-            // if (double.TryParse(args.get(1).TextValue().trim(), NumberStyles.Any,
-            // cultureInfo, out double d)) {
-            // count = F_base_countif(list, d);
-            // sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
-            // } else {
-            // String sunif = args.get(1).TextValue().trim();
-            // if (sumifRegex.matcher(sunif)) {
-            // count = F_base_countif(list, sunif);
-            // sum = F_base_sumif(list, sunif, sumdbs);
-            // } else {
-            // return Operand.Error("Function AVERAGE parameter 2 error!");
-            // }
-            // }
         }
-        return Operand.Create(sum / count);
+        return Operand.Create(sum.divide(new BigDecimal(count), MathContext.DECIMAL32));
     }
 
     @Override
@@ -2943,17 +2909,17 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (args.size() == 1)
             return args.get(0);
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function GEOMEAN parameter error!");
         }
 
-        double sum = 1;
-        for (final double db : list) {
-            sum *= db;
+        BigDecimal sum = new BigDecimal(1);
+        for (final BigDecimal db : list) {
+            sum = sum.multiply(db);
         }
-        return Operand.Create(Math.pow(sum, 1.0 / list.size()));
+        return Operand.Create(Math.pow(sum.doubleValue(), 1.0 / list.size()));
     }
 
     public Operand visitHARMEAN_fun(final HARMEAN_funContext context) {
@@ -2969,18 +2935,18 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (args.size() == 1)
             return args.get(0);
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function HARMEAN parameter error!");
         }
 
         double sum = 0;
-        for (final double db : list) {
-            if (db == 0) {
+        for (final BigDecimal db : list) {
+            if (db.doubleValue() == 0) {
                 return Operand.Error("Function HARMEAN parameter error!");
             }
-            sum += 1 / db;
+            sum += 1 / db.doubleValue();
         }
         return Operand.Create(list.size() / sum);
     }
@@ -2995,7 +2961,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function COUNT parameter error!");
@@ -3014,7 +2980,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_2(args.get(0), list);
         if (o == false) {
             return Operand.Error("Function COUNTIF parameter error!");
@@ -3022,10 +2988,10 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
         int count;
         if (args.get(1).Type() == OperandType.NUMBER) {
-            count = F_base_countif(list, args.get(1).NumberValue().doubleValue());
+            count = F_base_countif(list, args.get(1).NumberValue());
         } else {
             try {
-                final Double d = Double.parseDouble(args.get(1).TextValue().trim());
+                final BigDecimal d = new BigDecimal(args.get(1).TextValue().trim());
                 count = F_base_countif(list, d);
             } catch (final Exception e) {
                 final String sunif = args.get(1).TextValue().trim();
@@ -3035,17 +3001,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     return Operand.Error("Function COUNTIF parameter 2 error!");
                 }
             }
-            // if (double.TryParse(args.get(1).TextValue().trim(), NumberStyles.Any,
-            // cultureInfo, out double d)) {
-            // count = F_base_countif(list, d);
-            // } else {
-            // String sunif = args.get(1).TextValue().trim();
-            // if (sumifRegex.matcher(sunif)) {
-            // count = F_base_countif(list, sunif);
-            // } else {
-            // return Operand.Error("Function COUNTIF parameter 2 error!");
-            // }
-            // }
         }
         return Operand.Create(count);
     }
@@ -3063,13 +3018,13 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (args.size() == 1)
             return args.get(0);
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function SUM parameter error!");
         }
 
-        final double sum = Sum(list);
+        final BigDecimal sum = Sum(list);
         return Operand.Create(sum);
     }
 
@@ -3083,15 +3038,15 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_2(args.get(0), list);
         if (o == false) {
             return Operand.Error("Function SUMIF parameter 1 error!");
         }
 
-        List<Double> sumdbs;
+        List<BigDecimal> sumdbs;
         if (args.size() == 3) {
-            sumdbs = new ArrayList<Double>();
+            sumdbs = new ArrayList<BigDecimal>();
             final boolean o2 = F_base_GetList_2(args.get(2), sumdbs);
             if (o2 == false) {
                 return Operand.Error("Function SUMIF parameter 3 error!");
@@ -3100,9 +3055,9 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             sumdbs = list;
         }
 
-        double sum;
+        BigDecimal sum;
         if (args.get(1).Type() == OperandType.NUMBER) {
-            sum = F_base_countif(list, args.get(1).NumberValue().doubleValue()) * args.get(1).NumberValue().doubleValue();
+            sum = new BigDecimal(F_base_countif(list, args.get(1).NumberValue())).multiply(args.get(1).NumberValue());
         } else {
             if (Pattern.compile("^-?(\\d+)(\\.\\d+)?$").matcher(args.get(1).TextValue().trim()).find()) {
                 sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
@@ -3114,17 +3069,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     return Operand.Error("Function SUMIF parameter 2 error!");
                 }
             }
-            // if (double.TryParse(args.get(1).TextValue().trim(), NumberStyles.Any,
-            // cultureInfo, out _)) {
-            // sum = F_base_sumif(list, "=" + args.get(1).TextValue().trim(), sumdbs);
-            // } else {
-            // String sunif = args.get(1).TextValue().trim();
-            // if (sumifRegex.matcher(sunif)) {
-            // sum = F_base_sumif(list, sunif, sumdbs);
-            // } else {
-            // return Operand.Error("Function SUMIF parameter 2 error!");
-            // }
-            // }
         }
         return Operand.Create(sum);
     }
@@ -3139,16 +3083,16 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function AVEDEV parameter error!");
         }
 
-        final double avg = Average(list);
+        final BigDecimal avg = Average(list);
         double sum = 0;
         for (int i = 0; i < list.size(); i++) {
-            sum += Math.abs(list.get(i) - avg);
+            sum += Math.abs(list.get(i).doubleValue() - avg.doubleValue());
         }
         return Operand.Create(sum / list.size());
     }
@@ -3166,16 +3110,16 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (args.size() == 1) {
             return Operand.Error("Function STDEV parameter only one error!");
         }
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function STDEV parameter error!");
         }
 
-        final double avg = Average(list);
+        final double avg = Average(list).doubleValue();
         double sum = 0;
         for (int i = 0; i < list.size(); i++) {
-            sum += (list.get(i) - avg) * (list.get(i) - avg);
+            sum += (list.get(i).doubleValue() - avg) * (list.get(i).doubleValue() - avg);
         }
         return Operand.Create(Math.sqrt(sum / (list.size() - 1)));
     }
@@ -3190,17 +3134,17 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function STDEVP parameter error!");
         }
 
         double sum = 0;
-        final double avg = Average(list);
+        final double avg = Average(list).doubleValue();
 
         for (int i = 0; i < list.size(); i++) {
-            sum += (list.get(i) - avg) * (list.get(i) - avg);
+            sum += (list.get(i).doubleValue() - avg) * (list.get(i).doubleValue() - avg);
         }
         return Operand.Create(Math.sqrt(sum / (list.size())));
     }
@@ -3215,16 +3159,16 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function DEVSQ parameter error!");
         }
 
-        final double avg = Average(list);
+        final double avg = Average(list).doubleValue();
         double sum = 0;
         for (int i = 0; i < list.size(); i++) {
-            sum += (list.get(i) - avg) * (list.get(i) - avg);
+            sum += (list.get(i).doubleValue() - avg) * (list.get(i).doubleValue() - avg);
         }
         return Operand.Create(sum);
     }
@@ -3242,7 +3186,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         if (args.size() == 1) {
             return Operand.Error("Function VAR parameter only one error!");
         }
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function VAR parameter error!");
@@ -3251,8 +3195,8 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         double sum = 0;
         double sum2 = 0;
         for (int i = 0; i < list.size(); i++) {
-            sum += list.get(i) * list.get(i);
-            sum2 += list.get(i);
+            sum += list.get(i).doubleValue() * list.get(i).doubleValue();
+            sum2 += list.get(i).doubleValue();
         }
         return Operand.Create((list.size() * sum - sum2 * sum2) / list.size() / (list.size() - 1));
     }
@@ -3267,16 +3211,16 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(aa);
         }
 
-        final List<Double> list = new ArrayList<Double>();
+        final List<BigDecimal> list = new ArrayList<BigDecimal>();
         final boolean o = F_base_GetList_1(args, list);
         if (o == false) {
             return Operand.Error("Function VARP parameter error!");
         }
 
         double sum = 0;
-        final double avg = Average(list);
+        final double avg = Average(list).doubleValue();
         for (int i = 0; i < list.size(); i++) {
-            sum += (avg - list.get(i)) * (avg - list.get(i));
+            sum += (avg - list.get(i).doubleValue()) * (avg - list.get(i).doubleValue());
         }
         return Operand.Create(sum / list.size());
     }
@@ -3390,7 +3334,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         try {
             return Operand.Create(ExcelFunctions.BetaInv(probability, alpha, beta));
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return Operand.Error("Function BETAINV parameter error!");
     }
@@ -3493,7 +3437,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         try {
             return Operand.Create(ExcelFunctions.FInv(probability, degreesFreedom, degreesFreedom2));
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return Operand.Error("Function FINV parameter error!");
     }
@@ -3712,7 +3656,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         try {
             return Operand.Create(ExcelFunctions.TDist(x, degreesFreedom, tails));
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return Operand.Error("Function TDIST parameter error!");
     }
@@ -3735,7 +3679,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         try {
             return Operand.Create(ExcelFunctions.TInv(probability, degreesFreedom));
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return Operand.Error("Function TINV parameter error!");
     }
@@ -3775,24 +3719,23 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return Operand.Create(ExcelFunctions.WEIBULL(x, shape, scale, state));
     }
 
-    private int F_base_countif(final List<Double> dbs, double d) {
+    private int F_base_countif(final List<BigDecimal> dbs, BigDecimal d) {
         int count = 0;
-        d = round(d, 12);
-        for (final double item : dbs) {
-            if (round(item, 12) == d) {
+        for (final BigDecimal item : dbs) {
+            if (item.compareTo(d) == 0) {
                 count++;
             }
         }
         return count;
     }
 
-    private int F_base_countif(final List<Double> dbs, final String s) {
+    private int F_base_countif(final List<BigDecimal> dbs, final String s) {
         Matcher m = sumifRegex.matcher(s);
         int count = 0;
         if (m.find()) {
-            final Double d = Double.parseDouble(m.group(2));
-            for (final double item : dbs) {
-                if (F_base_compare(item, d, s)) {
+            final BigDecimal d = new BigDecimal(m.group(2));
+            for (final BigDecimal item : dbs) {
+                if (F_base_compare(item, d, m.group(1))) {
                     count++;
                 }
             }
@@ -3801,41 +3744,40 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return count;
     }
 
-    private double F_base_sumif(final List<Double> dbs, final String s, final List<Double> sumdbs) {
+    private BigDecimal F_base_sumif(final List<BigDecimal> dbs, final String s, final List<BigDecimal> sumdbs) {
         final Matcher m = sumifRegex.matcher(s);
-        double sum = 0;
+        BigDecimal sum = new BigDecimal(0);
         if (m.find()) {
-            final Double d = Double.parseDouble(m.group(2));
-
+            final BigDecimal d = new BigDecimal(m.group(2));
             for (int i = 0; i < dbs.size(); i++) {
-                if (F_base_compare(dbs.get(i), d, s)) {
-                    sum += sumdbs.get(i);
+                if (F_base_compare(dbs.get(i), d, m.group(1))) {
+                    sum = sum.add(sumdbs.get(i));
                 }
             }
         }
         return sum;
     }
 
-    private boolean F_base_compare(final double a, final double b, final String ss) {
+    private boolean F_base_compare(final BigDecimal a, final BigDecimal b, final String ss) {
         if (CharUtil.Equals(ss, "<")) {
-            return round(a - b, 12) < 0;
+            return a.compareTo(b) < 0;
         } else if (CharUtil.Equals(ss, "<=")) {
-            return round(a - b, 12) <= 0;
+            return a.compareTo(b) <= 0;
         } else if (CharUtil.Equals(ss, ">")) {
-            return round(a - b, 12) > 0;
+            return a.compareTo(b) > 0;
         } else if (CharUtil.Equals(ss, ">=")) {
-            return round(a - b, 12) >= 0;
+            return a.compareTo(b) >= 0;
         } else if (CharUtil.Equals(ss, "=", "==", "===")) {
-            return round(a - b, 12) == 0;
+            return a.compareTo(b) == 0;
         }
-        return round(a - b, 12) != 0;
+        return a.compareTo(b) != 0;
     }
 
-    private boolean F_base_GetList_1(final List<Operand> args, final List<Double> list) {
+    private boolean F_base_GetList_1(final List<Operand> args, final List<BigDecimal> list) {
         for (final Operand item : args) {
             if (item.Type() == OperandType.NUMBER) {
-                list.add(item.NumberValue().doubleValue());
-            } else if (item.Type() == OperandType.ARRARY) {
+                list.add(item.NumberValue());
+            } else if (item.Type() == OperandType.ARRARY || item.Type() == OperandType.ARRARYJSON) {
                 final boolean o = F_base_GetList_1(item.ArrayValue(), list);
                 if (o == false) {
                     return false;
@@ -3854,18 +3796,18 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 if (o.IsError()) {
                     return false;
                 }
-                list.add(o.NumberValue().doubleValue());
+                list.add(o.NumberValue());
             }
         }
         return true;
     }
 
-    private boolean F_base_GetList_2(final Operand args, final List<Double> list) {
+    private boolean F_base_GetList_2(final Operand args, final List<BigDecimal> list) {
         if (args.IsError()) {
             return false;
         }
         if (args.Type() == OperandType.NUMBER) {
-            list.add(args.NumberValue().doubleValue());
+            list.add(args.NumberValue());
         } else if (args.Type() == OperandType.ARRARY || args.Type() == OperandType.ARRARYJSON) {
             final boolean o = F_base_GetList_1(args.ArrayValue(), list);
             return o != false;
@@ -3881,7 +3823,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             if (o.IsError()) {
                 return false;
             }
-            list.add(o.NumberValue().doubleValue());
+            list.add(o.NumberValue());
         }
         return true;
     }
@@ -3948,9 +3890,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             args.add(a);
         }
 
-        final Matcher b = Pattern.compile(args.get(0).TextValue()).matcher(args.get(1).TextValue());// .Replace(args.get(0).TextValue(),
-        // args.get(1).TextValue(),
-        // args.get(2).TextValue());
+        final Matcher b = Pattern.compile(args.get(0).TextValue()).matcher(args.get(1).TextValue());
         final String t = b.replaceAll(args.get(2).TextValue());
         return Operand.Create(t);
     }
@@ -4318,7 +4258,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
         boolean b = firstValue.TextValue() == null || firstValue.TextValue().equals("");
         return Operand.Create(b);
-        // return Operand.Create(String.IsNullOrEmpty(firstValue.TextValue()));
     }
 
     public Operand visitISNULLORWHITESPACE_fun(final ISNULLORWHITESPACE_funContext context) {
@@ -4387,7 +4326,6 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         }
 
         final String text = firstValue.TextValue();
-        // StringComparison comparison = StringComparison.Ordinal;
         if (args.size() == 3) {
             final Operand thirdValue = args.get(2).ToBoolean("Function REMOVESTART parameter 3 is error!");
             if (thirdValue.IsError()) {
@@ -4416,7 +4354,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             try {
                 final JsonData json = JsonMapper.ToObject(txt);
                 return Operand.Create(json);
-            } catch (final Exception e) {
+            } catch (final Exception ignored) {
             }
         }
         return Operand.Error("Function JSON parameter is error!");
@@ -4481,7 +4419,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                     final Operand o = engine.Evaluate().ToBoolean(null);
                     if (o.IsError() == false) {
                         if (o.BooleanValue()) {
-                            final JsonData v = json.JsonValue().GetChild(thirdValue.TextValue());// [thirdValue.TextValue()];
+                            final JsonData v = json.JsonValue().GetChild(thirdValue.TextValue());
                             if (v != null) {
                                 if (v.IsString())
                                     return Operand.Create(v.StringValue());
@@ -4499,7 +4437,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                             }
                         }
                     }
-                } catch (final Exception e) {
+                } catch (final Exception ignored) {
                 }
             }
         }
@@ -4512,7 +4450,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
 
     public Operand visitNUM_fun(final NUM_funContext context) {
         final String t = context.num().getText();
-        Double d = Double.parseDouble(t);
+        BigDecimal d = new BigDecimal(t);
         if (context.unit() == null) return Operand.Create(d);
         String unit = context.unit().getText().toUpperCase();
         Map<String, NumberUnitType> dict = NumberUnitTypeHelper.GetUnitTypedict();
@@ -4530,7 +4468,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         final StringBuilder sb = new StringBuilder();
         int index = 1;
         while (index < opd.length() - 1) {
-            final char c = opd.charAt(index++);// [index++];
+            final char c = opd.charAt(index++);
             if (c == '\\') {
                 final char c2 = opd.charAt(index++);
                 if (c2 == 'n')
@@ -4640,7 +4578,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
             }
             final int index = op.IntValue() - excelIndex;
             if (index < obj.ArrayValue().size())
-                return obj.ArrayValue().get(index);// [index];
+                return obj.ArrayValue().get(index);
             return Operand.Error("ARRARY index " + index + " greater than maximum length!");
         }
         if (obj.Type() == OperandType.ARRARYJSON) {
@@ -4665,7 +4603,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 }
                 final int index = op.IntValue() - excelIndex;
                 if (index < json.inst_array.size()) {
-                    final JsonData v = json.GetChild(index);// [op.IntValue() - excelIndex];
+                    final JsonData v = json.GetChild(index);
                     if (v.IsString())
                         return Operand.Create(v.StringValue());
                     if (v.IsBoolean())
@@ -4686,7 +4624,7 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
                 if (op.IsError()) {
                     return op;
                 }
-                final JsonData v = json.GetChild(op.TextValue());// [op.TextValue()];
+                final JsonData v = json.GetChild(op.TextValue());
                 if (v != null) {
                     if (v.IsString())
                         return Operand.Create(v.StringValue());
@@ -4713,56 +4651,41 @@ public class MathVisitor extends AbstractParseTreeVisitor<Operand> implements ma
         return bigD.setScale(p, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
-    private double Sum(final List<Double> array) {
-        double d = 0;
+    private BigDecimal Sum(final List<BigDecimal> array) {
+        BigDecimal d = new BigDecimal(0);
         for (int i = 0; i < array.size(); i++) {
-            d += array.get(i);
+            d = d.add(array.get(i));
         }
         return d;
     }
 
-    private double Average(final List<Double> array) {
-        double d = 0;
+    private BigDecimal Average(final List<BigDecimal> array) {
+        BigDecimal d = new BigDecimal(0);
         for (int i = 0; i < array.size(); i++) {
-            d += array.get(i);
+            d = d.add(array.get(i));
         }
-        return d / array.size();
+        return d.divide(new BigDecimal(array.size()), MathContext.DECIMAL32);
     }
 
-    private double Max(final List<Double> array) {
-        double d = Double.MIN_VALUE;
+    private BigDecimal Max(final List<BigDecimal> array) {
+        BigDecimal d = new BigDecimal(Double.MIN_VALUE);
         for (int i = 0; i < array.size(); i++) {
-            if (d < array.get(i)) {
+            if (d.compareTo(array.get(i)) < 0) {
                 d = array.get(i);
             }
         }
         return d;
     }
 
-    private double Min(final List<Double> array) {
-        double d = Double.MAX_VALUE;
+    private BigDecimal Min(final List<BigDecimal> array) {
+        BigDecimal d = new BigDecimal(Double.MAX_VALUE);
         for (int i = 0; i < array.size(); i++) {
-            if (d > array.get(i)) {
+            if (d.compareTo(array.get(i)) > 0) {
                 d = array.get(i);
             }
         }
         return d;
     }
-
-    private String padLeft(final String src, final int len, final char ch) {
-        final int diff = len - src.length();
-        if (diff <= 0) {
-            return src;
-        }
-
-        final char[] charr = new char[len];
-        System.arraycopy(src.toCharArray(), 0, charr, 0, src.length());
-        for (int i = src.length(); i < len; i++) {
-            charr[i] = ch;
-        }
-        return new String(charr);
-    }
-
 
     private double log(final double value, final double base) {
         return Math.log(value) / Math.log(base);

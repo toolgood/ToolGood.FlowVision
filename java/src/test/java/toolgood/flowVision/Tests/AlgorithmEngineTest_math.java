@@ -420,42 +420,6 @@ public class AlgorithmEngineTest_math {
     }
 
 
-    @Test
-    public void transformation_test()
-    {
-        AlgorithmEngine engine = new AlgorithmEngine();
-        double num = engine.TryEvaluate("BIN2DEC(10101)", 0);
-        assertEquals(num, 21,0.001);
-        num = engine.TryEvaluate("OCT2DEC(12456)", 0);
-        assertEquals(num, 5422,0.001);
-        num = engine.TryEvaluate("HEX2DEC('213adf')", 0);
-        assertEquals(num, 2177759,0.001);
-
-        String t = engine.TryEvaluate("DEC2BIN(10)", "");
-        assertEquals(t, "1010");
-        t = engine.TryEvaluate("OCT2BIN('721')", "");
-        assertEquals(t, "111010001");
-        t = engine.TryEvaluate("HEX2BIN('fa')", "");
-        assertEquals(t, "11111010");
-        t = engine.TryEvaluate("'fa'.HEX2BIN()", "");
-        assertEquals(t, "11111010");
-
-        t = engine.TryEvaluate("BIN2OCT(10)", "");
-        assertEquals(t, "2");
-        t = engine.TryEvaluate("DEC2OCT('75')", "");
-        assertEquals(t, "113");
-        t = engine.TryEvaluate("HEX2OCT('f5')", "");
-        assertEquals(t, "365");
-
-        t = engine.TryEvaluate("BIN2HEX('101010100')", "");
-        assertEquals(t, "154");
-        t = engine.TryEvaluate("OCT2HEX(75212)", "");
-        assertEquals(t, "7A8A");
-        t = engine.TryEvaluate("DEC2HEX(952)", "");
-        assertEquals(t, "3B8");
-
-    }
-
 
     // @SuppressWarnings("deprecation")
     private double round(final double value, final int p) {

@@ -18,13 +18,6 @@ public class MyDate {
     public int Minute;
     public int Second;
 
-    // public MyDate(TimeSpan dt) {
-    // Day = dt.Days;
-    // Hour = dt.Hours;
-    // Minute = dt.Minutes;
-    // Second = dt.Seconds;
-    // }
-
     private MyDate() {
     }
 
@@ -257,45 +250,6 @@ public class MyDate {
         return new MyDate(ToDateTime().plusSeconds(d));
     }
 
-    // public static implicit operator
-
-    // Date(DateTime date) {
-    // return new Date(date);
-    // }
-
-    // public static implicit operator
-
-    // DateTime(Date date)
-    // {
-    // return new DateTime(date.Year ?? 0, date.Month ?? 0, date.Day ?? 0,
-    // date.Hour, date.Minute, date.Second);
-    // }
-
-    // public static implicit operator
-
-    // TimeSpan(Date date)
-    // {
-    // return new TimeSpan(date.Day ?? 0, date.Hour, date.Minute, date.Second);
-    // }
-
-    // public static implicit operator
-
-    // Date(double days) {
-    // var dt = DateTime.MinValue.AddDays((int) days);
-    // if (dt.Year > 1900) {
-    // dt = dt.AddSeconds((days - (int) days) * 24 * 60 * 60);
-    // return new Date(dt);
-    // }
-    // var day = (int) days;
-    // days = (days - day) * 24;
-    // var hour = (int) days;
-    // days = (days - hour) * 60;
-    // var minute = (int) days * 24;
-    // days = (days - minute) * 60;
-    // var second = (int) days;
-    // return new Date(new TimeSpan(day, hour, minute, second));
-    // }
-
     public double ToNumber() {
         if (Year != null && Year > 1900) {
             LocalDate start = LocalDate.of(Year, Month, Day);
@@ -309,19 +263,6 @@ public class MyDate {
         return (Hour + (Minute + Second / 60.0) / 60) / 24;
     }
 
-    // public static implicit operator double(
-    // Date date)
-    // {
-    // if (date.Year > 1900) {
-    // var dt = new DateTime((date.Year ?? 0), (date.Month ?? 0), (date.Day ?? 0),
-    // date.Hour, date.Minute, date.Second);
-    // double days = (double)(dt - DateTime.MinValue).TotalDays;
-    // days += (date.Hour + (date.Minute + date.Second / 60.0) / 60) / 24;
-    // return days;
-    // }
-    // return (date.Day ?? 0) + (date.Hour + (date.Minute + date.Second / 60.0) /
-    // 60) / 24;
-    // }
 
     public MyDate ADD(MyDate num) {
         return new MyDate(this.ToNumber() + num.ToNumber());
@@ -337,10 +278,6 @@ public class MyDate {
 
     public MyDate SUB(Double num) {
         return new MyDate(this.ToNumber() - num);
-    }
-
-    public MyDate MUL(Double num) {
-        return new MyDate(this.ToNumber() * num);
     }
 
     public MyDate DIV(Double num) {

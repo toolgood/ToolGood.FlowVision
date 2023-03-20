@@ -70,7 +70,7 @@ public class AlgorithmEngineTest {
         s = engine.TryEvaluate("'3'+2", "");
         assertEquals("5", s);
 
-        int r = engine.TryEvaluate("count(array(1,2,3,4))", 0);
+        int r = engine.TryEvaluate("count({1,2,3,4})", 0);
         assertEquals(4, r);
 
         r = engine.TryEvaluate("(1=1)*9+2", 0);

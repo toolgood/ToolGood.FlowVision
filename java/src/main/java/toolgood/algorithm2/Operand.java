@@ -251,10 +251,6 @@ public abstract class Operand {
             if (date != null) {
                 return Create(date);
             }
-            // if (TimeSpan.TryParse(TextValue, cultureInfo, out TimeSpan t)) { return
-            // Create(new Date(t)); }
-            // if (DateTime.TryParse(TextValue, cultureInfo, DateTimeStyles.None, out
-            // DateTime d)) { return Create(new Date(d)); }
         }
         return Error(errorMessage);
     }

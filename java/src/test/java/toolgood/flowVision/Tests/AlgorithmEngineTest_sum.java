@@ -34,15 +34,15 @@ public class AlgorithmEngineTest_sum {
     @Test
     public void QUARTILE_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("QUARTILE(array(1,2,3,4,2,2,1,4),0)", 0.0);
+        double t = engine.TryEvaluate("QUARTILE({1,2,3,4,2,2,1,4},0)", 0.0);
         assertEquals(t, 1.0, 0.001);
-        t = engine.TryEvaluate("QUARTILE(array(1,2,3,4,2,2,1,4),1)", 0.0);
+        t = engine.TryEvaluate("QUARTILE({1,2,3,4,2,2,1,4},1)", 0.0);
         assertEquals(t, 1.75, 0.001);
-        t = engine.TryEvaluate("QUARTILE(array(1,2,3,4,2,2,1,4),2)", 0.0);
+        t = engine.TryEvaluate("QUARTILE({1,2,3,4,2,2,1,4},2)", 0.0);
         assertEquals(t, 2.0, 0.001);
-        t = engine.TryEvaluate("QUARTILE(array(1,2,3,4,2,2,1,4),3)", 0.0);
+        t = engine.TryEvaluate("QUARTILE({1,2,3,4,2,2,1,4},3)", 0.0);
         assertEquals(t, 3.25, 0.001);
-        t = engine.TryEvaluate("QUARTILE(array(1,2,3,4,2,2,1,4),4)", 0.0);
+        t = engine.TryEvaluate("QUARTILE({1,2,3,4,2,2,1,4},4)", 0.0);
         assertEquals(t, 4.0, 0.001);
     }
 
@@ -56,14 +56,14 @@ public class AlgorithmEngineTest_sum {
     @Test
     public void PERCENTILE_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("PERCENTILE(array(1,2,3,4,2,2,1,4)，0.4)", 0.0);
+        double t = engine.TryEvaluate("PERCENTILE({1,2,3,4,2,2,1,4}，0.4)", 0.0);
         assertEquals(t, 2.0, 0.001);
     }
 
     @Test
     public void PERCENTRANK_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("PERCENTRANK(array(1,2,3,4,2,2,1,4)，3)", 0.0);
+        double t = engine.TryEvaluate("PERCENTRANK({1,2,3,4,2,2,1,4}，3)", 0.0);
         assertEquals(t, 0.714, 0.001);
     }
 
@@ -320,39 +320,39 @@ public class AlgorithmEngineTest_sum {
     @Test
     public void LARGE_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("LARGE(array(1,2,3,4,2,2,1,4),3)", 0.0);
+        double t = engine.TryEvaluate("LARGE({1,2,3,4,2,2,1,4},3)", 0.0);
         assertEquals(round(t, 6), round(3.0, 6), 0.001);
     }
 
     @Test
     public void SMALL_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("SMALL(array(1,2,3,4,2,2,1,4),3)", 0.0);
+        double t = engine.TryEvaluate("SMALL({1,2,3,4,2,2,1,4},3)", 0.0);
         assertEquals(round(t, 6), round(2.0, 6), 0.001);
     }
 
     @Test
     public void COUNTIF_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("COUNTIF(array(1,2,3,4,2,2,1,4),'>1')", 0.0);
+        double t = engine.TryEvaluate("COUNTIF({1,2,3,4,2,2,1,4},'>1')", 0.0);
         assertEquals(t, 6.0, 0.001);
     }
 
     @Test
     public void SUMIF_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("SUMIF(array(1,2,3,4,2,2,1,4),'>1')", 0.0);
+        double t = engine.TryEvaluate("SUMIF({1,2,3,4,2,2,1,4},'>1')", 0.0);
         assertEquals(t, 17, 0.001);
-        t = engine.TryEvaluate("SUMIF(array(1,2,3,4,2,2,1,4),'>1',array(1,1,1,1,1,1,1,1))", 0.0);
+        t = engine.TryEvaluate("SUMIF({1,2,3,4,2,2,1,4},'>1',{1,1,1,1,1,1,1,1})", 0.0);
         assertEquals(t, 6, 0.001);
     }
 
     @Test
     public void AVERAGEIF_test() {
         AlgorithmEngine engine = new AlgorithmEngine();
-        double t = engine.TryEvaluate("AVERAGEIF(array(1,2,3,4,2,2,1,4),'>1')", 0.0);
+        double t = engine.TryEvaluate("AVERAGEIF({1,2,3,4,2,2,1,4},'>1')", 0.0);
         assertEquals(round(t, 6), round(2.833333333, 6), 0.001);
-        t = engine.TryEvaluate("AVERAGEIF(array(1,2,3,4,2,2,1,4),'>1',array(1,1,1,1,1,1,1,1))", 0.0);
+        t = engine.TryEvaluate("AVERAGEIF({1,2,3,4,2,2,1,4},'>1',{1,1,1,1,1,1,1,1})", 0.0);
         assertEquals(t, 1, 0.001);
     }
 
