@@ -66,8 +66,10 @@ public class MyDate {
         Second = d.multiply(new BigDecimal(24)).subtract(new BigDecimal(Hour)).multiply(new BigDecimal(60)).subtract(new BigDecimal(Minute)).multiply(new BigDecimal(60)).intValue();
         // 防止秒数出错
         if (Second == 60) {
+            Second = 0;
             Minute = Minute + 1;
             if (Minute == 60) {
+                Minute = 0;
                 Hour = Hour + 1;
             }
         }
@@ -90,8 +92,10 @@ public class MyDate {
         Second = (int) Math.round(((d * 24 - Hour) * 60.0 - Minute) * 60.0);
         // 防止秒数出错
         if (Second == 60) {
+            Second = 0;
             Minute = Minute + 1;
             if (Minute == 60) {
+                Minute = 0;
                 Hour = Hour + 1;
             }
         }
