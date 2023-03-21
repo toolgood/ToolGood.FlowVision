@@ -63,7 +63,14 @@ public class MyDate {
         BigDecimal d = num.subtract(new BigDecimal(days));
         Hour = d.multiply(new BigDecimal(24)).intValue();
         Minute = d.multiply(new BigDecimal(24)).subtract(new BigDecimal(Hour)).multiply(new BigDecimal(60)).intValue();
-        Second= d.multiply(new BigDecimal(24)).subtract(new BigDecimal(Hour)).multiply(new BigDecimal(60)).subtract(new BigDecimal(Minute)).multiply(new BigDecimal(60)).intValue();
+        Second = d.multiply(new BigDecimal(24)).subtract(new BigDecimal(Hour)).multiply(new BigDecimal(60)).subtract(new BigDecimal(Minute)).multiply(new BigDecimal(60)).intValue();
+        // 防止秒数出错
+        if (Second == 60) {
+            Minute = Minute + 1;
+            if (Minute == 60) {
+                Hour = Hour + 1;
+            }
+        }
     }
 
     public MyDate(double num) {
@@ -80,7 +87,14 @@ public class MyDate {
         double d = num - days;
         Hour = (int) (d * 24);
         Minute = (int) ((d * 24 - Hour) * 60.0);
-        Second = (int) (((d * 24 - Hour) * 60.0 - Minute) * 60.0);
+        Second = (int) Math.round(((d * 24 - Hour) * 60.0 - Minute) * 60.0);
+        // 防止秒数出错
+        if (Second == 60) {
+            Minute = Minute + 1;
+            if (Minute == 60) {
+                Hour = Hour + 1;
+            }
+        }
     }
 
     public static MyDate parse(String txt) {
