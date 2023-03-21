@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -17,6 +19,13 @@ public class MyDate {
     public int Hour;
     public int Minute;
     public int Second;
+
+    // public MyDate(TimeSpan dt) {
+    // Day = dt.Days;
+    // Hour = dt.Hours;
+    // Minute = dt.Minutes;
+    // Second = dt.Seconds;
+    // }
 
     private MyDate() {
     }
@@ -225,11 +234,16 @@ public class MyDate {
     }
 
     public String toString(String f) {
-        return null;
-        // if (Year == null) {
-        // return ((DateTime) this).ToString(f);
-        // }
-        // return ((DateTime) this).ToString(f);
+        Date date;
+        if (Year != null && Year > 1900) {
+            date = new Date(Year, Month, Day, Hour, Minute, Second);
+        }else if (Day != null){
+            date = new Date(1900, 1, Day, Hour, Minute, Second);
+        }else{
+            date = new Date(1900, 1, 0, Hour, Minute, Second);
+        }
+        SimpleDateFormat sd = new SimpleDateFormat(f);
+        return sd.format(date);
     }
 
     public DateTime ToDateTime() {
@@ -268,55 +282,45 @@ public class MyDate {
         return new MyDate(ToDateTime().plusSeconds(d));
     }
 
-    public double ToNumber() {
+    public BigDecimal ToNumber() {
+        BigDecimal result = new BigDecimal(Second).divide(new BigDecimal(60), MathContext.DECIMAL32);
+        result = result.add(new BigDecimal(Minute)).divide(new BigDecimal(60), MathContext.DECIMAL32);
+        result = result.add(new BigDecimal(Hour)).divide(new BigDecimal(24), MathContext.DECIMAL32);
+
         if (Year != null && Year > 1900) {
             LocalDate start = LocalDate.of(Year, Month, Day);
             LocalDate end = LocalDate.of(1900, 1, 1);
             long days = ChronoUnit.DAYS.between(end, start) + 2;
-            return days + (Hour + (Minute + Second / 60.0) / 60) / 24;
+            return result.add(new BigDecimal(days));
         }
         if (Day != null) {
-            return Day + (Hour + (Minute + Second / 60.0) / 60) / 24;
+            return result.add(new BigDecimal(Day));
         }
-        return (Hour + (Minute + Second / 60.0) / 60) / 24;
+        return result;
     }
-
 
     public MyDate ADD(MyDate num) {
-        return new MyDate(this.ToNumber() + num.ToNumber());
-    }
-
-    public MyDate ADD(Double num) {
-        return new MyDate(this.ToNumber() + num);
+        return new MyDate(this.ToNumber().add(num.ToNumber()));
     }
 
     public MyDate SUB(MyDate num) {
-        return new MyDate(this.ToNumber() - num.ToNumber());
+        return new MyDate(this.ToNumber().subtract(num.ToNumber()));
     }
-
-    public MyDate SUB(Double num) {
-        return new MyDate(this.ToNumber() - num);
-    }
-
-    public MyDate DIV(Double num) {
-        return new MyDate(this.ToNumber() / num);
-    }
-
 
     public MyDate ADD(BigDecimal num) {
-        return new MyDate(this.ToNumber() + num.doubleValue());
+        return new MyDate(this.ToNumber().add(num));
     }
 
     public MyDate SUB(BigDecimal num) {
-        return new MyDate(this.ToNumber() - num.doubleValue());
+        return new MyDate(this.ToNumber().subtract(num));
     }
 
     public MyDate MUL(BigDecimal num) {
-        return new MyDate(this.ToNumber() * num.doubleValue());
+        return new MyDate(this.ToNumber().multiply(num));
     }
 
     public MyDate DIV(BigDecimal num) {
-        return new MyDate(this.ToNumber() / num.doubleValue());
+        return new MyDate(this.ToNumber().divide(num, MathContext.DECIMAL32));
     }
 
 

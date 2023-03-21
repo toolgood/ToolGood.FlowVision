@@ -148,25 +148,6 @@ public abstract class Operand {
     }
 
     public Operand ToNumber(final String errorMessage) {
-        if (Type() == OperandType.NUMBER) {
-            return this;
-        }
-        if (IsError()) {
-            return this;
-        }
-        if (Type() == OperandType.BOOLEAN) {
-            return BooleanValue() ? One : Zero;
-        }
-        if (Type() == OperandType.DATE) {
-            return Create(DateValue().ToNumber());
-        }
-        if (Type() == OperandType.TEXT) {
-            try {
-                BigDecimal b=new BigDecimal(TextValue());
-                return Create(b);
-            } catch (Exception e) {
-            }
-        }
         return Error(errorMessage);
     }
 
@@ -175,32 +156,6 @@ public abstract class Operand {
     }
 
     public Operand ToBoolean(final String errorMessage) {
-        if (Type() == OperandType.BOOLEAN) {
-            return this;
-        }
-        if (IsError()) {
-            return this;
-        }
-        if (Type() == OperandType.NUMBER) {
-            return (NumberValue() != new BigDecimal(0)) ? True : False;
-        }
-        if (Type() == OperandType.DATE) {
-            return (DateValue().ToNumber() != 0) ? True : False;
-        }
-        if (Type() == OperandType.TEXT) {
-            if (TextValue().equalsIgnoreCase("true")) {
-                return True;
-            }
-            if (TextValue().equalsIgnoreCase("false")) {
-                return False;
-            }
-            if (TextValue().equals("1")) {
-                return True;
-            }
-            if (TextValue().equals("0")) {
-                return False;
-            }
-        }
         return Error(errorMessage);
     }
 
@@ -209,26 +164,6 @@ public abstract class Operand {
     }
 
     public Operand ToText(final String errorMessage) {
-        if (Type() == OperandType.TEXT) {
-            return this;
-        }
-        if (IsError()) {
-            return this;
-        }
-        if (Type() == OperandType.NUMBER) {
-            String str = NumberValue().toString();
-            if (str.contains(".")) {
-                str = Pattern.compile("(\\.)?0+$").matcher(str).replaceAll("");
-            }
-            return Create(str);
-        }
-        if (Type() == OperandType.BOOLEAN) {
-            return Create(BooleanValue() ? "TRUE" : "FALSE");
-        }
-        if (Type() == OperandType.DATE) {
-            return Create(DateValue().toString());
-        }
-
         return Error(errorMessage);
     }
 
@@ -237,21 +172,6 @@ public abstract class Operand {
     }
 
     public Operand ToDate(final String errorMessage) {
-        if (Type() == OperandType.DATE) {
-            return this;
-        }
-        if (IsError()) {
-            return this;
-        }
-        if (Type() == OperandType.NUMBER) {
-            return Create(new MyDate(NumberValue()));
-        }
-        if (Type() == OperandType.TEXT) {
-            MyDate date = MyDate.parse(TextValue());
-            if (date != null) {
-                return Create(date);
-            }
-        }
         return Error(errorMessage);
     }
 
@@ -260,22 +180,6 @@ public abstract class Operand {
     }
 
     public Operand ToJson(final String errorMessage) {
-        if (Type() == OperandType.JSON) {
-            return this;
-        }
-        if (IsError()) {
-            return this;
-        }
-        if (Type() == OperandType.TEXT) {
-            final String txt = TextValue();
-            if ((txt.startsWith("{") && txt.endsWith("}")) || (txt.startsWith("[") && txt.endsWith("]"))) {
-                try {
-                    final JsonData json = JsonMapper.ToObject(txt);
-                    return Operand.Create(json);
-                } catch (final Exception e) {
-                }
-            }
-        }
         return Error(errorMessage);
     }
 
@@ -284,30 +188,6 @@ public abstract class Operand {
     }
 
     public Operand ToArray(final String errorMessage) {
-        if (Type() == OperandType.ARRARY) {
-            return this;
-        }
-        if (IsError()) {
-            return this;
-        }
-        if (Type() == OperandType.JSON) {
-            if (JsonValue().IsArray()) {
-                final List<Operand> list = new ArrayList<Operand>();
-                for (JsonData v : JsonValue().inst_array) {
-                    if (v.IsString())
-                        list.add(Create(v.StringValue()));
-                    else if (v.IsBoolean())
-                        list.add(Create(v.BooleanValue()));
-                    else if (v.IsDouble())
-                        list.add(Create(v.NumberValue()));
-                    else if (v.IsNull())
-                        list.add(CreateNull());
-                    else
-                        list.add(Create(v));
-                }
-                return Create(list);
-            }
-        }
         return Error(errorMessage);
     }
 
@@ -419,7 +299,7 @@ public abstract class Operand {
 
         @Override
         public Operand ToBoolean(String errorMessage) {
-            return (((double) DateValue().ToNumber()) != 0) ? True : False;
+            return ((DateValue().ToNumber().compareTo(new BigDecimal(0))) != 0) ? True : False;
         }
 
         @Override
