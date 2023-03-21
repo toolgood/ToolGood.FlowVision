@@ -364,6 +364,12 @@ namespace ToolGood.Algorithm
             Assert.AreEqual(t, 17);
             t = engine.TryEvaluate("SUMIF({1,2,3,4,2,2,1,4},'>1',{1,1,1,1,1,1,1,1})", 0.0);
             Assert.AreEqual(t, 6);
+            t = engine.TryEvaluate("SUMIF({1,2,3,4,2,2,1,4},'>=2',{1,1,1,1,1,1,1,1})", 0.0);
+            Assert.AreEqual(t, 6);
+            t = engine.TryEvaluate("SUMIF({1,2,3,4,2,2,1,4},'<1',{1,1,1,1,1,1,1,1})", 0.0);
+            Assert.AreEqual(t, 0);
+            t = engine.TryEvaluate("SUMIF({1,2,3,4,2,2,1,4},'==1',{1,1,1,1,1,1,1,1})", 0.0);
+            Assert.AreEqual(t, 2);
         }
         [Test]
         public void AVERAGEIF_test()

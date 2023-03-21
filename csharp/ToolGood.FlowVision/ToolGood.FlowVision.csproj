@@ -1,35 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-      <TargetFrameworks>netstandard2.1;net6.0;net7.0</TargetFrameworks>
-    <Nullable>disable</Nullable>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <Version>1.1.0.0</Version>
-    <Title>ToolGood.FlowVision</Title>
-    <Authors>ToolGood</Authors>
-    <Company>ToolGood</Company>
-    <Description>FlowVision可视化规则引擎</Description>
-    <Copyright>Copyright 2017-2023 ToolGood</Copyright>
-    <PackageProjectUrl>https://github.com/toolgood/ToolGood.FlowVision</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/toolgood/ToolGood.FlowVision.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.1;net6.0;net7.0</TargetFrameworks>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <Version>1.2.0.0</Version>
+        <Title>ToolGood.FlowVision</Title>
+        <Authors>ToolGood</Authors>
+        <Company>ToolGood</Company>
+        <Description>FlowVision可视化规则引擎</Description>
+        <Copyright>Copyright 2017-2023 ToolGood</Copyright>
+        <PackageProjectUrl>https://github.com/toolgood/ToolGood.FlowVision</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/toolgood/ToolGood.FlowVision.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.12.0" />
-    <PackageReference Include="Jint" Version="3.0.0-beta-2048" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.12.0" />
+        <PackageReference Include="Jint" Version="3.0.0-beta-2048" />
+    </ItemGroup>
 
 
     <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">

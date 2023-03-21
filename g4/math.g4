@@ -13,8 +13,13 @@ expr:
 	| expr '.' ISNULL '(' expr? ')'								# ISNULL_fun
 	| expr '.' ISNULLORERROR '(' expr? ')'						# ISNULLORERROR_fun
 	| expr '.' INT '(' ')'										# INT_fun
+	| expr '.' ASC '(' ')'										# ASC_fun
+	| expr '.' JIS '(' ')'										# JIS_fun
+	| expr '.' CHAR '(' ')'										# CHAR_fun
 	| expr '.' CLEAN '(' ')'									# CLEAN_fun
+	| expr '.' CODE '(' ')'										# CODE_fun
 	| expr '.' CONCATENATE '(' (expr (',' expr)*)? ')'			# CONCATENATE_fun
+	| expr '.' EXACT '(' expr ')'								# EXACT_fun
 	| expr '.' FIND '(' expr (',' expr)? ')'					# FIND_fun
 	| expr '.' LEFT '(' expr? ')'								# LEFT_fun
 	| expr '.' LEN '(' ')'										# LEN_fun
@@ -32,34 +37,42 @@ expr:
 	| expr '.' TRIM '(' ')'										# TRIM_fun
 	| expr '.' UPPER '(' ')'									# UPPER_fun
 	| expr '.' VALUE '(' ')'									# VALUE_fun
+	| expr '.' DATEVALUE '(' ')'								# DATEVALUE_fun
+	| expr '.' TIMEVALUE '(' ')'								# TIMEVALUE_fun
+	| expr '.' YEAR ('(' ')')?									# YEAR_fun
+	| expr '.' MONTH ('(' ')')?									# MONTH_fun
+	| expr '.' DAY ('(' ')')?									# DAY_fun
+	| expr '.' HOUR ('(' ')')?									# HOUR_fun
+	| expr '.' MINUTE ('(' ')')?								# MINUTE_fun
+	| expr '.' SECOND ('(' ')')?								# SECOND_fun
 	| expr '.' REGEXREPALCE '(' expr ',' expr ')'				# REGEXREPALCE_fun
 	| expr '.' ISREGEX '(' expr ')'								# ISREGEX_fun
 	| expr '.' TRIMSTART '(' expr? ')'							# TRIMSTART_fun
-	| expr '.' TRIMEND '(' expr? ')'							# TRIMEND_fun
+	| expr '.' TRIMEND '(' expr? ')'								# TRIMEND_fun
 	| expr '.' INDEXOF '(' expr (',' expr (',' expr)?)? ')'		# INDEXOF_fun
 	| expr '.' LASTINDEXOF '(' expr (',' expr (',' expr)?)? ')'	# LASTINDEXOF_fun
-	| expr '.' SPLIT '(' expr ')'								# SPLIT_fun
+	| expr '.' SPLIT '(' expr ')'									# SPLIT_fun
 	| expr '.' JOIN '(' expr (',' expr)* ')'					# JOIN_fun
 	| expr '.' SUBSTRING '(' expr (',' expr)? ')'				# SUBSTRING_fun
 	| expr '.' STARTSWITH '(' expr (',' expr)? ')'				# STARTSWITH_fun
 	| expr '.' ENDSWITH '(' expr (',' expr)? ')'				# ENDSWITH_fun
-	| expr '.' ISNULLOREMPTY '(' ')'							# ISNULLOREMPTY_fun
-	| expr '.' ISNULLORWHITESPACE '(' ')'						# ISNULLORWHITESPACE_fun
+	| expr '.' ISNULLOREMPTY '(' ')'								# ISNULLOREMPTY_fun
+	| expr '.' ISNULLORWHITESPACE '(' ')'							# ISNULLORWHITESPACE_fun
 	| expr '.' REMOVESTART '(' expr (',' expr)? ')'				# REMOVESTART_fun
 	| expr '.' REMOVEEND '(' expr (',' expr)? ')'				# REMOVEEND_fun
 	| expr '.' JSON '(' ')'										# JSON_fun
-	| expr '.' IN '(' expr ')'									# IN_fun
-	| expr '.' HAS '(' expr ')'									# HAS_fun
-	| expr '[' expr ']'											# GetJsonValue_fun
-	| expr '[' parameter2 ']'									# GetJsonValue_fun
-	| expr '.' parameter2										# GetJsonValue_fun
+	| expr '.' LOOKUP '(' expr ',' expr ')'						# LOOKUP_fun
 	| expr '.' ADDYEARS '(' expr ')'							# ADDYEARS_fun
 	| expr '.' ADDMONTHS '(' expr ')'							# ADDMONTHS_fun
 	| expr '.' ADDDAYS '(' expr ')'								# ADDDAYS_fun
 	| expr '.' ADDHOURS '(' expr ')'							# ADDHOURS_fun
 	| expr '.' ADDMINUTES '(' expr ')'							# ADDMINUTES_fun
 	| expr '.' ADDSECONDS '(' expr ')'							# ADDSECONDS_fun
-
+	| expr '.' IN '(' expr ')'									# IN_fun
+	| expr '.' HAS '(' expr ')'									# HAS_fun
+	| expr '[' expr ']'											# GetJsonValue_fun
+	| expr '[' parameter2 ']'									# GetJsonValue_fun
+	| expr '.' parameter2										# GetJsonValue_fun
 	//  
 	| '(' expr ')'												# Bracket_fun
 	| '!' expr													# NOT_fun
