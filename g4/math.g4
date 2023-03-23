@@ -48,16 +48,16 @@ expr:
 	| expr '.' REGEXREPALCE '(' expr ',' expr ')'				# REGEXREPALCE_fun
 	| expr '.' ISREGEX '(' expr ')'								# ISREGEX_fun
 	| expr '.' TRIMSTART '(' expr? ')'							# TRIMSTART_fun
-	| expr '.' TRIMEND '(' expr? ')'								# TRIMEND_fun
+	| expr '.' TRIMEND '(' expr? ')'							# TRIMEND_fun
 	| expr '.' INDEXOF '(' expr (',' expr (',' expr)?)? ')'		# INDEXOF_fun
 	| expr '.' LASTINDEXOF '(' expr (',' expr (',' expr)?)? ')'	# LASTINDEXOF_fun
-	| expr '.' SPLIT '(' expr ')'									# SPLIT_fun
+	| expr '.' SPLIT '(' expr ')'								# SPLIT_fun
 	| expr '.' JOIN '(' expr (',' expr)* ')'					# JOIN_fun
 	| expr '.' SUBSTRING '(' expr (',' expr)? ')'				# SUBSTRING_fun
 	| expr '.' STARTSWITH '(' expr (',' expr)? ')'				# STARTSWITH_fun
 	| expr '.' ENDSWITH '(' expr (',' expr)? ')'				# ENDSWITH_fun
-	| expr '.' ISNULLOREMPTY '(' ')'								# ISNULLOREMPTY_fun
-	| expr '.' ISNULLORWHITESPACE '(' ')'							# ISNULLORWHITESPACE_fun
+	| expr '.' ISNULLOREMPTY '(' ')'							# ISNULLOREMPTY_fun
+	| expr '.' ISNULLORWHITESPACE '(' ')'						# ISNULLORWHITESPACE_fun
 	| expr '.' REMOVESTART '(' expr (',' expr)? ')'				# REMOVESTART_fun
 	| expr '.' REMOVEEND '(' expr (',' expr)? ')'				# REMOVEEND_fun
 	| expr '.' JSON '(' ')'										# JSON_fun
@@ -684,12 +684,12 @@ LOOKUP: 'LOOKUP';
 IN: 'ISIN' | 'IN';
 HAS: 'HAS' | 'CONTAINS';
 PARAM: 'PARAM' | 'PARAMETER';
-ADDYEARS:'ADDYEARS';
-ADDMONTHS:'ADDMONTHS';
-ADDDAYS:'ADDDAYS';
-ADDHOURS:'ADDHOURS';
-ADDMINUTES:'ADDMINUTES';
-ADDSECONDS:'ADDSECONDS';
+ADDYEARS: 'ADDYEARS';
+ADDMONTHS: 'ADDMONTHS';
+ADDDAYS: 'ADDDAYS';
+ADDHOURS: 'ADDHOURS';
+ADDMINUTES: 'ADDMINUTES';
+ADDSECONDS: 'ADDSECONDS';
 
 PARAMETER: ([A-Z_] | FullWidthLetter) (
 		[A-Z0-9_]
