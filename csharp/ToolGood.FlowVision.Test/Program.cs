@@ -37,7 +37,7 @@ namespace ToolGood.FlowVision.Test
 
         static void AL2()
         {
-            var al2 = ProjectWork.LoadJson("dict/第二个案例_20230323135702.json");
+            var al2 = ProjectWork.LoadJson("dict/第二个案例_20230323144011.json");
             // 没房没车，本科，月薪少于3000，申请不通过
             FlowEngine flowEngine = new FlowEngine(al2);
             flowEngine.BuildTreeNode("Flow", "default", "{\"姓名\":\"12312\",\"性别\":\"123\",\"年龄\":\"20\",\"学历\":\"本科\",\"手机\":\"123\",\"月收入\":\"2000\",\"地址\":\"123\",\"有房\":\"false\",\"有车\":\"false\",\"信用卡数量\":\"1\"}");
