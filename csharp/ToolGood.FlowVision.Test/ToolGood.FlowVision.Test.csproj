@@ -22,9 +22,6 @@
     <None Update="dict\第一个项目_20221211121522.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dict\第二个案例_20230323135702.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="dict\项目_20221207133837.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
