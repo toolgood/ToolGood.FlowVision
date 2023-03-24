@@ -2,8 +2,13 @@
 
 本开源库包括`FlowVision可视化规则引擎`核心算法。不包含编辑程序完整源码。
 
-    完整程序下载：https://pan.baidu.com/s/138R4d172-drb731GoTI6Vg?pwd=92i2
-
+    `csharp` 规则引擎核心算法 C#语言实现
+    `java` 规则引擎核心算法 JAVA语言实现
+    `g4` 计算规则，Antlr4语法
+    `doc` 说明文档、案例实现
+    `TestScript` 测试脚本，用于检测设计是否有问题
+    设计程序下载：https://pan.baidu.com/s/138R4d172-drb731GoTI6Vg?pwd=92i2
+  
 
 ## 规则引擎适用场景
 - 商品价格计算

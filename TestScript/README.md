@@ -3,7 +3,7 @@
 用于测试FlowVision规则是否设计合理
 - `data.sav` 为案例二的数据库
 - `test-one-parameter.py` 测试脚本，单个参数变化，只检测规则是否能运行
-- `test-random.py` 测试脚本，多个参数变化，只检测规则是否能运行
+- `test-random.py` 测试脚本，多个参数变化，可设置随机次数，只检测规则是否能运行
 
 
 # 脚本说明
@@ -38,12 +38,13 @@ parameters = {
     ],
 }
 ```
-`factoryCode`设置厂区编码，默认`default`。
-`appCode` 设置流程编码
-`json`设置传入的参数，方括号枚举可能的值。
-`formulas`设置返回的公式
-`batch`可以批量设置参数，其中`isError`表示这例参数会出错。
-`errors`匹配错误的参数
+主要参数说明：
+- `factoryCode` 设置厂区编码，默认`default`。
+- `appCode` 设置流程编码
+- `json` 设置传入的参数，方括号枚举可能的值。
+- `formulas` 设置返回的公式
+- `batch` 可以批量设置参数，其中`isError`表示这例参数会出错。
+- `errors` 匹配错误的参数
 
 
 
