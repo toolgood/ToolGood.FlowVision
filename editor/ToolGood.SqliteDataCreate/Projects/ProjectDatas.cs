@@ -37,16 +37,7 @@ namespace ToolGood.DataCreate
                 CreateUserId = db.CreateUserId,
             };
             helper.Insert_Async(factory);
-
-            //var txt = File.ReadAllText(@"File\空白箱.txt");
-            //helper.Insert(new DbAppFlow() {
-            //	CreateTime = DateTime.Now,
-            //	ProjectId = 1,
-            //	CreateUserId = 1,
-            //	MainMemberId = 1,
-            //	AppCode = "BlankBox",
-            //	FlowString = txt
-            //}); ;
+ 
         }
 
     }
