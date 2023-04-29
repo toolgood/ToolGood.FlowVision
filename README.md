@@ -90,7 +90,23 @@
     var t2 = flowEngine2.TryEvaluate("总价", 0);
 ```
 
+## 特别声明
+源码为GPL-3.0 许可，商业请购买商业许可，商业授权费1000元
 
+购买步骤：
+
+1、进入面包多购买 https://mbd.pub/o/bread/ZJiWmpty
+
+2、将公司名称、组织机构代码、授权码、面包多订单号发送给我。
+-    a) 邮件发送至toolgood@qq.com
+-    b) 加我QQ1665690808
+
+商业授权名单：https://github.com/toolgood/ToolGood.TextFilter/issues/3
+
+
+开票说明：
+- 金额超过1000元，可开票。
+-    面包多上其他产品，需提供购买截图。
 
 
 ## FlowVision交流群
