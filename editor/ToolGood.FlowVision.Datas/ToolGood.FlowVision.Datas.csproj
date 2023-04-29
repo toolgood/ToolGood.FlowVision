@@ -17,7 +17,7 @@
 	
 
   <ItemGroup>
-    <PackageReference Include="ToolGood.ReadyGo3" Version="4.0.5" />
+    <PackageReference Include="ToolGood.ReadyGo3" Version="4.0.7" />
   </ItemGroup>
 
   <ItemGroup>
