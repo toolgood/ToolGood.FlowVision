@@ -1,0 +1,143 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Projects.Formulas.ReplaceModel
+@{
+	Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+	<style>
+		.layui-table td, .layui-table th { padding: 3px; }
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+		.editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+		.ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+		div.layui-input.editor-div { padding: 0; height: initial }
+	</style>
+}
+	<div style="overflow:hidden;background-color:#f3f3f4;">
+		<h2 style="text-align:center ">更新替换说明</h2>
+		<p style="text-indent:2em;margin-top:8px;">
+			1、先进入编辑，勾选代码替换，然后点击【提交】保存。
+		</p>
+		<p style="text-indent:2em;margin-top:8px;">
+			2、确认所有勾选都是正确。
+		</p>
+		<p style="text-indent:2em;margin-top:8px;">
+			3、确认完毕后，点击下面按钮
+		</p>
+		<p style="text-align:center;margin-top:15px;">
+			<a id="upbtn" class="layui-btn" style="text-indent:0" href="javascript:;" onclick="replace();">开始代码替换更新</a>
+		</p>
+		<p style="text-indent:2em;margin-top:8px;">
+			4、批量小工具：
+		</p>
+		<p style="text-align:center;margin-top:15px;">
+			<a id="upbtn" class="layui-btn layui-btn-sm" style="text-indent:0" href="javascript:;" onclick="checkAll();">勾选所有</a>
+			名称包含
+			<input type="text" class="layui-input layui-input-sm" id="txt_name" value="费用,单价,价格,数量" autocomplete="off" style="width:160px;display:inline-block">
+			<a id="upbtn" class="layui-btn layui-btn-sm" style="text-indent:0" href="javascript:;" onclick="uncheck();">取消勾选</a>
+		</p>
+		<p style="text-align:center;margin-top:25px;">
+			<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+		</p>
+
+
+	</div>
+	<form id="edit-form" style="height: 100%;">
+		<input type="hidden" name="ProjectId" value="@Model.ProjectId" />
+		@Html.AntiForgeryToken()
+	</form>
+
+	@section js{
+	<script>
+		pid = '@Model.ProjectId';
+		function replace() {
+			var url = "./Ajax/replaceFormulas";
+			var data = {
+				data: $("#edit-form").serializeJson(),
+				fingerprint: window.fingerprint
+			}
+			$.ajax({
+				type: "POST",
+				url: url,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(data),
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) {
+					if (data.state == "SUCCESS") {
+						top.layer.msg("更新完成");
+						closeWindowAndReload();
+					} else {
+						$(obj).prop("disabled", false);
+						if (data.message) {
+							layer.msg(data.message);
+						} else {
+							layer.msg("出错了");
+						}
+					}
+				},
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+		function checkAll() {
+			var url = "./Ajax/checkAllFormulas";
+			var data = {
+				data: $("#edit-form").serializeJson(),
+				fingerprint: window.fingerprint
+			}
+			$.ajax({
+				type: "POST",
+				url: url,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(data),
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) {
+					if (data.state == "SUCCESS") {
+						layer.msg("勾选所有完成");
+					} else {
+						$(obj).prop("disabled", false);
+						if (data.message) {
+							layer.msg(data.message);
+						} else {
+							layer.msg("出错了");
+						}
+					}
+				},
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+		function uncheck() {
+			var url = "./Ajax/uncheckFormulas";
+			var data = {
+				data: $("#edit-form").serializeJson(),
+				fingerprint: window.fingerprint
+			}
+			data.data.name = $("#txt_name").val();
+
+			$.ajax({
+				type: "POST",
+				url: url,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(data),
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) {
+					if (data.state == "SUCCESS") {
+						layer.msg("取消勾选完成");
+					} else {
+						$(obj).prop("disabled", false);
+						if (data.message) {
+							layer.msg(data.message);
+						} else {
+							layer.msg("出错了");
+						}
+					}
+				},
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+
+	</script>
+
+}
+

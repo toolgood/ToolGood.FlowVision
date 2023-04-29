@@ -1,0 +1,114 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup Label="Configuration">
+	  <TypeScriptSourceMap>False</TypeScriptSourceMap>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!--<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>-->
+		<Configurations>Debug;Release;Win;Linux</Configurations>
+
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<!--- ServerGarbageCollection ： 服务器垃圾收集 ：不会让内存无限增长 -->
+		<ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+		<Version>1.0.1</Version>
+		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+		<!--- ServerGarbageCollection ： 并发垃圾收集 ：不会让内存无限增长 -->
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Win'">
+        <DefineConstants>Win;RELEASE</DefineConstants>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Linux'">
+		<DefineConstants>Linux;RELEASE</DefineConstants>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+
+
+	<ItemGroup Condition="'$(Configuration)'=='Win'">
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.4" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
+        <Reference Include="ToolGood.FlowWork.Applications">
+            <HintPath>..\bin\vision\ToolGood.FlowWork.Applications.dll</HintPath>
+        </Reference>
+        <Reference Include="ToolGood.FlowVision.Applications">
+            <HintPath>..\bin\vision\ToolGood.FlowVision.Applications.dll</HintPath>
+        </Reference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Linux'">
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.4" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
+        <Reference Include="ToolGood.FlowWork.Applications">
+            <HintPath>..\bin\vision\ToolGood.FlowWork.Applications.dll</HintPath>
+        </Reference>
+        <Reference Include="ToolGood.FlowVision.Applications">
+            <HintPath>..\bin\vision\ToolGood.FlowVision.Applications.dll</HintPath>
+        </Reference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+        <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.4" />
+        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
+		<PackageReference Include="MySql.Data" Version="8.0.32.1" />
+        <ProjectReference Include="..\ToolGood.FlowWork.Applications\ToolGood.FlowWork.Applications.csproj" />
+        <ProjectReference Include="..\ToolGood.FlowVision.Applications\ToolGood.FlowVision.Applications.csproj" />
+    </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<PackageReference Include="MySql.Data" Version="8.0.32.1" />
+        <Reference Include="ToolGood.FlowWork.Applications">
+            <HintPath>..\bin\vision\ToolGood.FlowWork.Applications.dll</HintPath>
+        </Reference>
+        <ProjectReference Include="..\ToolGood.FlowVision.Applications\ToolGood.FlowVision.Applications.csproj" />
+    </ItemGroup>
+ 
+
+	<ItemGroup>
+		<!--<PackageReference Include="System.Drawing.Common" Version="7.0.0" />-->
+		<PackageReference Include="ToolGood.AntiDuplication" Version="2.0.0.1" />
+		<PackageReference Include="ToolGood.RcxCrypto" Version="1.4.0" />
+		<PackageReference Include="ToolGood.ReadyGo3" Version="4.0.5" />
+		<PackageReference Include="WebMarkupMin.AspNet.Common" Version="2.13.8" />
+		<PackageReference Include="WebMarkupMin.AspNetCore7" Version="2.13.8" />
+		<PackageReference Include="WebMarkupMin.NUglify" Version="2.13.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ToolGood.FlowVision.Commons\ToolGood.FlowVision.Commons.csproj" />
+		<ProjectReference Include="..\ToolGood.FlowVision.Datas\ToolGood.FlowVision.Datas.csproj" />
+		<ProjectReference Include="..\ToolGood.FlowVision.Dtos\ToolGood.FlowVision.Dtos.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
+		<None Include="Pages\FlowProject\Apps\Conds.cshtml" />
+	</ItemGroup>
+
+	<!--<ItemGroup>
+	  <Content Update="wwwroot\_\js\doT.min.js">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>-->
+
+
+	<ItemGroup>
+	  <None Update="App_Data\data.sav">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="App_Data\Rsa.xml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="Controllers\" />
+	</ItemGroup>
+
+
+
+
+</Project>

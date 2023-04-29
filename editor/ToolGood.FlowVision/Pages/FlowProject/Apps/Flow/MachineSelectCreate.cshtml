@@ -1,0 +1,157 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.MachineSelectCreateModel
+@{
+    Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+    <div class="data-header">
+        <div class="search-v2">
+            <form id="search-form">
+                <div class="filter">
+                    <label class="label">类型：</label>
+                    <select id="sel_Category" name="Category">
+                        <option value="">-- 请选择 --</option>
+                        @Model.CategoryList.ToOption();
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">子类型：</label>
+                    <select id="sel_SubCategory" name="SubCategory">
+                        <option value="" selected>-- 请选择 --</option>
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">厂区：</label>
+                    <select id="sel_Factory" name="Factory">
+                        <option value="0">-- 请选择 --</option>
+                        @Model.FactoryList.ToOption(q=>q.SimplifyName,q=>q.Id);
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">机械名称：</label>
+                    <input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+                </div>
+                <div class="filter"> | </div>
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal add-btn">&nbsp; 批量增加 &nbsp; </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="data-content">
+        <table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+    </div>
+</div>
+
+@section js{
+    <script>
+        layui.use(["layer", "form", "table"], function () {
+            var getListUrl = './Ajax/GetMachineSelectList';
+            var cols = [];
+            cols.push({ checkbox: true, fixed: true });
+            cols.push({ field: 'category', title: '分类', width: "100", sort: true, });
+            cols.push({ field: 'subCategory', title: '子分类', width: "100", sort: true, });
+            cols.push({ field: 'name', title: '名称', width: "150", sort: true, });
+            cols.push({ field: 'factoryId', title: '厂区', width: "80", sort: true, templet: function (d) { return d.factory; } });
+            cols.push({ field: 'machineCode', title: '机械编号', width: "80", });
+            cols.push({ field: 'machineName', title: '机械名称', width: "150", });
+            cols.push({ field: 'machineCategoryCode', title: '分类编号', width: "80", });
+            cols.push({ field: 'machineCategoryName', title: '分类名称', width: "150", });
+
+            var tableOptions = {
+                url: getListUrl,
+                autoSort: false,
+                size: 'sm',
+                even: true,
+                method: 'POST',
+                cols: [cols],
+                page: true,
+                limit: 30,
+                limits: [10, 20, 30, 50, 100],
+                response: { statusCode: 1, msgName: 'message' },
+                height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+                done: function () { layer.closeAll('loading'); },
+                request: { pageName: 'pageIndex', limitName: 'pageSize' },
+                text: { none: '<span style="color:red;">暂无记录</span>' },
+                where: { ProjectId: '@Model.ProjectId', appId: '@Model.AppId' }
+            };
+
+            var layer = layui.layer, table = layui.table;
+            layer.load(2);
+            table.init('dataList', tableOptions);
+
+            table.on('sort(dataList)', function (obj) {
+                layer.load(2);
+                var field = obj.field; order = obj.type;
+                if (obj.type == null) { field = ""; order = ""; }
+                table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+            });
+            function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
+            $('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $('select').change(function (event) {
+                event && event.stopPropagation();
+                if ($(this).attr("name") == "Category") {
+                    var data = { data: $("#search-form").serializeJson() };
+                    data.data["ProjectId"] = '@Model.ProjectId';
+                    var now = new Date();
+                    data.modifyDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-"+now.getDay() + " " + now.getHours() + ":"+now.getMinutes() + ":" + now.getSeconds();
+                    data.modifyUser = "@Model.MemberDto.Name";
+
+                    $.ajax({
+                        type: "POST",
+                        url: "./ajax/GetSubCategoryList",
+                        contentType: "application/json;charset=UTF-8",
+                        data: JSON.stringify(data),
+                        headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+                        dataType: "JSON",
+                        success: function (res, textStatus, jqXHR) {
+                            var html = '<option value="" selected>-- 请选择 --</option>';
+                            if (res.code == 1) {
+                                for (var i = 0; i < res.data.length; i++) {
+                                    html += '<option value="' + res.data[i] + '">' + res.data[i] + '</option>'
+                                }
+                            }
+                            $("#sel_SubCategory").html(html);
+                            tableReload(); return false;
+                        },
+                        error: function (data, textStatus, errorThrown) { layer.msg("出错了"); }
+                    });
+                } else {
+                    tableReload(); return false;
+                }
+            });
+            $('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+
+            $('.add-btn').click(function (event) {
+                event && event.stopPropagation();
+                var datas = table.checkStatus("dataList")
+                if (!datas.data || datas.data.length == 0) { layer.msg("请选择机械"); return; }
+                top.window.addMachineInfos(datas.data);
+                closeWindow();
+            });
+
+        });
+        $(document).on("click", ".layui-table-body table.layui-table tbody tr", function () {
+            var index = $(this).attr('data-index');
+            var tableBox = $(this).parents('.layui-table-box');
+            if (tableBox.find(".layui-table-fixed.layui-table-fixed-l").length > 0) {
+                tableDiv = tableBox.find(".layui-table-fixed.layui-table-fixed-l");
+            } else {
+                tableDiv = tableBox.find(".layui-table-body.layui-table-main");
+            }
+            var checkCell = tableDiv.find("tr[data-index=" + index + "]").find("td div.laytable-cell-checkbox div.layui-form-checkbox I");
+            if (checkCell.length > 0) { checkCell.click(); }
+        });
+        $(document).on("click", "td div.laytable-cell-checkbox div.layui-form-checkbox", function (e) { e.stopPropagation(); });
+
+        function pageReload() {
+            location.reload();
+        }
+        function reload() {
+            layui.table.reload("dataList");
+        }
+    </script>
+}

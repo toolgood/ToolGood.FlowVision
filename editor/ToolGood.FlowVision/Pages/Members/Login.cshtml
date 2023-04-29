@@ -1,0 +1,63 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.LoginModel
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<meta http-equiv="Content-Language" content="zh-CN" />
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<meta http-equiv="Cache-Control" content="no-transform" />
+	<meta name="robots" content="noindex,nofollow">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self';style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none';frame-src 'self'">
+	<title>FlowVision流程设计平台 登录页面</title>
+	<script>if (self != top) { top.location.href = self.location.href; }</script>
+	<link href="/_/login/login.css" rel="stylesheet" />
+</head>
+<body>
+	<div class="loginscreen" style="padding-top:150px;">
+		<div>
+			<div style="background-color:deepskyblue;border-radius:10px;padding:15px 3px;">
+				<span style="font-size: 24px; color: white;font-weight:bold">FlowVision</span>
+				<span style="font-size: 24px; color: black;">流程设计平台</span>
+			</div>
+			<form id="loginForm" style="margin-top: 30px;" autocomplete="off">
+				@Html.AntiForgeryToken()
+				<div class="form-group">
+					<input type="text" class="form-control" value="@Model.UserName" placeholder="用户名" name="tname" maxlength="50" id="tname" autofocus>
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control" value="@Model.Password" placeholder="密码" maxlength="20" id="tpwd">
+				</div>
+				<div class="form-group l">
+					<input type="text" class="form-control Code" placeholder="验证码" name="vcode" maxlength="5" id="vcode" autocomplete="off" autofocus>
+					<div class="CodeImg" style="padding-top: 0px;">
+						<img src="/Members/Account/VerifyCode" id="vcode-img" width="100" height="32" alt="点击切换验证码" class="vcode" title="点击切换验证码" />
+					</div>
+				</div>
+				<button type="button" class="btn" onclick="login()">登 录</button>
+				<br />
+			</form>
+				<p class="copyright">
+					<small>
+						Copyright &copy; 2016-2023
+						<a href="http://www.toolgood.com" target="_blank">ToolGood.com</a>
+						All Rights Reserved.
+					</small>
+				</p>
+		</div>
+	</div>
+	<script src="/_/js/jquery.min.js"></script>
+	<script src="/_/layer/layer.js"></script>
+	<script src="/_/login/ajaxdata.js"></script>
+	<script>$(function () { $.init('@(Model.RsaModulus)', '@(Model.RsaExponent)'); })</script>
+	<script src="/_/login/memberLogin.js"></script>
+	<script src="/_/js/fp.umd.min.js"></script>
+	<script>FingerprintJS.load().then(function (fp) { return fp.get() }).then(function (result) { window.fingerprint = result.visitorId; })</script>
+
+</body>
+</html>

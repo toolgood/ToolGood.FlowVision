@@ -1,0 +1,165 @@
+﻿html, body { height: 100%; background-color: #fff; }
+th, td { white-space: nowrap; }
+/*基本样式 - 排版*/
+.red { color: red; }
+.blue { color: blue; }
+.orange { color: orange; }
+td a { color: blue; }
+
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+
+.text-warning { color: #c09853; }
+a.text-warning:hover, a.text-warning:focus { color: #a47e3c; }
+
+.text-error { color: #b94a48; }
+a.text-error:hover, a.text-error:focus { color: #953b39; }
+
+.text-info { color: #3a87ad; }
+a.text-info:hover, a.text-info:focus { color: #2d6987; }
+
+.text-success { color: #468847; }
+a.text-success:hover, a.text-success:focus { color: #356635; }
+
+.layui-table tbody tr.success > td, .layui-table thead tr.success > th { background-color: #dff0d8; }
+.layui-table tbody tr.error > td, .layui-table thead tr.error > th { background-color: #f2dede; }
+.layui-table tbody tr.warning > td, .layui-table thead tr.warning > th { background-color: #fcf8e3; }
+.layui-table tbody tr.info > td, .layui-table thead tr.info > th { background-color: #d9edf7; }
+.layui-table tbody tr.success:hover > td, .layui-table thead tr.success:hover > th { background-color: #d0e9c6; }
+.layui-table tbody tr.error:hover > td, .layui-table thead tr.error:hover > th { background-color: #ebcccc; }
+.layui-table tbody tr.warning:hover > td, .layui-table thead tr.warning:hover > th { background-color: #faf2cc; }
+.layui-table tbody tr.info:hover > td, .layui-table thead tr.info:hover > th { background-color: #c4e3f3; }
+
+/*.layui-tab-title { padding-left: 20px; }
+.layui-tab-content.index { padding: 5px; position: absolute; left: 0; right: 0; bottom: 0; top: 55px; }
+.layui-tab-item { height: 100%; }
+.layui-tab-title .layui-this { color: #009688; }*/
+.header .layui-nav { position: absolute; left: 185px; top: 0; padding: 0; background: none; }
+.header .logo img { padding-top: 8px; padding-left: 8px; padding-bottom: 8px; vertical-align: middle; }
+/*.layui-tab-more + .layui-tab-content.index { top: 90px; }*/
+
+.header .useroption { position: absolute; right: 10px; padding: 0; color: #fff; }
+.header .useroption a { color: #1E9FFF; }
+.header .useroption a:hover { color: #01AAED; }
+
+/*.layui-upload-img { width: 92px; height: 92px; margin: 0 10px 10px 0; }
+*/
+.layui-table { margin: 0; }
+.data-header { margin-bottom: 0; line-height: 26px; padding: 0 5px; }
+.data-header .search { }
+.data-header .search .txtSearch, .data-header .search select { border: 1px solid #aaa; height: 30px; line-height: 30px; padding: 0 5px; font-size: 12px; }
+/*.gridTable th { background-color: #ebebeb; font-weight: bold; }*/
+.layui-tab-title .layui-this:after { border-top: 2px solid #e36209; }
+.layui-table th { background-color: #f2f2f2; }
+.layui-table.details tbody tr:hover { background-color: #fff !important }
+
+.layui-select-disabled .layui-disabled { border-color: #CCC !important; }
+
+body.details { background-color: #fff; }
+/*.layui-tab-content { background: url(/_/img/loading.gif) no-repeat center center; }*/
+
+/*筛选条件栏样式*/
+.search-v2 { padding: 5px; font-size: 12px; display: inline-table; }
+.search-v2 .filter { float: left; margin-right: 5px; height: 26px; line-height: 26px; /*padding-bottom: 5px;*/ }
+.search-v2 .filter label { padding-right: 0; color: #403e3e; }
+.search-v2 .text { height: 26px; border: 1px solid #e1e3e4; border-radius: 2px; padding: 0 5px; line-height: 26px; width: 120px; margin-left: 0; }
+.search-v2 select { height: 26px; border: 1px solid #e1e3e4; border-radius: 2px; padding: 0 5px; line-height: 26px; margin-left: 6px; }
+.search-v2 .text.laydate { width: 136px; }
+.search-v2 .layui-btn-primary:hover { border-color: #AAA; }
+
+/*.layui-tab { margin: 5px 0; }
+.layui-tab-content.index { top: 25px; }
+.layui-tab-title li { line-height: 30px; padding: 0 10px; }
+.layui-tab-title { height: 30px; }
+.layui-tab-title .layui-this::after { height: 31px; }*/
+
+body.indexLayout .logo { color: #EEE; -webkit-transition: none; -o-transition: none; transition: none; -webkit-transition: width 0.3s ease-in-out; -o-transition: width 0.3s ease-in-out; transition: width 0.3s ease-in-out; display: block; float: left; height: 50px; font-size: 28px; line-height: 50px; width: 230px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; overflow: hidden; }
+body.indexLayout .layui-header { height: 42px; }
+body.indexLayout .layui-main .logo { height: 42px; line-height: 42px; }
+body.indexLayout .layui-main .layui-nav .layui-nav-item { height: 42px; line-height: 42px; }
+body.indexLayout .layui-layout-admin .layui-side { top: 42px; }
+body.indexLayout .layui-layout-admin .layui-body { top: 42px; }
+/*body.indexLayout .header .useroption { top: initial; height: 42px; line-height: 42px; }
+body.indexLayout .layui-tab-bar { width: 25px; height: 25px; line-height: 25px; }*/
+/*body.indexLayout .layui-nav-tree .layui-nav-item { line-height: 40px; }
+body.indexLayout .layui-nav-tree .layui-nav-item a { height: 40px; line-height: 40px; }*/
+/*body.indexLayout .layui-tab-title { padding-left: 15px; }
+body.indexLayout .layui-tab-title li { font-size: 13px; padding: 0 5px 0 8px; }
+body.indexLayout .layui-tab-title li .layui-tab-close { margin-left: 3px; }*/
+/*body.indexLayout .layui-nav .layui-this::after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed::after { height: 4px; }
+body.indexLayout .layui-nav-tree .layui-nav-bar { width: 4px; }
+
+body.indexLayout .layui-tab-title .layui-this::after { height: 26px; }
+body.indexLayout .layui-tab-title li { line-height: 26px; }
+body.indexLayout .layui-tab-title { height: 26px; }
+body.indexLayout .layui-main .layui-nav * { font-size: 15px; }*/
+
+.pack-right:before { content: "\e66b" }
+.pack-left:before { content: "\e668" }
+#app.pack-up .layui-side { width: 0; display: none }
+#app.pack-up .layui-side .layui-side-scroll { width: 0; display: none }
+#app.pack-up .layui-body { left: 0; right: 0; width: auto !important; }
+#app.inited { opacity: 1; filter: alpha(opacity=100) }
+#app.inited .layui-side-scroll, #app.inited > .layui-side { transition: width .2s linear; -webkit-transition: width .2s linear }
+#app.inited .layui-body { transition: left .2s linear; -webkit-transition: left .2s linear }
+
+#app .layui-body .content-tabs { position: absolute; left: 0; top: 0; right: 0; height: 30px; background: #fafafa; line-height: 30px; border-bottom: 1px solid #e2e2e2 }
+#app .layui-body .content-tabs a, #app .layui-body .content-tabs button, #app .layui-body .content-tabs span { color: #999 }
+#app .layui-body .content-tabs .roll-nav { position: absolute; top: 0; width: 26px; height: 30px; text-align: center; color: #999; z-index: 2; font-size: 12px }
+#app .layui-body .content-tabs .roll-left { left: 0; border-right: solid 1px #ddd }
+#app .layui-body .content-tabs .roll-right { right: 0; border-left: solid 1px #ddd }
+#app .layui-body .content-tabs button { background: #fff; border: 0; height: 30px; width: 26px; outline: 0 }
+#app .layui-body .content-tabs button:hover { background: #fafafa }
+#app .layui-body .content-tabs nav.page-tabs { overflow: hidden; margin-left: 30px; width: 100000px; height: 30px; }
+#app .layui-body .content-tabs nav.page-tabs a.active { height: 27px; line-height: 27px; color: #009688; border-top: 2px solid #e36209; margin-top: 3px; border-radius: 3px; }
+#app .layui-body .content-tabs nav.page-tabs .page-tabs-content { float: left }
+#app .layui-body .content-tabs nav.page-tabs a { display: block; float: left; border-right: solid 1px #ddd; padding: 0 8px 0 12px }
+#app .layui-body .content-tabs nav.page-tabs a i { margin-left: 5px }
+#app .layui-body .content-tabs nav.page-tabs a i:hover { color: white; background-color: red; font-weight: bold; }
+#app .layui-body .content-tabs .page-tabs a:hover, #app .layui-body .content-tabs .roll-nav:hover { color: #777; background: #f2f2f2; cursor: pointer }
+#app .layui-body .content-tabs .roll-right.J_tabRight { right: 80px }
+#app .layui-body .content-tabs .roll-right.btn-group { right: 0; width: 80px; padding: 0 }
+#app .layui-body .content-tabs .roll-right.btn-group .layui-nav-item { width: 100% }
+#app .layui-body .content-tabs .roll-right.btn-group .layui-nav-item .layui-nav-more { display: none }
+#app .layui-body .content-tabs .roll-right.btn-group button { width: 80px }
+#app .layui-body .content-tabs .more-opt { background-color: inherit; width: 80px }
+#app .layui-body .content-tabs .more-opt .layui-nav-bar { display: none }
+#app .layui-body .content-tabs .more-opt .layui-nav-item { line-height: inherit }
+#app .layui-body .content-tabs .more-opt .layui-nav-item.layui-this:after { content: none; }
+#app .layui-body .content-tabs .more-opt .layui-nav-child { left: auto; right: 0; top: 30px }
+#app .layui-body .content-tabs .more-opt button { cursor: pointer; position: relative; top: -2px }
+#app .layui-body .content-tabs .more-opt button span { margin-left: 3px }
+#app .layui-body .content-main { margin-top: 30px; height: calc( 100% - 30px); overflow: hidden }
+#app .layui-body .content-main .sub-window-container { height: 100%; overflow: hidden }
+
+body.listLayout .layui-table tbody tr:hover, .layui-table-header, .layui-table-hover, .layui-table-patch, .layui-table-tool { background-color: #d1e7fb !important }
+body.listLayout .data-header { margin-bottom: 0; line-height: 26px; }
+body.listLayout .layui-btn-xs { height: 24px; line-height: 26px; }
+body.listLayout .layui-table, .layui-table-view { margin: 0; }
+body.listLayout div.layui-table-cell a { color: blue; }
+body.listLayout .layui-btn + .layui-btn { margin-left: 5px; }
+body.listLayout .search-v2 .text { height: 24px; line-height: 26px; margin-left: 0; width: 80px; }
+
+body.editLayout .listDetail { height: 180px; }
+body.editLayout .showDetail { display: none; }
+body.editLayout .showDetailHeader { padding: 10px 0; }
+body.editLayout .showDetailHeaderDetail { width: auto; height: 100%; }
+body.editLayout .closeDetail { margin-top: 40px; }
+
+ul.contextmenu { margin: 0; padding: 5px 0; font-family: "微软雅黑"; list-style: none; }
+ul.contextmenu * { margin: 0; padding: 0; }
+ul.contextmenu { display: none; position: absolute; min-width: 150px; background: #FFFFFF; border-radius: 5px; border: 1px solid #BBB; overflow: hidden; z-index: 999999; -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }
+ul.contextmenu li { border-left: 3px solid transparent; transition: ease 0.3s; font-size: 13px; }
+ul.contextmenu li a { display: block; padding: 5px 5px 5px 15px; color: #000000; text-decoration: none; transition: ease 0.3s; }
+ul.contextmenu li.header:hover { background: inherit; border-left: 0; }
+ul.contextmenu li:hover { background: #BBDDF0; border-left: 3px solid #56B; }
+ul.contextmenu li.separator { margin: 0; display: block; height: 1px; width: 100%; background-color: #BBB; }
+ul.contextmenu li.header { border: 0; display: block; padding: 5px 3px 3px 10px; font-size: 11px; font-weight: bold; color: #999; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5); text-transform: uppercase; transition: ease 0.3s; }
+ul.contextmenu li.hidden, ul.contextmenu li.separator.hidden, ul.contextmenu li.header.hidden { display: none; }
+
+.index_tab_button { position: absolute; background-color: #ffffff; width: 24px; height: 24px; text-align: center; line-height: 24px; color: #000000; z-index: 100; cursor: pointer; padding-top: 5px; }
+
+.layui-nav .layui-nav-more { content: ''; width: 0; height: 0; border-style: solid dashed dashed; border-color: #fff transparent transparent; overflow: hidden; cursor: pointer; transition: all .2s; -webkit-transition: all .2s; position: absolute; top: 50%; margin-top: -4px; border-width: 6px; border-top-color: rgba(255,255,255,.7) }
+.layui-nav .layui-nav-item a { display: block; padding: 0 20px; color: #fff; color: rgba(255,255,255,.7); transition: all .3s; -webkit-transition: all .3s; }
+.layui-textarea { min-height: 75px !important; }

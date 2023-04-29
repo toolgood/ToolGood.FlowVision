@@ -1,0 +1,40 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.User.InfoModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Detail.cshtml";
+}
+<div style="overflow-x:hidden">
+    <div class="layui-form layui-form-sm" style="padding: 20px 30px 0 0;">
+        <div class="layui-form-item-sm">
+            <label class="layui-form-label-sm">登录名</label>
+            <div class="layui-input-block-sm">
+                <input type="text" class="layui-input layui-input-sm" value="@Model.Admin.Name" readonly>
+            </div>
+        </div>
+
+        <div class="layui-form-item-sm">
+            <label class="layui-form-label-sm">姓名</label>
+            <div class="layui-input-block-sm">
+                <input type="text" class="layui-input layui-input-sm" value="@Model.Admin.TrueName" readonly>
+            </div>
+        </div>
+
+        <div class="layui-form-item-sm">
+            <label class="layui-form-label-sm">手机</label>
+            <div class="layui-input-block-sm">
+                <input type="text" class="layui-input layui-input-sm" value="@Model.Admin.Phone" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item-sm">
+            <label class="layui-form-label-sm">邮箱</label>
+            <div class="layui-input-block-sm">
+                <input type="text" class="layui-input layui-input-sm" value="@Model.Admin.Email" readonly>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="text-align:center;padding-left: 30px;">
+            <a href="./Edit?h=250&w=450" class="layui-btn layui-btn-normal openwin" title="修改信息"> &nbsp; 修改信息 &nbsp; </a>
+            <a href="./ChangePassword?h=290&w=470" class="layui-btn layui-btn-normal openwin" title="修改登录密码"> &nbsp; 修改登录密码 &nbsp; </a>
+        </div>
+    </div>
+</div>

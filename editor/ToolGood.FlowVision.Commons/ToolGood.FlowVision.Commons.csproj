@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Configurations>Debug;Release;Win;Linux</Configurations>
+  </PropertyGroup>
+	
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>Win</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DefineConstants>Win</DefineConstants>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Win'">
+		<DefineConstants>Win;RELEASE;Sqlite</DefineConstants>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Win'">
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Linux'">
+		<DefineConstants>Linux;RELEASE;Sqlite</DefineConstants>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	
+
+
+    <ItemGroup>
+	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	  <PackageReference Include="IronSoftware.System.Drawing" Version="2023.3.1" />
+	  <PackageReference Include="NPOI" Version="2.6.0" />
+	  <PackageReference Include="ToolGood.RcxCrypto" Version="1.4.0" />
+	  <PackageReference Include="ToolGood.ReadyGo3" Version="4.0.5" />
+  </ItemGroup>
+	
+</Project>

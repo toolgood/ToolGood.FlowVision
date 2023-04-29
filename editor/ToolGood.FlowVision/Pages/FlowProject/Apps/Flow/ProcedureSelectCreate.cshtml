@@ -1,0 +1,222 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.ProcedureSelectCreateModel
+@{
+    Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+    <div class="data-header">
+        <div class="search-v2">
+            <form id="search-form">
+                <div class="filter">
+                    <label class="label">类型：</label>
+                    <select id="sel_Category" name="Category">
+                        <option value="">-- 请选择 --</option>
+                        @Model.CategoryList.ToOption();
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">厂区：</label>
+                    <select id="sel_Factory" name="Factory">
+                        <option value="0">-- 请选择 --</option>
+                        @Model.FactoryList.ToOption(q=>q.SimplifyName,q=>q.Id);
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">工艺名：</label>
+                    <input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+                </div>
+                <div class="filter"> | </div>
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal add-btn">&nbsp; 批量增加 &nbsp; </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="data-content">
+        <table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+    </div>
+</div>
+
+
+
+@section js{
+    <script>
+        function autoLayer(graph) {
+            function setLayer(id, map, layer) {
+                var fs = map[id]; if (fs == undefined) return;
+                for (var i = 0; i < fs.length; i++) {
+                    var fi = graph.getCellById(fs[i]);
+                    if (fi.data["layer"] < layer) { fi.data["layer"] = layer; setLayer(fs[i], map, layer + 1); }
+                }
+            }
+            var edges = graph.getEdges();
+            var nodes = graph.getNodes();
+
+            var map = {}; var list = [];
+            for (var i = 0; i < edges.length; i++) {
+                const eg = edges[i];
+                var val = map[eg.source.cell];
+                if (val == undefined) {
+                    map[eg.source.cell] = [eg.target.cell];
+                    list.push(eg.source.cell);
+                } else {
+                    val.push(eg.target.cell);
+                }
+            }
+            for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].data == undefined) nodes[i].data = {};
+                nodes[i].data["layer"] = -1;
+            }
+            while (list.length > 0) {
+                var id = list.pop();
+                var fi = graph.getCellById(id);
+                if (fi.data["layer"] < 0) fi.data["layer"] = 0;
+                setLayer(id, map, 1);
+            }
+        }
+        function getLeft(graph) {
+            var nodes = graph.getNodes();
+            var map = {};
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                var val = map[node.data["layer"]];
+                if (val == undefined) {
+                    map[node.data["layer"]] = [node];
+                } else {
+                    val.push(node);
+                }
+            }
+            for (key in map) {
+                var arr = map[key];
+                var len = arr.length;
+                for (var fraction = Math.floor(len / 2); fraction > 0; fraction = Math.floor(fraction / 2)) {
+                    for (var i = fraction; i < len; i += fraction) {
+                        for (var j = i - fraction; j >= 0 && arr[j].position().y > arr[fraction + j].position().y; j -= fraction) {
+                            var temp = arr[j];
+                            arr[j] = arr[fraction + j];
+                            arr[fraction + j] = temp;
+                        }
+                    }
+                }
+                for (var i = 0; i < arr.length; i++) { arr[i].data["order"] = i + 1; }
+            }
+            var max = -1;
+            for (var layer in map) {
+                if (layer == -1) continue;
+                if (parseInt(layer) > max) max = layer;
+            }
+            return 200 * max + 200;
+        }
+    </script>
+    <script>
+        layui.use(["layer", "form", "table"], function () {
+            var getListUrl = './Ajax/GetProcedureSelectList';
+            var cols = [];
+            cols.push({ checkbox: true, fixed: true });
+            cols.push({ field: 'category', title: '类型', width: "100", sort: true, });
+            cols.push({ field: 'code', title: '编码', width: "150", sort: true, });
+            cols.push({ field: 'name', title: '工艺名称', width: "200", sort: true, });
+            cols.push({ field: 'factorys', title: '适用厂区', width: "200", });
+            cols.push({ field: 'comment', title: '备注', width: "300", });
+
+            var tableOptions = {
+                url: getListUrl,
+                autoSort: false,
+                size: 'sm',
+                even: true,
+                method: 'POST',
+                cols: [cols],
+                page: true,
+                limit: 30,
+                limits: [10, 20, 30, 50, 100],
+                response: { statusCode: 1, msgName: 'message' },
+                height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+                done: function () { layer.closeAll('loading'); },
+                request: { pageName: 'pageIndex', limitName: 'pageSize' },
+                text: { none: '<span style="color:red;">暂无记录</span>' },
+                where: { ProjectId: '@Model.ProjectId' }
+            };
+
+            var layer = layui.layer, table = layui.table;
+            layer.load(2);
+            table.init('dataList', tableOptions);
+            table.on('sort(dataList)', function (obj) {
+                layer.load(2);
+                var field = obj.field; order = obj.type;
+                if (obj.type == null) { field = ""; order = ""; }
+                table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+            });
+            function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
+            $('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $("select").change(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+
+            $('.add-btn').click(function (event) {
+                event && event.stopPropagation();
+                var datas = table.checkStatus("dataList")
+                if (!datas.data || datas.data.length == 0) { layer.msg("请选择工艺"); return; }
+                var graph = top.window.getGraph();
+                top.window.setCloseAddEvent(true);
+
+                autoLayer(graph);
+                var box = top.window.getGraphBox();
+                x = box.x + box.width / 2;
+                y = box.y + box.height / 3 * 2;
+                var now = new Date();
+                for (var i = 0; i < datas.data.length; i++) {
+                    var row = datas.data[i];
+                    var label = row.name + "\n" + row.factorys;
+
+                    graph.addNode({
+                        shape: 'procedure',
+                        x: x,
+                        y: y + 44 * i,
+                        width: 120,
+                        height: 36,
+                        attrs: { text: { text: label }, },
+                        data: {
+                            comment: "",
+                            procedure: row.code,
+                            checkFormula: "",
+                            checkType: "add",
+                            inputFormula: [],
+                            inputName: "",
+                            errorMessage: "",
+                            isSubsidiaryCount: false,
+                            machines: [],
+                            machineRequired: false,
+                            inputNumberType: "original",
+                            modifyDate: now.getFullYear() + "-" + (now.getMonth() + 1) + "-"+now.getDay() + " " + now.getHours() + ":"+now.getMinutes() + ":" + now.getSeconds(),
+                            modifyUser: "@Model.MemberDto.Name"
+                        }
+                    })
+                }
+                top.window.setCloseAddEvent(false);
+                closeWindow();
+            });
+        });
+        $(document).on("click", ".layui-table-body table.layui-table tbody tr", function () {
+            var index = $(this).attr('data-index');
+            var tableBox = $(this).parents('.layui-table-box');
+            if (tableBox.find(".layui-table-fixed.layui-table-fixed-l").length > 0) {
+                tableDiv = tableBox.find(".layui-table-fixed.layui-table-fixed-l");
+            } else {
+                tableDiv = tableBox.find(".layui-table-body.layui-table-main");
+            }
+            var checkCell = tableDiv.find("tr[data-index=" + index + "]").find("td div.laytable-cell-checkbox div.layui-form-checkbox I");
+            if (checkCell.length > 0) { checkCell.click(); }
+        });
+        $(document).on("click", "td div.laytable-cell-checkbox div.layui-form-checkbox", function (e) { e.stopPropagation(); });
+
+        function pageReload() {
+            location.reload();
+        }
+        function reload() {
+            layui.table.reload("dataList");
+        }
+    </script>
+}

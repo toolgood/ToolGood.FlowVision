@@ -1,0 +1,43 @@
+﻿
+
+1、图片编辑 快捷键
+graph.bindKey
+
+2、连线不能重复 ，保证无环
+
+3、开始 结束只有一个
+
+4、ace编辑器
+
+5、ace编辑器支持 拼间首字母
+F:\BaiduNetdiskDownload\ToolGood.FlowVision\ToolGood.FlowVision\wwwroot\_\inputControl\ace\ext-language_tools.js
+类 FilteredList  
+复制 filterCompletions
+
+
+条件公式
+1、条件公式优先使用输入值、初始值
+
+2、绕开所有数量相关公式
+ 
+
+最后一个 最好要有节点
+
+
+不建议使用  条件有未知参数 因为难反调试
+运费：
+距离运费<30
+30
+距离运费>=30
+距离运费
+
+
+状态码不为End时，不建议获取 反推的 涉及数量 的公式
+
+
+https://w1301625107.github.io/Vue-Gantt-chart/demo/index.html
+
+
+数量名称与入量 描术不一致 出错
+如 两页成型的成箱数量
+

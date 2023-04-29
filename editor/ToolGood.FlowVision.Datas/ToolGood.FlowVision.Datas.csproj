@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Configurations>Debug;Release;Win;Linux</Configurations>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Win'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Linux'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+	
+
+  <ItemGroup>
+    <PackageReference Include="ToolGood.ReadyGo3" Version="4.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ToolGood.FlowVision.Commons\ToolGood.FlowVision.Commons.csproj" />
+    <ProjectReference Include="..\ToolGood.FlowWork.Applications\ToolGood.FlowWork.Applications.csproj" />
+  </ItemGroup>
+
+</Project>

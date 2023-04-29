@@ -1,0 +1,146 @@
+﻿@page
+@model ToolGood.FlowWork.Pages.Analysis.FlowFormulaDetailsResultModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公式计算步骤</title>
+    <link href="/_/layui/css/layui.css" rel="stylesheet" />
+    <link href="/_/css/layform_sm.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layui-container" style="padding-top: 15px;background: #fff;">
+        <div>
+            <input type="text" id="search-input" class="layui-input layui-input-sm" style="width: 250px; clear: none; display: inline-block;" />
+            <button type="button" class="layui-btn layui-btn-sm" onclick="search()">搜索</button> |
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="showAll()" style="margin-left:0;">显示所有</button>
+        </div>
+        <div id="formulasList">
+            <table class="layui-table" lay-skin="line" lay-size="sm" id="list">
+                <tr><th width="100">名称</th><th>计算步骤</th></tr>
+            </table>
+        </div>
+    </div>
+
+    <script id="tpl" type="text/template">
+        {{ for(var i=0;i < it.length; i++){ var item=it[i]; }}
+        {{ if(item.formulas && item.formulas.length==1 && item.formulas[0].text==item["value"] ) { }}
+            <tr name="{{= item.name }}"><td>{{= item.name }}</td><td>= {{= item["value"] }}</td></tr>
+        {{  } else if(item.formulas) {  }}
+        <tr name="{{= item.name }}"><td>{{= item.name }}</td>
+            <td>= {{ for(var j=0;j< item.formulas.length;j++ ){ var f=item.formulas[j];
+                if (f.text) {
+            }}
+            <span>{{= f.text }}</span>
+            {{ }else{ }}
+            <a href="javascript:;" onclick="showName('{{= f.name}}','{{= item.name }}')" style="color:blue" >{{= f.name}}</a>
+            {{ } }}
+            {{ } }}
+            </td>
+        </tr>
+        <tr name="{{= item.name }}"><td></td>
+            <td>= 
+                {{ for(var j=0;j< item.formulas.length;j++ ){ var f=item.formulas[j];
+                if (f.text) {
+            }}
+            <span>{{= f.text }}</span>
+            {{ }else{ }}
+            <a href="javascript:;" onclick="showName('{{= f.name}}','{{= item.name }}','{{= item.nodeId }}')" >{{= f.value}}</a>
+            {{ } }}
+            {{ } }}
+            </td>
+        </tr>
+        {{ if(item.formulas.length>1){ }}
+        <tr name="{{= item.name }}"><td></td><td>= {{= item["value"] }}</td></tr>
+        {{ } }}
+        {{ }else{ }}
+        <tr name="{{= item.name }}"><td>{{= item.name }}</td><td>= {{= item["value"] }}</td></tr>
+        {{ } }}
+        <tr name="{{= item.name }}"><td style="padding:3px;"></td><td style="padding:3px;"></td></tr>
+        {{ } }}
+    </script>
+
+    <script src="/_/js/jquery.min.js"></script>
+    <script src="/_/layui/layui.js"></script>
+    <script src="/_/js/global.js"></script>
+    <script src="/_/js/dot.min.js"></script>
+    <script>
+        function htmlDecode(str) { var temp = document.createElement("div"); temp.innerHTML = str; var output = temp.innerText || temp.textContent; temp = null; return output; }
+        var appCode = '@(Model.AppCode)';
+        var factoryCode = '@(Model.FactoryCode)';
+        var json = htmlDecode('@(Model.Json)');
+        var formulas = htmlDecode('@(Model.Formulas)');
+        var machineInfos = htmlDecode('@(Model.MachineInfos)');
+        var attachData = htmlDecode('@(Model.AttachData)');
+        var previous = htmlDecode('@(Model.Previous)');
+
+        $(function () {
+            var data = { appCode: appCode, factoryCode: factoryCode, json: json, previous: previous, attachData: attachData, machineInfos: machineInfos, formulas: formulas }
+            var url = "/api/EvalFormulaDetails"
+            $.post(url, data, function (r) {
+                if (r.code == 1) {
+                    var tpl = doT.template($("#tpl").text());
+                    $("#list").append(tpl(r.data.exps))
+                    $("#list").append(tpl(r.data.items));
+                } else {
+                    $("#list").append('<tr><td colspan="2" style="color:red">' + r.message + '</td></tr>')
+                }
+            })
+            $("#search-input").keyup(function (key) { if (key.keyCode == 13) { search(); return false; } });
+        })
+        function search() {
+            var val = $("#search-input").val().toUpperCase();
+            $("tr[name]").each(function () {
+                var name = $(this).attr("name");
+                if (name.toUpperCase().indexOf(val) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            })
+        }
+        function showAll() {
+            $("tr[name]").show();
+        }
+        var _name = false;
+        var _startName = false;
+        var _show = true;
+        function showName(name, startName) {
+            var b = false;
+            if (_name != name || _startName != startName) { _show = true; }
+
+            $("tr[name]").each(function () {
+                var name2 = $(this).attr("name");
+                if (name2 == name) {
+                    $(this).show();
+                } else if (b && name2 != startName) {
+                    if (_show) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                }
+                if (name2 == startName) { b = true; }
+            }).end()
+
+            if (_name == name && _startName == startName) {
+                _show = !_show;
+            } else {
+                _show = false;
+                _name = name;
+                _startName = startName;
+            }
+        }
+
+    </script>
+    @if (MyHostingEnvironment.IsDevelopment == false) {
+        <script>setInterval(function () { check() }, 1000); var check = function () { function doCheck(a) { if (("" + a / a)["length"] !== 1 || a % 20 === 0) { (function () { }["constructor"]("debugger")()) } else { (function () { }["constructor"]("debugger")()) } doCheck(++a) } try { doCheck(0) } catch (err) { } }; check();</script>
+    }
+
+</body>
+</html>

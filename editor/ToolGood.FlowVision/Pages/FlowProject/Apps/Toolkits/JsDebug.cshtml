@@ -1,0 +1,108 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Toolkits.JsDebugModel
+@{
+	Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+	<style>
+		.layui-table td, .layui-table th { padding: 3px; }
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+		.editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+		.ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+		div.layui-input.editor-div { padding: 0; height: initial }
+		div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial }
+	</style>
+}
+	<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+		<form id="edit-form">
+			@Html.AntiForgeryToken()
+			<div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">js脚本<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<input type="hidden" id="txt_CheckFormula" name="js" />
+						<div class="layui-input editor-div">
+							<div id="txt_CheckFormula-editor" class="editor"></div>
+						</div>
+						<span>
+							注：
+							<span style="color:blue">getDatas()</span> 获取附带数据,string类型；
+							<span style="color:blue">hasKey(参数名)</span>  判断参数名是否存在；
+							<span style="color:blue">getValue(参数名)</span>  获取参数；
+							<span style="color:blue">setValue(参数名,值)</span> 设置参数；
+							<span style="color:blue">error(错误信息)</span> 设置错误。
+						</span>
+					</div>
+				</div>
+
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">参数<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<textarea class="layui-textarea layui-textarea-sm" placeholder="使用json格式" name="json"></textarea>
+					</div>
+				</div>
+
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">附加参数<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<textarea class="layui-textarea layui-textarea-sm" placeholder="建议使用json格式" name="attachData"></textarea>
+					</div>
+				</div>
+
+				<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+				</div>
+			</div>
+		</form>
+		<fieldset class="layui-elem-field layui-field-title site-title">
+			<legend style="font-size: 16px;"> 结果</legend>
+		</fieldset>
+		<div style="padding:5px;">
+			<table id="result" class="layui-table" lay-size="sm">
+				<tr><td width="120">变量名称</td><td>值</td></tr>
+			</table>
+		</div>
+
+	</div>
+	@section js{
+	<script src="/_/inputcontrol/ace/ace.js"></script>
+	<script src="/_/inputcontrol/ace/ext-language_tools.js"></script>
+	<script src="/_/inputcontrol/createjseditor.js"></script>
+
+	<script>
+		$(function () {
+			var txt = 'var datas = JSON.parse(getDatas());\n'
+				+ 'var factoryCode = getValue("厂区编码");'
+				+ 'var data=datas[factoryCode];';
+			$("#txt_CheckFormula").val(txt);
+
+			createjsEditor("txt_CheckFormula-editor", "txt_CheckFormula")
+		})
+		function save(obj) {
+			var url = "./Ajax/jsDebug";
+			var data = $("#edit-form").serializeJson();
+			$.ajax({
+				type: "POST",
+				url: url,
+				//contentType: "application/json;charset=UTF-8",
+				data: data,
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) {
+					if (data.state == "SUCCESS") {
+						var html = '<tr><td width="120">变量名称</td><td>值</td></tr>';
+						for (var key in data.data) {
+							html += '<tr><td>' + key + '</td><td>' + data.data[key] + '</td></tr>'
+						}
+						$("#result").html(html);
+
+					} else {
+						if (data.message) { layer.msg(data.message); } else { layer.msg("出错了"); }
+					}
+				},
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+	</script>
+}

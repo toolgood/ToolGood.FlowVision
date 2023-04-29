@@ -1,0 +1,160 @@
+﻿@page
+@model ToolGood.FlowWork.Pages.Analysis.FlowPathResultModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程路径</title>
+    <link href="/_/layui/css/layui.css" rel="stylesheet" />
+    <link href="/_/x6/x6.css" rel="stylesheet" />
+    <script src="/_/js/jquery.min.js"></script>
+    <script src="/_/X6/x6.js"></script>
+    <script src="/_/layui/layui.js"></script>
+    <style>
+        #container { display: flex; border: 1px solid #dfe3e8; }
+        #graph-container { width: 100%; height: 100%; }
+
+        .node { display: flex; align-items: center; width: 100%; height: 100%; background-color: #fff; border: 1px solid #c2c8d5; border-left: 4px solid #5F95FF; border-radius: 4px; box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06); }
+        .node img { width: 20px; height: 20px; flex-shrink: 0; margin-left: 8px; }
+        .node .label { display: inline-block; flex-shrink: 0; width: 104px; margin-left: 8px; color: #666; font-size: 11px; }
+        .x6-edge:hover path:nth-child(2) { stroke: #1890ff; stroke-width: 1px; }
+        .x6-edge-selected path:nth-child(2) { stroke: #1890ff; stroke-width: 1.5px !important; }
+    </style>
+</head>
+<body style="height:100%;width: 100%;margin:0 auto;position: fixed;">
+    <div id="container" style="height:100%;width:100%;">
+        <div id="graph-container"></div>
+    </div>
+
+    <script>
+        layui.use(["layer"], function () { });
+        function htmlDecode(str) { var temp = document.createElement("div"); temp.innerHTML = str; var output = temp.innerText || temp.textContent; temp = null; return output; }
+        var appCode = '@(Model.AppCode)';
+        var factoryCode = '@(Model.FactoryCode)';
+        var json = htmlDecode('@(Model.Json)');
+        var machineInfos = htmlDecode('@(Model.MachineInfos)');
+        var attachData = htmlDecode('@(Model.AttachData)');
+        var previous = htmlDecode('@(Model.Previous)');
+        var projectCode = htmlDecode('@(Model.ProjectCode)');
+
+        Graph = X6.Graph;
+        Shape = X6.Shape;
+        // #region 初始化画布
+        Graph.registerEdge('dag-edge', { inherit: 'edge', attrs: { line: { stroke: '#C2C8D5', strokeWidth: 1, } } }, true)
+
+        const graph = new Graph({
+            grid: true,
+            container: document.getElementById('graph-container'),
+            panning: { enabled: true, eventTypes: ['leftMouseDown'] },
+            mousewheel: { enabled: true, modifiers: ['ctrl', 'meta'], factor: 1.1, maxScale: 2, minScale: 0.5 },
+            highlighting: { magnetAdsorbed: { name: 'stroke', args: { attrs: { fill: '#5F95FF', stroke: '#5F95FF', strokeWidth: 4 } } } },
+            connecting: {
+                snap: false,
+                allowBlank: false,
+                allowLoop: false,
+                highlight: true,
+                connectionPoint: 'anchor',
+                anchor: 'center',
+                validateMagnet({ magnet }) { return false; },
+                createEdge() { return graph.createEdge({ shape: 'dag-edge', zIndex: -1 }) },
+            },
+            interacting: false,
+            selecting: false,
+            keyboard: false,
+            clipboard: false,
+            history: false,
+            resizing: false,
+            rotating: false,
+            snapline: false
+        })
+        // #region 初始化图形
+        const ports = { groups: { top: { position: 'left', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF', } } }, bottom: { position: 'right', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF' } } } }, items: [{ group: 'top' }, { group: 'bottom' }] }
+        const endPorts = { groups: { top: { position: 'left', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF', } } } }, items: [{ group: 'top' }] }
+        const startPorts = { groups: { bottom: { position: 'right', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF' } } } }, items: [{ group: 'bottom' }] }
+        const noneports = { groups: {}, items: [] }
+
+        Graph.registerNode('start', { inherit: 'rect', width: 66, height: 36, attrs: { body: { rx: 20, ry: 26, strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...startPorts } }, true)
+        Graph.registerNode('end', { inherit: 'circle', width: 36, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...endPorts } }, true)
+        Graph.registerNode('error', { inherit: 'circle', width: 36, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#FFDDFF' }, text: { fontSize: 12 } }, ports: { ...endPorts } }, true)
+        Graph.registerNode('merge', { inherit: 'polygon', width: 66, height: 36, attrs: { body: { refPoints: '0,10 10,0 20,10 10,20', strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('jump', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('procedure', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('procedureItem', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('custom', { inherit: 'rect', width: 66, height: 36, attrs: { body: { rx: 8, ry: 8, strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('comment', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#fff', fill: '#fff' }, text: { fontSize: 14 }, label: { refX: 3, refY: 3, textAnchor: 'start', textVerticalAnchor: 'top', fill: '#ff4d4f' }, }, ports: { ...noneports } }, true)
+        Graph.registerNode('status', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#faffa4' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        const showPorts = (ports, show) => { for (let i = 0, len = ports.length; i < len; i = i + 1) { ports[i].style.visibility = show ? 'visible' : 'hidden' } }
+
+
+        function addNode(node) {
+            var x = node.layer * 200 + 30;
+            var y = node.order * 60 + 30;
+            nd = graph.addNode(({ shape: node.nodeType, id: node.id, label: node.label, x: x, y: y }))
+            if (node.nodeType == "procedure" || node.nodeType == "procedureItem" || node.nodeType == "jump" || node.nodeType == "custom" || node.nodeType == "status") { nd.resize(120, 36) }
+        }
+        function addError(node) {
+            var x = node.layer * 200 + 30;
+            var y = node.order * 60 + 70;
+            graph.addNode(({ shape: 'comment', id: node.id + "_error", label: node.errorMessage, x: x, y: y }))
+        }
+        function addEdge(node) {
+            if (node.nextNodeIds) {
+                var ports = graph.getCellById(node.id).port.ports;
+                var startPort = "";
+                for (var i = 0; i < ports.length; i++) {
+                    var post = ports[i];
+                    if (post.group == "bottom") {
+                        startPort = post.id;
+                        break;
+                    }
+                }
+                for (var key in node.nextNodeIds) {
+                    var ids = node.nextNodeIds[key]
+                    for (var k = 0; k < ids.length; k++) {
+                        var id = ids[k];
+                        var ports2 = graph.getCellById(id).port.ports;
+                        for (var i = 0; i < ports2.length; i++) {
+                            var post = ports2[i];
+                            if (post.group == "top") {
+                                graph.addEdge({
+                                    shape: 'dag-edge',
+                                    source: { cell: node.id, port: startPort },
+                                    target: { cell: id, port: post.id },
+                                })
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $(function () {
+            var data = { appCode: appCode, factoryCode: factoryCode, json: json, previous: previous, attachData: attachData, machineInfos: machineInfos, projectCode: projectCode }
+            var url = "/api/EvalWithMessages"
+            $.post(url, data, function (r) {
+                if (r.state == "SUCCESS") {
+                    var nodes = r.data.nodes;
+                    var startId = r.data.start;
+
+                    for (var i = 0; i < nodes.length; i++) {
+                        addNode(nodes[i]);
+                        if (nodes[i].isError && nodes[i].errorMessage) { addError(nodes[i]); }
+                    }
+                    for (var i = 0; i < nodes.length; i++) { addEdge(nodes[i]); }
+                    showPorts(document.getElementById('graph-container').querySelectorAll('.x6-port-body'), false)
+                } else {
+                    layui.layer.alert(r.message);
+                }
+            })
+        })
+    </script>
+    @if (MyHostingEnvironment.IsDevelopment == false) {
+        <script>setInterval(function () { check() }, 1000); var check = function () { function doCheck(a) { if (("" + a / a)["length"] !== 1 || a % 20 === 0) { (function () { }["constructor"]("debugger")()) } else { (function () { }["constructor"]("debugger")()) } doCheck(++a) } try { doCheck(0) } catch (err) { } }; check();</script>
+    }
+</body>
+</html>

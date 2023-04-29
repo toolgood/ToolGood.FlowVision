@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Configurations>Debug;Release;Win</Configurations>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.4" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
+		<PackageReference Include="MySql.Data" Version="8.0.32.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ToolGood.FlowVision.Applications\ToolGood.FlowVision.Applications.csproj" />
+		<ProjectReference Include="..\ToolGood.FlowVision.Commons\ToolGood.FlowVision.Commons.csproj" />
+		<ProjectReference Include="..\ToolGood.FlowVision.Datas\ToolGood.FlowVision.Datas.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="File\FlowVision上传导入模板.mini.xlsx">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="File\空白箱.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+	
+</Project>

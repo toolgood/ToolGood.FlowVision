@@ -1,0 +1,72 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Projects.Dicts.ImportModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+    </style>
+}
+    <div style="overflow-x:hidden;background-color:#f3f3f4;">
+        <h2 style="text-align:center ">上传导入说明</h2>
+        <p style="text-indent:2em;margin-top:8px;">
+            1、先下载上传文件模板，<a href="/FlowProject/Projects/Ajax/DownloadTemplate" target="_blank" style="color:blue;">点这里下载</a>；
+        </p>
+        <p style="text-indent:2em;margin-top:8px;">
+            2、请确保EXCEL文件内的【名称】、【编码】、【简称】不重复；
+        </p>
+        <p style="text-indent:2em;margin-top:8px;">
+            3、请确保EXCEL文件内的【厂区】、【机械名称】等填写正确；
+        </p>
+        <p style="text-indent:2em;margin-top:8px;">
+            4、<span style="color:red">上传导入会清空原有内容，无法恢复</span>；
+        </p>
+        <p style="text-indent:2em;margin-top:8px;">
+            5、【厂区机械】、【厂区工艺】请先排序，以【分类】、【编码】、【名称】；
+        </p>
+        <p style="text-indent:2em;margin-top:8px;">
+            6、EXCEL文件内的公式，类EXCEL函数，<a href="/FlowProject/Apps/Formula" target="_blank" style="color:blue;">参考</a>； 
+        </p>
+
+        <p style="text-align:center;margin-top:15px;"><a id="upbtn" class="layui-btn" style="text-indent:0" href="javascript:;"><i class="layui-icon">&#xe67c;</i>上传文件</a></p>
+
+    </div>
+    @section js{
+    <script>
+        function getUrl() {
+            return '/FlowProject/Projects/Ajax/UploadTemplate?projectId=@(Model.ProjectId)&fingerprint=' + window.fingerprint;
+        }
+        FingerprintJS.load().then(function (fp) { return fp.get() }).then(function (result) {
+            window.fingerprint = result.visitorId;
+            layui.use('upload', function () {
+                var upload = layui.upload;
+
+                var uploadInst = upload.render({
+                    elem: '#upbtn' //绑定元素
+                    , url: getUrl() //上传接口
+                    , accept: 'file'
+                    , exts: "xlsx|xls"
+                    , done: function (data) {
+                        if (data.state == "SUCCESS") {
+                            closeWindowAndReload();
+                        } else {
+                            if (data.message) {
+                                layer.alert(data.message);
+                            } else {
+                                layer.msg("出错了");
+                            }
+                        }
+                    }
+                    , error: function () {
+                        layer.msg("网络连接出错了");
+                    }
+                });
+            });
+        })
+
+
+    </script>
+
+}

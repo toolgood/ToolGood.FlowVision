@@ -1,0 +1,20 @@
+﻿* { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+html, body { background-color: #f3f3f4; height: 100%; margin: 0; padding: 0; }
+body { font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #676a6c; }
+.loginscreen { max-width: 400px; z-index: 100; margin: 0 auto; padding-top: 200px; width: 300px; text-align: center; }
+h3 { margin-top: 5px; font-weight: 600; font-size: 16px; }
+form { margin-top: 50px; }
+.form-group { margin-bottom: 15px; }
+.form-control { background-color: #FFFFFF; background-image: none; border: 1px solid #e5e6e7; border-radius: 1px; color: inherit; display: block; padding: 6px 12px; transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s; width: 100%; font-size: 14px; box-shadow: none; font-family: inherit; line-height: 1.42857143; }
+.form-control:focus { border-color: #1ab394 !important; }
+.btn { display: inline-block; padding: 6px 12px; margin-bottom: 0; font-size: 14px; font-weight: 400; line-height: 1.42857143; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; border-radius: 3px; width: 100% !important; background-color: #1d90ee; border-color: #36abfa; color: #FFFFFF; }
+.btn:hover { background-color: rgb(241, 71, 80); border-color: #E49FA3; color: #FFFFFF; }
+.copyright { margin-top: 15px; }
+.small, small { font-size: 85%; }
+.form-group.l { text-align: left; }
+.form-control.Code { width: 60%; display: inline !important; }
+.CodeImg { width: 36%; float: right; padding: 5px; }
+.vcode { margin-top: 0px; vertical-align: top; cursor: pointer; }
+.hidden { display: none !important; }
+a.btn { text-decoration: none; }
+#loading { position: absolute; z-index: 3000; left: 45%; top: 45%; border: 1px solid #ccc; width: auto; padding: 6px 5px 6px 40px; background: #fff url("/_/img/loading.gif") no-repeat scroll 7px 2px; display: none; cursor: pointer; }

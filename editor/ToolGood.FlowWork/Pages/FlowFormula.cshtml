@@ -1,0 +1,225 @@
+﻿@page
+@model ToolGood.FlowWork.Pages.FlowFormulaModel
+@{
+	Layout = "~/Pages/Shared/_Website.cshtml";
+	ViewBag.Title = "计算公式";
+}
+@section nav{
+	<li class="layui-nav-item"><a href="/">首页</a></li>
+	<li class="layui-nav-item layui-this"><a href="/FlowFormula">计算公式</a></li>
+	<li class="layui-nav-item"><a href="/FlowFormulaDetails">公式步骤</a></li>
+	<li class="layui-nav-item"><a href="/FlowPath">流程路径</a></li>
+	<li class="layui-nav-item"><a href="/FlowDebug">流程调试</a></li>
+	<li class="layui-nav-item"><a href="/FlowProcedure">流程工艺</a></li>
+}
+
+<div class="layui-container" style="background: #fff;">
+	<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+		<ul class="layui-tab-title">
+			<li class="layui-this">调试页面</li>
+			@foreach (var appwork in Model.AppWorks) {
+				<li>@(appwork.Name)</li>
+			}
+		</ul>
+		<div class="layui-tab-content" style="min-height: 100px;">
+			<div class="layui-tab-item layui-show">
+				<form id="form-">
+					<div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">厂区<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<select name="factoryCode" lay-filter="factoryCode">
+									@foreach (var item in Model.ProjectWork.FactoryList) {
+										<option value="@(item.Value.Code)">@(item.Value.Name) @(item.Value.Code)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">流程<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<select name="appCode" lay-filter="appCode">
+									@foreach (var appwork in Model.AppWorks) {
+										<option value="@(appwork.Code)">@(appwork.Name) @(appwork.Code)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">参数<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<textarea placeholder="请输入参数！" name="json" class="layui-textarea" rows="8"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">公式<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<textarea placeholder="请输入公式！" name="formulas" class="layui-textarea" style="min-height: 60px;">总价</textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								机械状态
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="machineInfos" class="layui-textarea" style="min-height: 60px;"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								附加参数
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="attachData" class="layui-textarea" style="min-height: 60px;"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								上个流程参数
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="previous" class="layui-textarea" style="min-height: 60px;"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="save(this,'');"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+						</div>
+					</div>
+				</form>
+				<hr style="clear:both" />
+				<div id="result-"></div>
+
+			</div>
+			@for (int i = 0; i < Model.AppWorks.Count; i++) {
+				var appwork = Model.AppWorks[i];
+				<div class="layui-tab-item">
+					<form id="form-@(appwork.Code)">
+						<input type="hidden" name="appCode" value="@(appwork.Code)">
+						<div class="layui-form layui-form-sm layui-row inputItem" lay-filter="form" style="padding: 20px 30px 0 0;">
+							<div class="layui-form-item-sm  layui-col-md4" style="clear:none">
+								<label class="layui-form-label-sm">厂区<span class="red"> *</span></label>
+								<div class="layui-input-block-sm">
+									<select name="factoryCode">
+										@foreach (var item in Model.ProjectWork.FactoryList) {
+											<option value="@(item.Value.Code)">@(item.Value.Name)</option>
+										}
+									</select>
+								</div>
+							</div>
+							<div class="layui-form-item-sm layui-col-md4" style="clear:none">
+								<label class="layui-form-label-sm">数量<span class="red"> *</span></label>
+								<div class="layui-input-block-sm">
+									<input type="text" class="layui-input layui-input-sm" placeholder="请输入数量！" name="json.数量" value="1000" autocomplete="off">
+								</div>
+							</div>
+							<div class="layui-form-item-sm layui-col-md4" style="clear:none">
+								<label class="layui-form-label-sm">流程名</label>
+								<div class="layui-input-block-sm">
+									<input type="text" class="layui-input layui-input-sm" value="@(appwork.Name)" readonly autocomplete="off">
+								</div>
+							</div>
+							@foreach (var input in appwork.InputList) {
+								<div class="layui-form-item-sm layui-col-md4" style="clear:none">
+									<label class="layui-form-label-sm">
+										@(input.InputName)
+										@if (input.IsRequired) {
+											<span class="red"> *</span>
+										}
+									</label>
+									<div class="layui-input-block-sm">
+										@if (input.InputType == ToolGood.FlowWork.Flows.InputType.Number) {
+											<input type="text" class="layui-input layui-input-sm number" placeholder="请输入数字！" name="json.@(input.InputName)" value="@(input.DefaultValue)" autocomplete="off">
+										} else if (input.InputType == ToolGood.FlowWork.Flows.InputType.Bool) {
+											<select name="json.@(input.InputName)">
+												<option value="true" @(input.UseDefaultValue && input.DefaultValue.Equals("true", StringComparison.OrdinalIgnoreCase)?"selected":"")>是</option>
+												<option value="false" @(input.UseDefaultValue && input.DefaultValue.Equals("false", StringComparison.OrdinalIgnoreCase)?"selected":"")>否</option>
+											</select>
+										} else if (input.InputType == ToolGood.FlowWork.Flows.InputType.String) {
+											if (Model.IsList(input)) {
+												<select name="json.@(input.InputName)">
+													@foreach (var item in Model.GetListItem(input)) {
+														<option value="@(item)" @(input.UseDefaultValue && input.DefaultValue==item?"selected":"")>@(item)</option>
+													}
+												</select>
+											} else {
+												<input type="text" class="layui-input layui-input-sm" name="json.@(input.InputName)" value="@(input.DefaultValue)" autocomplete="off">
+											}
+										} else if (input.InputType == ToolGood.FlowWork.Flows.InputType.Date) {
+											<input type="text" class="layui-input layui-input-sm date" name="json.@(input.InputName)" readonly autocomplete="off">
+										} else if (input.InputType == ToolGood.FlowWork.Flows.InputType.List) {
+											<input type="text" class="layui-input layui-input-sm" placeholder="集合，逗号分开" name="json.@(input.InputName)" value="@(input.DefaultValue)" autocomplete="off">
+										}
+										@if (string.IsNullOrEmpty(input.Unit) == false) {
+											<span>@(input.Unit)</span>
+										}
+									</div>
+								</div>
+							}
+							<div class="layui-form-item-sm">
+								<label class="layui-form-label-sm">公式<span class="red"> *</span></label>
+								<div class="layui-input-block-sm">
+									<textarea placeholder="请输入公式！" name="formulas" class="layui-textarea"></textarea>
+								</div>
+							</div>
+
+							<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="save(this,'@(appwork.Code)');"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+							</div>
+
+						</div>
+					</form>
+					<hr style="clear:both" />
+					<div id="json-@(appwork.Code)"></div>
+					<hr style="clear:both" />
+					<div id="result-@(appwork.Code)"></div>
+				</div>
+			}
+		</div>
+	</div>
+</div>
+@section js{
+	<script src="/_/js/jquery.min.js"></script>
+	<script src="/_/layui/layui.js"></script>
+	<script src="/_/js/global.js"></script>
+	<script>
+		layui.use(["layer", "laydate", 'element', "form",], function () { layui.laydate.render({ elem: '.date' }); });
+		$(function () {
+			$(".number").change(function () {
+				var val = $(this).val().replace(/[^-\.\d]/g, '').replace(/^(-?)0+(\d.*)$/g, '$1$2').replace(/^(.+)-/g, '$1').replace(/(\..*?)\./g, '$1').replace(/^(-?)(\.)(\d*)$/g, '$10$2$3');
+				$(this).val(val);
+			});
+		})
+		function save(obj, id) {
+			var data = $("#form-" + id).serializeJson();
+			if (typeof (data.json) != 'string') {
+				data.json = JSON.stringify(data.json);
+				$("#json-" + id).text(data.json);
+			}
+			var url = "/api/EvalFormulas";
+			$.post(url, data, function (r) {
+				$("#result-" + id).text(JSON.stringify(r));
+			})
+		}
+		layui.use(["layer", 'element', "form"], function () {
+			var value = window.sessionStorage["factoryCode"]
+			if (value) { $("[name=factoryCode]").val(value); }
+			value = window.sessionStorage["appCode"]
+			if (value) { $("[name=appCode]").val(value); }
+			value = window.sessionStorage["json"]
+			if (value) { $("[name=json]").val(value); }
+			value = window.sessionStorage["formulas"]
+			if (value) { $("[name=formulas]").val(value); }
+			value = window.sessionStorage["machineInfos"]
+			if (value) { $("[name=machineInfos]").val(value); }
+			value = window.sessionStorage["attachData"]
+			if (value) { $("[name=attachData]").val(value); }
+			value = window.sessionStorage["previous"]
+			if (value) { $("[name=previous]").val(value); }
+			layui.form.render("select");
+
+			layui.form.on('select(factoryCode)', function (data) { window.sessionStorage["factoryCode"] = data.value; });
+			layui.form.on('select(appCode)', function (data) { window.sessionStorage["appCode"] = data.value; });
+			$("textarea").change(function () { window.sessionStorage[$(this).attr("name")] = $(this).val(); })
+		});
+	</script>
+}

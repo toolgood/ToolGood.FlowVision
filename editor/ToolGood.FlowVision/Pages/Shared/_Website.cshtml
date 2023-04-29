@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title 规则引擎</title>
+    <link href="/_/layui/css/layui.css" rel="stylesheet" />
+    <link href="/_/css/layform_sm.css" rel="stylesheet" />
+    <style>
+        .red { color: red }
+        .inputItem .layui-form-select { width: 80%; }
+        .inputItem input { width: 80%; display: inline-block; }
+    </style>
+    @RenderSection("css", required: false)
+</head>
+<body>
+   <header id="top">
+        <div style="background-color: #393D49;">
+            <div class="layui-container" style="padding: 0;">
+                <ul class="layui-nav" style="padding: 0;">
+                    @RenderSection("nav", required: false)
+                    <li class="layui-nav-item " style="float:right;right: 15px;"><a href="/Members/login">管理后台</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    @RenderBody()
+    <div style="height:50px"></div>
+        <hr />
+    <footer style="padding-bottom:20px;margin-top:10px;">
+        <div class="layui-container" style="text-align:center">
+                <a href="http://www.toolgood.com" target="_blank">&copy; 2016-2023  <b>ToolGood</b> 规则引擎</a>
+            <span> | </span>
+            <a href="/Legal"> 许可协议</a>
+            <span> | </span>
+            <a href="http://www.toolgood.com/about"> 关于我们</a>
+        </div>
+        <div class="layui-container" style="text-align:center">
+            <span>温岭城东知君软件开发工作室</span>
+        </div>
+    </footer>
+    @RenderSection("js", required: false)
+</body>
+</html>

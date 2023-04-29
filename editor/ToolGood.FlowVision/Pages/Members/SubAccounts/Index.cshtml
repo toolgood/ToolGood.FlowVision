@@ -1,0 +1,197 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.SubAccounts.IndexModel
+@{
+    Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+    <div class="data-header">
+        <div class="search-v2">
+            <form id="search-form">
+                <div class="filter">
+                    <label class="label">角色：</label>
+                    <select id="sel_Group" name="GroupId">
+                        <option value="">-- 请选择 --</option>
+                        @Model.Groups.ToOption(q=>q.Name,q=>q.Id);
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">账号：</label>
+                    <input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">姓名：</label>
+                    <input type="text" class="text" name="truename" id="txt_truename" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">部门：</label>
+                    <input type="text" class="text" name="Department" id="txt_Department" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">工号：</label>
+                    <input type="text" class="text" name="JobNo" id="txt_JobNo" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">手机号：</label>
+                    <input type="text" class="text" name="Phone" id="txt_Phone" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">邮箱：</label>
+                    <input type="text" class="text" name="Email" id="txt_Email" autocomplete="off">
+                </div>
+
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary" onclick="pageReload()">&nbsp; 重置 &nbsp; </button>
+                </div>
+                <div pass-edit="@Model.ButtonPass" style="display:inline-block">
+                    <div class="filter"> | </div>
+                    <div class="filter">
+                        <a href="./Add?h=480&w=650" class="layui-btn layui-btn-xs layui-btn-normal openwin" title="新增子账号"> &nbsp; 新增子账号 &nbsp; </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="data-content">
+        <table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+    </div>
+</div>
+
+<form id="delete-form" class="hidden">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="" />
+</form>
+
+<div style="display:none" id="bar">
+    <a pass-edit="@Model.ButtonPass" href="./Edit?h=450&w=650&id={{ d.id }}" edit class="openwin" title="编辑子账号"> 编辑</a>
+    <span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+    <a pass-edit="@Model.ButtonPass" href="./ChangePassword?h=290&w=470&id={{ d.id }}"> 修改密码</a>
+    <span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+    {{# if(d.isFrozen==false){ }}
+    <a pass-edit="@Model.ButtonPass" href="javascript:frozenItem({{ d.id }},'{{ d.name }}')"> 冻结</a>
+    <span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+    {{# }else{ }}
+    <a pass-edit="@Model.ButtonPass" href="javascript:recoveryItem({{ d.id }},'{{ d.name }}')"> 解冻</a>
+    <span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+    {{# } }}
+    <a pass-delete="@Model.ButtonPass" href="javascript:deleteItem({{ d.id }},'{{ d.name }}');">删除</a>
+</div>
+
+
+@section js{
+    <script>
+        var showBar = '@(Model.ButtonPass.CanEditOrDelete ? "1" : "0")';
+        function recoveryItem(id, name) {
+            $("#delete-form input[name=id]").val(id);
+            if (top.$("a.layui-layer-btn0").length > 0) {
+                changeItem("./Ajax/recoveryItem");
+                top.layer.close(top.$(".layui-layer-dialog").attr("times"));
+                return false;
+            }
+            top.layer.confirm('恢复子账号【' + name + "】吗？", function (index) {
+                changeItem("./Ajax/recoveryItem");
+                top.layer.close(index);
+            })
+        }
+        function frozenItem(id, name) {
+            $("#delete-form input[name=id]").val(id);
+            if (top.$("a.layui-layer-btn0").length > 0) {
+                changeItem("./Ajax/frozenItem");
+                top.layer.close(top.$(".layui-layer-dialog").attr("times"));
+                return false;
+            }
+            top.layer.confirm('冻结子账号【' + name + "】吗？", function (index) {
+                changeItem("./Ajax/frozenItem");
+                top.layer.close(index);
+            })
+        }
+        function deleteItem(id, name) {
+            $("#delete-form input[name=id]").val(id);
+            if (top.$("a.layui-layer-btn0").length > 0) {
+                changeItem("./Ajax/DeleteItem");
+                top.layer.close(top.$(".layui-layer-dialog").attr("times"));
+                return false;
+            }
+            top.layer.confirm('删除子账号【' + name + "】吗？", function (index) {
+                changeItem( "./Ajax/DeleteItem");
+                top.layer.close(index);
+            })
+        }
+        function changeItem(url) {
+            var data = { data: $("#delete-form").serializeJson(), fingerprint: window.fingerprint }
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(data),
+                headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+                dataType: "JSON",
+                success: function (data, textStatus, jqXHR) { layer.load(2); layui.table.reload("dataList", { where: $("#search-form").serializeJson() }); },
+                error: function (data, textStatus, errorThrown) { layer.msg("出错了"); }
+            });
+        }
+
+        layui.use(["layer", "form", "table"], function () {
+            var getListUrl = './Ajax/GetList';
+            var cols = [];
+            //cols.push({ checkbox: true, fixed: true });
+            cols.push({ field: 'id', title: '序号', width: "80", sort: true, });
+            cols.push({ field: 'name', title: '登录名', width: "100", sort: true, });
+            cols.push({ field: 'groupName', title: '角色', width: "100", });
+            cols.push({ field: 'projectNames', title: '项目', width: "150", });
+            cols.push({ field: 'department', title: '部门', width: "80", sort: true, });
+            cols.push({ field: 'trueName', title: '姓名', width: "80", sort: true, });
+            cols.push({ field: 'jobNo', title: '工号', width: "80", sort: true, });
+            cols.push({ field: 'phone', title: '手机', width: "110", sort: true, });
+            cols.push({ field: 'email', title: '邮箱', width: "150", sort: true, });
+            cols.push({ field: 'isFrozen', title: '冻结', width: "80", });
+            cols.push({ field: 'comment', title: '备注', width: "150", });
+            cols.push({ field: 'modifyTime', title: '修改时间', width: "150", });
+
+            if (showBar == '1') {
+                cols.push({ field: 'right', title: '操作', width: "210", align: 'center', fixed: 'right', toolbar: '#bar' });
+            }
+
+            var tableOptions = {
+                url: getListUrl,
+                autoSort: false,
+                size: 'sm',
+                even: true,
+                method: 'POST',
+                cols: [cols],
+                page: true,
+                limit: 30,
+                limits: [10, 20, 30, 50, 100],
+                response: { statusCode: 1, msgName: 'message' },
+                height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+                done: function () { layer.closeAll('loading'); },
+                request: { pageName: 'pageIndex', limitName: 'pageSize' },
+                text: { none: '<span style="color:red;">暂无记录</span>' },
+            };
+
+            var layer = layui.layer, table = layui.table;
+            layer.load(2);
+            table.init('dataList', tableOptions);
+            table.on('rowDouble(dataList)', function (obj) { $(obj.tr[0]).find("a[edit]").trigger("click"); });
+            table.on('sort(dataList)', function (obj) {
+                layer.load(2);
+                var field = obj.field; order = obj.type;
+                if (obj.type == null) { field = ""; order = ""; }
+                table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+            });
+
+            function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
+            $('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $("select").change(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+            $('.filter a').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13 && $(".layui-layer").length > 0) { return false; } })
+
+        });
+        function pageReload() {
+            location.reload();
+        }
+        function reload() {
+            layui.table.reload("dataList");
+        }
+    </script>
+}
