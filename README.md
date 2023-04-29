@@ -98,7 +98,7 @@
 -    a) 邮件发送至toolgood@qq.com
 -    b) 加我QQ1665690808
 
-商业授权名单：https://github.com/toolgood/ToolGood.TextFilter/issues/3
+商业授权名单：https://github.com/toolgood/ToolGood.FlowVision/issues/1
 
 
 开票说明：
