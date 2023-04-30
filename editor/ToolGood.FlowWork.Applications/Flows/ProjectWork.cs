@@ -29,6 +29,7 @@ namespace ToolGood.FlowWork.Flows
 		public int Mass { get; set; }
 
 		public Dictionary<string, string> FormulaList { get; set; }
+		public Dictionary<string, string> DataList { get; set; }
 		public Dictionary<string, FactoryWork> FactoryList { get; set; }
 		public Dictionary<string, FactoryMachineWork> FactoryMachineList { get; set; }
 		public Dictionary<string, FactoryProcedureWork> FactoryProcedureList { get; set; }
@@ -62,6 +63,17 @@ namespace ToolGood.FlowWork.Flows
 			context = null;
 			return false;
 		}
+
+		internal bool TryGetData(string name, out Operand operand)
+		{
+			if (DataList.TryGetValue(name, out string exp)) {
+				operand = Operand.CreateJson(exp);
+				return true;
+			}
+			operand = null;
+			return false;
+		}
+
 
 		//public static ProjectWork LoadJson2(string json)
 		//{

@@ -225,7 +225,8 @@ namespace ToolGood.FlowVision.Applications.Projects.Impl
 			var factories = await helper.Select_Async<DbFactory>("where mainMemberId=@0 and projectId=@1 and isDelete=0", mainMemberId, projectId);
 			var machineDtos = await helper.Select_Async<FactoryMachineDto>("where mainMemberId=@0 and projectId=@1 and isDelete=0", mainMemberId, projectId);
 			var procedureDtos = await helper.Select_Async<FactoryProcedureDto>("where mainMemberId=@0 and projectId=@1 and isDelete=0", mainMemberId, projectId);
-			var procedureItems = await helper.Select_Async<FactoryProcedureItemDto>("where mainMemberId=@0 and projectId=@1 and isDelete=0", mainMemberId, projectId);
+			var procedureItems = await helper.Select_Async<FactoryProcedureItemDto>("where mainMemberId=@0 and projectId=@1 and isDelete=0 and Used=1", mainMemberId, projectId);
+			var ProjectDatas = await helper.Select_Async<DbProjectData>("where mainMemberId=@0 and projectId=@1 and isDelete=0", mainMemberId, projectId);
 
 			foreach (var item in machineDtos) {
 				var fact = factories.Where(q => q.Id == item.FactoryId).FirstOrDefault();
@@ -259,6 +260,7 @@ namespace ToolGood.FlowVision.Applications.Projects.Impl
 			project.ProcedureList = procedureDtos;
 			project.Project = dbProject;
 			project.FormulaList = formulas;
+			project.DataList = ProjectDatas;
 
 			return project;
 		}
@@ -324,6 +326,7 @@ namespace ToolGood.FlowVision.Applications.Projects.Impl
 				FactoryMachineList = new Dictionary<string, FactoryMachineWork>(),
 				FactoryProcedureList = new Dictionary<string, FactoryProcedureWork>(),
 				FormulaList = new Dictionary<string, string>(),
+				DataList = new Dictionary<string, string>(),
 				AppList = new Dictionary<string, AppWork>(),
 			};
 
@@ -389,6 +392,13 @@ namespace ToolGood.FlowVision.Applications.Projects.Impl
 			}
 
 			#endregion FormulaList
+
+			#region DataList
+			foreach (var item in projectInfo.DataList) {
+				var jo = JObject.Parse(item.Data);
+				work.DataList[item.Name] = jo.ToString(Newtonsoft.Json.Formatting.None);
+			}
+			#endregion
 
 			#region AppList
 

@@ -485,6 +485,7 @@ namespace ToolGood.FlowVision.Applications.Projects.Impl
 							MainMemberId = body.MainMemberId,
 							ProjectId = projectId,
 
+							Used = true,
 							Factory = factoryname,
 							Code = row.ReadString(6)?.Trim(),
 							Name = row.ReadString(7)?.Trim(),

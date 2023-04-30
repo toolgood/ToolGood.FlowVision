@@ -10,6 +10,7 @@ namespace ToolGood.FlowVision.Dtos.Flow
 		public List<FactoryMachineDto> MachineList { get; set; }
 		public List<FactoryProcedureDto> ProcedureList { get; set; }
 		public List<DbProjectFormula> FormulaList { get; set; }
+		public List<DbProjectData> DataList { get; set; }
 
 		public List<ProjectAppInfo> AppList { get; set; }
 	}

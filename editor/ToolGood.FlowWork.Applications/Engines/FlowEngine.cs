@@ -799,6 +799,9 @@ namespace ToolGood.FlowWork.Applications.Engines
 				} else if (Project.FormulaList.ContainsKey(formula.Name)) {
 					formulaDetailItem.Type = "projectFormula";
 					fma = Project.FormulaList[formula.Name];
+				} else if (Project.DataList.ContainsKey(formula.Name)) {
+					formulaDetailItem.Type = "projectData";
+					fma = Project.DataList[formula.Name];
 				} else if (_scriptDict.ContainsKey(formula.Name)) {
 					formulaDetailItem.Type = "js";
 					formulaDetailItem.NodeId = _scriptDict[formula.Name].Id;
@@ -1031,6 +1034,9 @@ namespace ToolGood.FlowWork.Applications.Engines
 				_tempdict[parameter] = result;
 				return result;
 			}
+			if (Project.TryGetData(parameter, out Operand temp)) {
+				return temp;
+			}
 			return Operand.Error($"{parameter}的公式未找到！");
 		}
 
@@ -1124,6 +1130,8 @@ namespace ToolGood.FlowWork.Applications.Engines
 			} else if (_progDict.ContainsKey(name)) {
 				return true;
 			} else if (Project.TryGetFormula(name, out _)) {
+				return true;
+			} else if (Project.TryGetData(name, out _)) {
 				return true;
 			}
 			return false;
