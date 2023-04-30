@@ -54,6 +54,7 @@ namespace ToolGood.FlowVision.Pages.Members
 						TreeMenuDto3_1.Name = "参考文档";
 						TreeMenuDto3_1.Items.Add(new TreeMemberMenuDto() { Name = "项目字典", Id = id++, Url = "/FlowProject/Projects/Dicts/Index?pid=" + item.Id });
 						TreeMenuDto3_1.Items.Add(new TreeMemberMenuDto() { Name = "项目公式", Id = id++, Url = "/FlowProject/Projects/Formulas/Index?pid=" + item.Id });
+						TreeMenuDto3_1.Items.Add(new TreeMemberMenuDto() { Name = "项目数据", Id = id++, Url = "/FlowProject/Projects/Datas/Index?pid=" + item.Id });
 
 						var TreeMenuDto3 = new TreeMemberMenuDto();
 						TreeMenuDto2.Items.Add(TreeMenuDto3);

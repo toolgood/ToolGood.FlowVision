@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using ToolGood.FlowVision.Applications.Members;
 using ToolGood.FlowVision.Applications.Projects;
 using ToolGood.FlowVision.Commons;
@@ -6,6 +7,7 @@ using ToolGood.FlowVision.Commons.Controllers;
 using ToolGood.FlowVision.Datas.Projects;
 using ToolGood.FlowVision.Dtos;
 using ToolGood.FlowVision.Dtos.Members;
+using ToolGood.FlowVision.Dtos.Projects.Dtos;
 
 namespace ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures
 {
@@ -53,11 +55,10 @@ namespace ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures
 
 		[MemberMenu("TechnologyProcedures", "edit")]
 		[HttpPost]
-		public async Task<IActionResult> EditItem([FromBody, FromForm] Request<DbFactoryProcedure> request)
+		public async Task<IActionResult> EditItem([FromBody, FromForm] Request<FactoryProcedureEditDto> request)
 		{
 			if (MemberDto.AllowProject(request.Data.ProjectId) == false) { return Error("系统出了个小差！"); }
-
-			try {
+            try {
 				bool b;
 				if (request.Data.Id > 0) {
 					b = await _memberFlowApplication.EditFactoryProcedure(request);

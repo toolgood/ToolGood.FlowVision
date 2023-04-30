@@ -15,6 +15,7 @@ namespace ToolGood.DataCreate
         {
 			Add(typeof(DbProject));
 			Add(typeof(DbProjectDict));
+			Add(typeof(DbProjectData));
 			Add(typeof(DbProjectFormula));
 			Add(typeof(DbProjectFile));
 			Add(typeof(DbProjectLog));

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Utilities;
+using ToolGood.FlowVision.Applications.Impl;
 using ToolGood.FlowVision.Applications.Members;
 using ToolGood.FlowVision.Applications.Projects;
 using ToolGood.FlowVision.Commons.Controllers;
@@ -22,6 +24,8 @@ namespace ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures
 		public IButtonPass ButtonPass { get; private set; }
 		public DbFactoryProcedure Dto { get; private set; }
 		public List<DbFactory> FactoryList { get; private set; }
+		public Dictionary<int, DbFactoryProcedureItem> Items { get; private set; }
+
 		public List<int> FactoryIds { get; private set; }
 
 		public async Task<IActionResult> OnGetAsync(int pid, int id = 0)
@@ -31,6 +35,7 @@ namespace ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures
 			ButtonPass = await _memberApplication.GetButtonPassByMemberId(MemberDto.Id, ViewData["MenuCode"].ToString());
 
 			FactoryList = await _memberFlowApplication.GetFactoryAll(MemberDto.MainMemberId, pid);
+			Items = new Dictionary<int, DbFactoryProcedureItem>();
 
 			if (id == 0) {
 				Dto = new DbFactoryProcedure();
@@ -42,6 +47,10 @@ namespace ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures
 				if (Dto == null) { return Redirect(UrlSetting.MemberNotFoundUrl); }
 				if (Dto.ProjectId != pid) { return Redirect(UrlSetting.MemberNotFoundUrl); }
 
+				var items = await _memberFlowApplication.GetFactoryProcedureItemAll(MemberDto.MainMemberId, pid, id);
+				foreach (var item in items) {
+					Items[item.FactoryId] = item;
+				}
 				ViewData["Title"] = "编辑厂区工艺";
 			}
 			FactoryIds = new List<int>();
@@ -51,7 +60,11 @@ namespace ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures
 					FactoryIds.Add(int.Parse(fid));
 				}
 			}
-
+			foreach (var factory in FactoryList) {
+				if (Items.ContainsKey(factory.Id)==false) {
+					Items[factory.Id] = new DbFactoryProcedureItem();
+                }
+            }
 			return Page();
 		}
 	}

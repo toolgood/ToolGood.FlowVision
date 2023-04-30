@@ -47,8 +47,10 @@ namespace ToolGood.DataCreate
                 {
                     helper.Insert(new DbSysMemberMenu() { MenuName = "项目字典", MenuCode = "FlowProjectDict", Url = "", Buttons = "navbar|show|edit|delete|import", ParentId = desktop.Id, OrderNum = (menuIndex++), });
                     helper.Insert(new DbSysMemberMenu() { MenuName = "项目公式", MenuCode = "FlowProjectFormula", Url = "", Buttons = "navbar|show|edit|delete", ParentId = desktop.Id, OrderNum = (menuIndex++), });
-                }
-                desktop = new DbSysMemberMenu() { MenuName = "厂区管理", MenuCode = "FlowFactorysDesktop", Buttons = "navbar|show", ParentId = topdesktop.Id, OrderNum = (menuIndex++), };
+					helper.Insert(new DbSysMemberMenu() { MenuName = "项目数据", MenuCode = "FlowProjectData", Url = "", Buttons = "navbar|show|edit|delete", ParentId = desktop.Id, OrderNum = (menuIndex++), });
+
+				}
+				desktop = new DbSysMemberMenu() { MenuName = "厂区管理", MenuCode = "FlowFactorysDesktop", Buttons = "navbar|show", ParentId = topdesktop.Id, OrderNum = (menuIndex++), };
                 helper.Insert(desktop);
                 {
                     helper.Insert(new DbSysMemberMenu() { MenuName = "厂区信息", MenuCode = "FlowFactorys", Url = "", Buttons = "navbar|show|edit|delete", ParentId = desktop.Id, OrderNum = (menuIndex++), });

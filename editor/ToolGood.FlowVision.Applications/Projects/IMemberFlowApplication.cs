@@ -71,6 +71,56 @@ namespace ToolGood.FlowVision.Applications.Projects
 
 		#endregion ProjecLog 项目日志
 
+		#region ProjectData 项目数据
+		/// <summary>
+		/// 添加 项目数据
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		ValueTask<bool> AddProjectData(Request<DbProjectData> request);
+
+		/// <summary>
+		/// 修改 项目数据
+		/// </summary>
+		/// <param name="request"></param>
+		ValueTask<bool> EditProjectData(Request<DbProjectData> request);
+
+		/// <summary>
+		/// 删除 项目数据
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		ValueTask<bool> DeleteProjectData(Request<MemberIdDto> request);
+
+		/// <summary>
+		/// 获取所有 项目数据
+		/// </summary>
+		/// <returns></returns>
+		Task<List<DbProjectData>> GetProjectDataAll(int mainMemberId, int projectId);
+
+		/// <summary>
+		/// 获取  项目数据 页
+		/// </summary>
+		/// <returns></returns>
+		Task<Page<DbProjectData>> GetProjectDataPage(Request<GetProjectDataListDto> request);
+
+		/// <summary>
+		/// 获取 项目数据
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<DbProjectData> GetProjectDataById(int mainMemberId, int id);
+
+		/// <summary>
+		/// 获取 项目数据 分类
+		/// </summary>
+		/// <param name="mainMemberId"></param>
+		/// <param name="projectId"></param>
+		/// <returns></returns>
+		Task<List<string>> GetCategoryInProjectData(int mainMemberId, int projectId);
+
+		#endregion
+
 		#region ProjectDict 项目字典
 
 		/// <summary>
@@ -301,13 +351,13 @@ namespace ToolGood.FlowVision.Applications.Projects
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		ValueTask<bool> AddFactoryProcedure(Request<DbFactoryProcedure> request);
+		ValueTask<bool> AddFactoryProcedure(Request<FactoryProcedureEditDto> request);
 
 		/// <summary>
 		/// 修改 厂区工艺
 		/// </summary>
 		/// <param name="request"></param>
-		ValueTask<bool> EditFactoryProcedure(Request<DbFactoryProcedure> request);
+		ValueTask<bool> EditFactoryProcedure(Request<FactoryProcedureEditDto> request);
 
 		/// <summary>
 		/// 删除 厂区工艺

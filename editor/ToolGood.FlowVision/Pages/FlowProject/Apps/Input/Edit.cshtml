@@ -48,7 +48,10 @@
 			<div class="layui-form-item-sm">
 				<label class="layui-form-label-sm">单位</label>
 				<div class="layui-input-block-sm">
-					<input type="text" class="layui-input  layui-input-sm" id="txt_Unit" name="Unit" value="@Model.Dto.Unit" autocomplete="off">
+					<input type="text" class="layui-input  layui-input-sm" id="txt_Unit" name="Unit" value="@Model.Dto.Unit" autocomplete="off" style="width: 120px;display: inline-block;margin-right:15px;">
+					<input type="checkbox" name="IsRequired" lay-skin="primary" value="true" title="输入必填"  @(Model.Dto.IsRequired.ToChecked()) />
+					<input type="checkbox" name="UseDefaultValue" lay-skin="primary" value="true" title="使用默认值:" @(Model.Dto.UseDefaultValue.ToChecked()) />
+					<input type="text" class="layui-input layui-input-sm" id="txt_DefaultValue" name="DefaultValue" value="@Model.Dto.DefaultValue" style="width: 120px;display: inline-block;">
 				</div>
 			</div>
 
@@ -61,14 +64,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-form-item-sm">
-				<label class="layui-form-label-sm">选项</label>
-				<div class="layui-input-block-sm">
-					<input type="checkbox" name="IsRequired" lay-skin="primary" value="true" title="必填" @(Model.Dto.IsRequired.ToChecked()) />
-					<input type="checkbox" name="UseDefaultValue" lay-skin="primary" value="true" title="使用默认值:" @(Model.Dto.UseDefaultValue.ToChecked()) />
-					<input type="text" class="layui-input layui-input-sm" id="txt_DefaultValue" name="DefaultValue" value="@Model.Dto.DefaultValue" style="width: 120px;display: inline-block;">
-				</div>
-			</div>
+	 
 
 			<div class="layui-form-item-sm">
 				<label class="layui-form-label-sm">抛错信息</label>

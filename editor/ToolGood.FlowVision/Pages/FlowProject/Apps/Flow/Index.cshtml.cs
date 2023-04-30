@@ -39,8 +39,6 @@ namespace ToolGood.FlowVision.Pages.FlowProject.Apps.Flow
 			} else {
 				AppCode = "";
 			}
-			var dt = await _memberApplication.GetRealTime();
-
 			return Page();
 		}
 	}

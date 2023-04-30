@@ -1,5 +1,5 @@
 ﻿@page
-@model ToolGood.FlowVision.Pages.Members.Apps.InitValue.IndexModel
+@model ToolGood.FlowVision.Pages.FlowProject.Projects.Datas.IndexModel
 @{
     Layout = "~/Pages/Shared/_Layout_List.cshtml";
 }
@@ -8,14 +8,14 @@
         <div class="search-v2">
             <form id="search-form">
                 <div class="filter">
-                    <label class="label">流程名：</label>
-                    <select id="txt_appId" name="appid">
-                        <option value="0">-- 请选择 --</option>
-                        @Model.Apps.ToOption(q=>q.Name,q=>q.Id);
+                    <label class="label">类型：</label>
+                    <select id="sel_Category" name="Category">
+                        <option value="">-- 请选择 --</option>
+                        @Model.CategoryList.ToOption();
                     </select>
                 </div>
                 <div class="filter">
-                    <label class="label">初始值：</label>
+                    <label class="label">名称：</label>
                     <input type="text" class="text" name="name" id="txt_name" autocomplete="off">
                 </div>
                 <div class="filter">
@@ -25,9 +25,10 @@
                 <div pass-edit="@Model.ButtonPass" style="display:inline-block">
                     <div class="filter"> | </div>
                     <div class="filter">
-                        <a href="./Edit?h=520&w=800&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-normal openwin" title="新增初始值"> &nbsp; 新增初始值 &nbsp; </a>
+                        <a href="./Edit?h=520&w=750&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-normal openwin" title="新增数据"> &nbsp; 新增数据 &nbsp; </a>
                     </div>
                 </div>
+
             </form>
         </div>
     </div>
@@ -42,15 +43,22 @@
     <input type="hidden" name="ProjectId" value="@Model.ProjectId" />
 </form>
 
+<div style="display:none" id="copy">
+    <a href="javascript:;" class="copy" data-clipboard-text="{{d.name}}">{{d.name}}</a>
+</div>
+
 <div style="display:none" id="bar">
-    <a pass-edit="@Model.ButtonPass" href="./Edit?h=520&w=800&pid=@Model.ProjectId&id={{ d.id }}" edit class="openwin" title="编辑初始值"> 编辑</a>
+    <a pass-edit="@Model.ButtonPass" href="./Edit?h=520&w=750&pid=@Model.ProjectId&id={{ d.id }}" edit class="openwin" title="编辑数据"> 编辑</a>
     <span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
     <a pass-delete="@Model.ButtonPass" href="javascript:deleteItem({{ d.id }},'{{ d.name }}');">删除</a>
 </div>
 
 
 @section js{
+    <script src="/_/js/clipboard.min.js"></script>
     <script>
+        var clipboard = new ClipboardJS('.copy');
+        clipboard.on('success', function (e) { openMsg("已复制"); });
         var showBar = '@(Model.ButtonPass.CanEditOrDelete ? "1" : "0")';
         function deleteItem(id, name) {
             $("#delete-form input[name=id]").val(id);
@@ -59,7 +67,7 @@
                 top.layer.close(top.$(".layui-layer-dialog").attr("times"));
                 return false;
             }
-            top.layer.confirm('删除初始值【' + name + "】吗？", function (index) {
+            top.layer.confirm('删除数据【' + name + "】吗？", function (index) {
                 deleteItem2();
                 top.layer.close(index);
             })
@@ -84,14 +92,10 @@
             var cols = [];
             //cols.push({ checkbox: true, fixed: true });
             cols.push({ field: 'id', title: '序号', width: "80", sort: true, });
-            cols.push({ field: 'apps', title: '流程名称', width: "200", });
-            cols.push({ field: 'name', title: '初始值', width: "100", sort: true, });
-            cols.push({ field: 'inputType', title: '类型', width: "80", });
-            cols.push({ field: 'settingFormula', title: '公式', width: "300", });
-
-            cols.push({ field: 'errorMessage', title: '错误信息', width: "200", });
-
-            cols.push({ field: 'comment', title: '备注', width: "250", });
+            cols.push({ field: 'category', title: '分类', width: "100", sort: true, });
+            cols.push({ field: 'code', title: 'CODE', width: "150", sort: true, });
+            cols.push({ field: 'name', title: '名称', width: "150", sort: true, });
+            cols.push({ field: 'comment', title: '备注', width: "300", });
             cols.push({ field: 'modifyTime', title: '修改时间', width: "150", });
 
             if (showBar == '1') {
@@ -126,7 +130,6 @@
                 if (obj.type == null) { field = ""; order = ""; }
                 table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
             });
-
             function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
             $('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
             $("select").change(function (event) { event && event.stopPropagation(); tableReload(); return false; });

@@ -34,6 +34,8 @@ namespace ToolGood.FlowVision.Datas.Projects
 		[ReadyGo3.Attributes.FieldLength(500)]
 		public string Comment { get; set; }
 
+		public bool Used { get; set; }
+
 		public DateTime CreateTime { get; set; }
 
 		[System.Text.Json.Serialization.JsonIgnore]

@@ -206,16 +206,136 @@ namespace ToolGood.FlowVision.Applications.Impl
             return GetReadHelper().Where<DbProjectLog>(q => q.Id == id && q.MainMemberId == mainMemberId).FirstOrDefault_Async();
         }
 
-        #endregion ProjectOperationLog 项目日志
+		#endregion ProjectOperationLog 项目日志
 
-        #region ProjectDict 项目字典
+		#region ProjectData 项目数据
+		/// <summary>
+		/// 添加 项目数据
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public async ValueTask<bool> AddProjectData(Request<DbProjectData> request)
+		{
+			if (request == null) { throw new ArgumentNullException(nameof(request)); }
+			if (request.Data == null) { throw new ArgumentException("Data is null"); }
 
-        /// <summary>
-        /// 添加 词汇
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async ValueTask<bool> AddProjectDict(Request<DbProjectDict> request)
+			var helper = GetWriteHelper();
+			var count = helper.Count<DbProjectData>("where ProjectId=@0 and Name=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Name);
+			if (count > 0) { request.Message = "出错了，名称重复！"; return false; }
+
+			var db = DbProjectData.CreateBy(request);
+			await helper.Insert_Async(db);
+			await AddProjectOperationLog(db.ProjectId, $"添加项目数据\"{db.Name}\"[{db.Id}]", request);
+
+			return true;
+		}
+
+		/// <summary>
+		/// 修改 项目数据
+		/// </summary>
+		/// <param name="request"></param>
+		public async ValueTask<bool> EditProjectData(Request<DbProjectData> request)
+		{
+			if (request == null) { throw new ArgumentNullException(nameof(request)); }
+			if (request.Data == null) { throw new ArgumentException("Data is null"); }
+			var helper = GetWriteHelper();
+			var db = await helper.FirstOrDefault_Async<DbProjectData>(request.Data.Id);
+			if (db.ProjectId != request.Data.ProjectId || db.MainMemberId != request.MainMemberId) { return false; }
+
+			var count = helper.Count<DbProjectData>("where Id<>@0 and ProjectId=@1 and Name=@2 and IsDelete=0", request.Data.Id, request.Data.ProjectId, request.Data.Name);
+			if (count > 0) { request.Message = "出错了，名称重复！"; return false; }
+
+			db.EditBy(request);
+			await helper.Save_Async(db);
+			await AddProjectOperationLog(db.ProjectId, $"编辑项目数据\"{db.Name}\"[{db.Id}]", request);
+
+			return true;
+		}
+
+		/// <summary>
+		/// 删除 项目数据
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public async ValueTask<bool> DeleteProjectData(Request<MemberIdDto> request)
+		{
+			if (request == null) { throw new ArgumentNullException(nameof(request)); }
+			if (request.Data == null) { throw new ArgumentException("Data is null"); }
+			var helper = GetWriteHelper();
+			var db = await helper.FirstOrDefault_Async<DbProjectData>(request.Data.Id);
+			if (db.ProjectId != request.Data.ProjectId || db.MainMemberId != request.MainMemberId) { return false; }
+
+			db.IsDelete = true;
+			db.DeleteUserId = request.OperatorId;
+			db.DeleteTime = DateTime.Now;
+			await helper.Save_Async(db);
+
+			await AddProjectOperationLog(db.ProjectId, $"删除项目数据\"{db.Name}\"[{db.Id}]", request);
+			return true;
+		}
+
+		/// <summary>
+		/// 获取所有 项目数据
+		/// </summary>
+		/// <returns></returns>
+		public Task<List<DbProjectData>> GetProjectDataAll(int mainMemberId, int projectId)
+		{
+			var read = GetReadHelper();
+			return read.Select_Async<DbProjectData>("where MainMemberId=@0 and projectId=@1 and IsDelete=0", mainMemberId, projectId);
+		}
+
+		/// <summary>
+		/// 获取  项目数据 页
+		/// </summary>
+		/// <returns></returns>
+		public Task<Page<DbProjectData>> GetProjectDataPage(Request<GetProjectDataListDto> request)
+		{
+			if (request == null) { throw new ArgumentNullException(nameof(request)); }
+			if (request.Data == null) { throw new ArgumentException("Data is null"); }
+
+			var helper = GetReadHelper();
+			return helper.Where<DbProjectData>(q => q.IsDelete == false)
+					.Where(q => q.MainMemberId == request.MainMemberId)
+					.Where(q => q.ProjectId == request.Data.ProjectId)
+					.IfSet(request.Data.Category).Where(q => q.Category == (request.Data.Category))
+					.IfSet(request.Data.Name).Where(q => q.Name.Contains(request.Data.Name))
+					.IfSet(request.Data.Field).OrderBy(request.Data.Field, request.Data.Order)
+					.Page_Async(request.Data.PageIndex, request.Data.PageSize);
+		}
+
+		/// <summary>
+		/// 获取 项目数据
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public Task<DbProjectData> GetProjectDataById(int mainMemberId, int id)
+		{
+			return GetReadHelper().Where<DbProjectData>(q => q.Id == id && q.MainMemberId == mainMemberId && q.IsDelete == false).FirstOrDefault_Async();
+		}
+
+		/// <summary>
+		/// 获取 项目数据 分类
+		/// </summary>
+		/// <param name="mainMemberId"></param>
+		/// <param name="projectId"></param>
+		/// <returns></returns>
+		public Task<List<string>> GetCategoryInProjectData(int mainMemberId, int projectId)
+		{
+			var helper = GetReadHelper();
+			var sql = @"SELECT DISTINCT Category from flow_project_data where IsDelete=0 and MainMemberId=@0 and ProjectId=@1 ORDER BY Category";
+			return helper.Select_Async<string>(sql, mainMemberId, projectId);
+		}
+
+		#endregion
+
+		#region ProjectDict 项目字典
+
+		/// <summary>
+		/// 添加 词汇
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public async ValueTask<bool> AddProjectDict(Request<DbProjectDict> request)
         {
             if (request == null) { throw new ArgumentNullException(nameof(request)); }
             if (request.Data == null) { throw new ArgumentException("Data is null"); }
@@ -790,102 +910,146 @@ namespace ToolGood.FlowVision.Applications.Impl
             return helper.Select_Async<string>(sql, mainMemberId, projectId, category);
         }
 
-        #endregion FactoryMachine  厂区机械
+		#endregion FactoryMachine  厂区机械
 
-        #region FactoryProcedure 厂区工艺
+		#region FactoryProcedure 厂区工艺
 
-        /// <summary>
-        /// 添加 厂区工艺
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async ValueTask<bool> AddFactoryProcedure(Request<DbFactoryProcedure> request)
-        {
-            if (request == null) { throw new ArgumentNullException(nameof(request)); }
-            if (request.Data == null) { throw new ArgumentException("Data is null"); }
+		/// <summary>
+		/// 添加 厂区工艺
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public async ValueTask<bool> AddFactoryProcedure(Request<FactoryProcedureEditDto> request)
+		{
+			if (request == null) { throw new ArgumentNullException(nameof(request)); }
+			if (request.Data == null) { throw new ArgumentException("Data is null"); }
 
-            var helper = GetWriteHelper();
-            var count = helper.Count<DbFactoryProcedure>("where ProjectId=@0 and code=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Code);
-            if (count > 0) { request.Message = "出错了，编码重复！"; return false; }
-            count = helper.Count<DbFactoryProcedure>("where ProjectId=@0 and Name=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Name);
-            if (count > 0) { request.Message = "出错了，厂区工艺名称重复！"; return false; }
+			var helper = GetWriteHelper();
+			var count = helper.Count<DbFactoryProcedure>("where ProjectId=@0 and code=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Code);
+			if (count > 0) { request.Message = "出错了，编码重复！"; return false; }
+			count = helper.Count<DbFactoryProcedure>("where ProjectId=@0 and Name=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Name);
+			if (count > 0) { request.Message = "出错了，厂区工艺名称重复！"; return false; }
 
-            var db = DbFactoryProcedure.CreateBy(request);
-            using (var tran = helper.UseTransaction()) {
-                await helper.Insert_Async(db);
-                await AddProjectOperationLog(db.ProjectId, $"添加厂区工艺\"{db.Name}\"[{db.Id}]", request);
-                // 增加机械标记
-                var fids = db.FactoryIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                foreach (var fid in fids) {
-                    DbFactoryProcedureItem item = new DbFactoryProcedureItem() {
-                        CreateTime = DateTime.Now,
-                        CreateUserId = request.OperatorId,
-                        ModifyTime = DateTime.Now,
-                        ModifyUserId = request.OperatorId,
-                        ProjectId = db.ProjectId,
-                        MainMemberId = db.MainMemberId,
-                        ProcedureId = db.Id,
+			var db = new DbFactoryProcedure() {
+				MainMemberId = request.MainMemberId,
+				ProjectId = request.Data.ProjectId,
+				FactoryIds = "," + request.Data.FactoryIds + ",",
 
-                        FactoryId = int.Parse(fid),
-                    };
-                    helper.Insert(item);
-                }
-                tran.Complete();
-            }
-            return true;
-        }
+				Category = request.Data.Category?.Trim(),
+				Code = request.Data.Code?.Trim(),
+				Name = request.Data.Name?.Trim(),
+				CheckFormula = request.Data.CheckFormula?.Trim(),
+				Comment = request.Data.Comment?.Trim(),
 
-        /// <summary>
-        /// 修改 厂区工艺
-        /// </summary>
-        /// <param name="request"></param>
-        public async ValueTask<bool> EditFactoryProcedure(Request<DbFactoryProcedure> request)
-        {
-            if (request == null) { throw new ArgumentNullException(nameof(request)); }
-            if (request.Data == null) { throw new ArgumentException("Data is null"); }
-            var helper = GetWriteHelper();
-            var count = helper.Count<DbFactoryProcedure>("where Id<>@0 and ProjectId=@1 and code=@2 and IsDelete=0", request.Data.Id, request.Data.ProjectId, request.Data.Code);
-            if (count > 0) { request.Message = "出错了，编码重复！"; return false; }
-            count = helper.Count<DbFactoryProcedure>("where Id<>@0 and ProjectId=@1 and Name=@2 and IsDelete=0", request.Data.Id, request.Data.ProjectId, request.Data.Name);
-            if (count > 0) { request.Message = "出错了，厂区工艺名称重复！"; return false; }
+				CreateTime = DateTime.Now,
+				CreateUserId = request.OperatorId,
+				ModifyTime = DateTime.Now,
+				ModifyUserId = request.OperatorId,
+			};
+			db.FactoryIds = "," + string.Join(",", request.Data.Factorys.Where(q => q.Used).Select(q => q.FactoryId)) + ",";
+			using (var tran = helper.UseTransaction()) {
+				await helper.Insert_Async(db);
+				await AddProjectOperationLog(db.ProjectId, $"添加厂区工艺\"{db.Name}\"[{db.Id}]", request);
+				// 增加机械标记
+				foreach (var fid in request.Data.Factorys) {
+					DbFactoryProcedureItem item = new DbFactoryProcedureItem() {
+						CreateTime = DateTime.Now,
+						CreateUserId = request.OperatorId,
+						ModifyTime = DateTime.Now,
+						ModifyUserId = request.OperatorId,
+						ProjectId = db.ProjectId,
+						MainMemberId = db.MainMemberId,
+						ProcedureId = db.Id,
 
-            var db = await helper.FirstOrDefault_Async<DbFactoryProcedure>(request.Data.Id);
-            if (db.ProjectId != request.Data.ProjectId || db.MainMemberId != request.MainMemberId) { return false; }
+						Used = fid.Used,
+						FactoryId = fid.FactoryId,
+						Category = fid.Category,
+						CategoryCode = fid.CategoryCode,
+						Code = fid.Code,
+						Name = fid.Name,
+						Comment = fid.Comment,
+					};
+					helper.Insert(item);
+				}
+				tran.Complete();
+			}
+			return true;
+		}
 
-            db.EditBy(request);
-            var ids = await helper.Select_Async<int>("select FactoryId from flow_factory_procedure_item where ProjectId=@0 and ProcedureId=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Id);
-            using (var tran = helper.UseTransaction()) {
-                await helper.Save_Async(db);
-                await AddProjectOperationLog(db.ProjectId, $"编辑厂区工艺\"{db.Name}\"[{db.Id}]", request);
-                var fids = db.FactoryIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+		/// <summary>
+		/// 修改 厂区工艺
+		/// </summary>
+		/// <param name="request"></param>
+		public async ValueTask<bool> EditFactoryProcedure(Request<FactoryProcedureEditDto> request)
+		{
+			if (request == null) { throw new ArgumentNullException(nameof(request)); }
+			if (request.Data == null) { throw new ArgumentException("Data is null"); }
+			var helper = GetWriteHelper();
+			var count = helper.Count<DbFactoryProcedure>("where Id<>@0 and ProjectId=@1 and code=@2 and IsDelete=0", request.Data.Id, request.Data.ProjectId, request.Data.Code);
+			if (count > 0) { request.Message = "出错了，编码重复！"; return false; }
+			count = helper.Count<DbFactoryProcedure>("where Id<>@0 and ProjectId=@1 and Name=@2 and IsDelete=0", request.Data.Id, request.Data.ProjectId, request.Data.Name);
+			if (count > 0) { request.Message = "出错了，厂区工艺名称重复！"; return false; }
 
-                foreach (var fid in fids) {
-                    if (ids.Contains(int.Parse(fid))) { continue; }
-                    DbFactoryProcedureItem item = new DbFactoryProcedureItem() {
-                        CreateTime = DateTime.Now,
-                        CreateUserId = request.OperatorId,
-                        ModifyTime = DateTime.Now,
-                        ModifyUserId = request.OperatorId,
-                        ProjectId = db.ProjectId,
-                        MainMemberId = db.MainMemberId,
-                        ProcedureId = db.Id,
+			var db = await helper.FirstOrDefault_Async<DbFactoryProcedure>(request.Data.Id);
+			if (db.ProjectId != request.Data.ProjectId || db.MainMemberId != request.MainMemberId) { return false; }
 
-                        FactoryId = int.Parse(fid),
-                    };
-                    helper.Insert(item);
-                }
-                tran.Complete();
-            }
+			db.FactoryIds = "," + string.Join(",", request.Data.Factorys.Where(q => q.Used).Select(q => q.FactoryId)) + ",";
 
-            return true;
-        }
+			db.Category = request.Data.Category?.Trim();
+			db.Code = request.Data.Code?.Trim();
+			db.Name = request.Data.Name?.Trim();
+			db.CheckFormula = request.Data.CheckFormula?.Trim();
+			db.Comment = request.Data.Comment?.Trim();
+			db.ModifyTime = DateTime.Now;
+			db.ModifyUserId = request.OperatorId;
 
-        /// <summary>
-        /// 删除 厂区工艺
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async ValueTask<bool> DeleteFactoryProcedure(Request<MemberIdDto> request)
+			var ids = await helper.Select_Async<int>("select FactoryId from flow_factory_procedure_item where ProjectId=@0 and ProcedureId=@1 and IsDelete=0", request.Data.ProjectId, request.Data.Id);
+			using (var tran = helper.UseTransaction()) {
+				await helper.Save_Async(db);
+				await AddProjectOperationLog(db.ProjectId, $"编辑厂区工艺\"{db.Name}\"[{db.Id}]", request);
+
+				foreach (var fid in request.Data.Factorys) {
+					DbFactoryProcedureItem item;
+					if (fid.Id == 0) {
+						item = new DbFactoryProcedureItem() {
+							CreateTime = DateTime.Now,
+							CreateUserId = request.OperatorId,
+							ModifyTime = DateTime.Now,
+							ModifyUserId = request.OperatorId,
+							ProjectId = db.ProjectId,
+							MainMemberId = db.MainMemberId,
+							ProcedureId = db.Id,
+
+							Used = fid.Used,
+							FactoryId = fid.FactoryId,
+							Category = fid.Category,
+							CategoryCode = fid.CategoryCode,
+							Code = fid.Code,
+							Name = fid.Name,
+							Comment = fid.Comment,
+						};
+						helper.Insert(item);
+					} else {
+						item = await helper.Where<DbFactoryProcedureItem>(q => q.Id == fid.Id && q.MainMemberId == db.MainMemberId && q.IsDelete == false).FirstOrDefault_Async();
+						item.Used = fid.Used;
+						item.Category = fid.Category;
+						item.CategoryCode = fid.CategoryCode;
+						item.Code = fid.Code;
+						item.Name = fid.Name;
+						item.Comment = fid.Comment;
+						helper.Update(item);
+					}
+				}
+				tran.Complete();
+			}
+			return true;
+		}
+		/// <summary>
+		/// 删除 厂区工艺
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public async ValueTask<bool> DeleteFactoryProcedure(Request<MemberIdDto> request)
         {
             if (request == null) { throw new ArgumentNullException(nameof(request)); }
             if (request.Data == null) { throw new ArgumentException("Data is null"); }

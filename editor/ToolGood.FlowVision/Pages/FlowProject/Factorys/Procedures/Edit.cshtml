@@ -1,134 +1,173 @@
 ﻿@page
 @model ToolGood.FlowVision.Pages.Members.Technologys.FactoryProcedures.EditModel
 @{
-	Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
 }
 @section css{
-	<style>
-		.layui-table td, .layui-table th { padding: 3px; }
-		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
-		.editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
-		.ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
-		div.layui-input.editor-div { padding: 0; height: initial }
-		div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial }
-	</style>
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+        .editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+        .ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+        div.layui-input.editor-div { padding: 0; height: initial }
+        div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial }
+    </style>
 }
 
-	<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
-		<form id="edit-form" style="height: 100%;">
-			<input type="hidden" name="id" value="@Model.Dto.Id" />
-			<input type="hidden" name="ProjectId" value="@Model.Dto.ProjectId" />
-			@Html.AntiForgeryToken()
-			<div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+    <form id="edit-form" style="height: 100%;">
+        <input type="hidden" name="id" value="@Model.Dto.Id" />
+        <input type="hidden" name="ProjectId" value="@Model.Dto.ProjectId" />
+        @Html.AntiForgeryToken()
+        <div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
 
-				<div class="layui-form-item-sm">
-					<label class="layui-form-label-sm">分类<span class="red"> *</span></label>
-					<div class="layui-input-block-sm">
-						<input type="text" class="layui-input layui-input-sm" id="txt_Category" name="Category" value="@Model.Dto.Category" autocomplete="off">
-					</div>
-				</div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">分类<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Category" name="Category" value="@Model.Dto.Category" autocomplete="off">
+                </div>
+            </div>
 
-				<div class="layui-form-item-sm">
-					<label class="layui-form-label-sm">编码<span class="red"> *</span></label>
-					<div class="layui-input-block-sm">
-						<input type="text" class="layui-input layui-input-sm" id="txt_Code" name="Code" value="@Model.Dto.Code" autocomplete="off">
-						<div class="layui-form-mid layui-word-aux">
-							添加后，请不要修改。
-						</div>
-					</div>
-				</div>
-				<div class="layui-form-item-sm">
-					<label class="layui-form-label-sm">工艺名称<span class="red"> *</span></label>
-					<div class="layui-input-block-sm">
-						<input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Name" value="@Model.Dto.Name" autocomplete="off">
-					</div>
-				</div>
-				<div class="layui-form-item-sm">
-					<label class="layui-form-label-sm">适用厂区<span class="red"> *</span></label>
-					<div class="layui-input-block-sm">
-					@foreach (var item in Model.FactoryList) {
-						if (Model.FactoryIds.Contains(item.Id)) {
-							<input type="hidden" name="FactoryIds[]" value="@item.Id" />
-							<input type="checkbox" lay-skin="primary" value="@item.Id" title="@item.SimplifyName" @(Model.FactoryIds.Contains(item.Id).ToChecked()) disabled />
-						} else {
-							<input type="checkbox" name="FactoryIds[]" lay-skin="primary" value="@item.Id" title="@item.SimplifyName" @(Model.FactoryIds.Contains(item.Id).ToChecked()) />
-						}
-					}
-				</div>
-			</div>
-			<div class="layui-form-item-sm">
-				<label class="layui-form-label-sm">检测公式</label>
-				<div class="layui-input-block-sm">
-					<input type="hidden" id="txt_CheckFormula" name="CheckFormula" value="@Model.Dto.CheckFormula" />
-					<div class="layui-input editor-div">
-						<div id="txt_CheckFormula-editor" class="editor"> </div>
-					</div>
-				</div>
-			</div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">编码<span class="red"> *</span></label>
+                <div class="layui-input-inline-sm" style="width:calc(100% - 242px)">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Code" name="Code" value="@Model.Dto.Code" autocomplete="off">
+                </div>
+                <div class="layui-form-mid layui-word-aux" style="width:140px">
+                    添加后，请不要修改。
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">工艺名称<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Name" value="@Model.Dto.Name" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">适用厂区<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td width="100">厂区</td>
+                                <td width="80">编号</td>
+                                <td width="150">名称</td>
+                                <td width="80">分类编号</td>
+                                <td width="150">分类名称</td>
+                                <td width="250">备注</td>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.FactoryList) {
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="Factorys[@(item.Id)].FactoryId" value="@item.Id" />
+                                    <input type="hidden" name="Factorys[@(item.Id)].Id" value="@(Model.Items[item.Id].Id)" />
+                                    <input type="checkbox" name="Factorys[@(item.Id)].Used" lay-skin="primary" value="true" title="@item.SimplifyName" @(Model.FactoryIds.Contains(item.Id).ToChecked()) />
+                                </td>
+                                <td>
+                                    <input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Factorys[@(item.Id)].Code"  value="@(Model.Items[item.Id].Code)" autocomplete="off">
+                                </td>
+                                <td>
+                                    <input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Factorys[@(item.Id)].Name" value="@(Model.Items[item.Id].Name)" autocomplete="off">
+                                </td>
+                                <td>
+                                    <input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Factorys[@(item.Id)].CategoryCode" value="@(Model.Items[item.Id].CategoryCode)" autocomplete="off">
+                                </td>
+                                <td>
+                                    <input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Factorys[@(item.Id)].Category" value="@(Model.Items[item.Id].Category)" autocomplete="off">
+                                </td>
+                                <td>
+                                    <input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Factorys[@(item.Id)].Comment" value="@(Model.Items[item.Id].Comment)" autocomplete="off">
+                                </td>
+                            </tr>
+                        }
+                    </table>
 
-			<div class="layui-form-item-sm">
-				<label class="layui-form-label-sm">备注</label>
-				<div class="layui-input-block-sm">
-					<textarea class="layui-textarea layui-textarea-sm" id="txt_Comment" name="Comment">@(Model.Dto.Comment.ToHtml())</textarea>
-				</div>
-			</div>
 
-			<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
-			</div>
-		</div>
-	</form>
+        @*            @foreach (var item in Model.FactoryList) {
+                        if (Model.FactoryIds.Contains(item.Id)) {
+                            <input type="hidden" name="FactoryIds[]" value="@item.Id" />
+                            <input type="checkbox" lay-skin="primary" value="@item.Id" title="@item.SimplifyName" @(Model.FactoryIds.Contains(item.Id).ToChecked()) disabled />
+                        } else {
+                            <input type="checkbox" name="FactoryIds[]" lay-skin="primary" value="@item.Id" title="@item.SimplifyName" @(Model.FactoryIds.Contains(item.Id).ToChecked()) />
+                        }
+                    }*@
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">检测公式</label>
+                <div class="layui-input-block-sm">
+                    <input type="hidden" id="txt_CheckFormula" name="CheckFormula" value="@Model.Dto.CheckFormula" />
+                    <div class="layui-input editor-div">
+                        <div id="txt_CheckFormula-editor" class="editor"> </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">备注</label>
+                <div class="layui-input-block-sm">
+                    <textarea class="layui-textarea layui-textarea-sm" id="txt_Comment" name="Comment">@(Model.Dto.Comment.ToHtml())</textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+            </div>
+        </div>
+    </form>
 </div>
 @section js{
-	<script src="/_/inputcontrol/toolgood.algorithm.js"></script>
-	<script src="/_/inputcontrol/ace/ace.js"></script>
-	<script src="/_/inputcontrol/ace/ext-language_tools.js"></script>
-	<script src="/_/inputcontrol/AceKeywords.js?pid=@(Model.Dto.ProjectId)"></script>
-	<script src="/_/inputcontrol/createeditor.js"></script>
+    <script src="/_/inputcontrol/toolgood.algorithm.js"></script>
+    <script src="/_/inputcontrol/ace/ace.js"></script>
+    <script src="/_/inputcontrol/ace/ext-language_tools.js"></script>
+    <script src="/_/inputcontrol/AceKeywords.js?pid=@(Model.Dto.ProjectId)"></script>
+    <script src="/_/inputcontrol/createeditor.js"></script>
 
-	<script>
-		$(function () {
-			createEditor("txt_CheckFormula-editor", "txt_CheckFormula")
-		})
+    <script>
+        $(function () {
+            createEditor("txt_CheckFormula-editor", "txt_CheckFormula")
+            createjsonEditor("txt_Parameters-editor", "txt_Parameters")
+        })
 
-		function save(obj) {
-			if ($("#txt_Category").val().length < 1) { layer.alert("请输入分类"); $("#txt_Category").focus(); return; }
-			if ($("#txt_Code").val().length < 1) { layer.alert("请输入编码"); $("#txt_Code").focus(); return; }
-			if ($("#txt_Name").val().length < 1) { layer.alert("请输入工艺名称"); $("#txt_Name").focus(); return; }
+        function save(obj) {
+            if ($("#txt_Category").val().length < 1) { layer.alert("请输入分类"); $("#txt_Category").focus(); return; }
+            if ($("#txt_Code").val().length < 1) { layer.alert("请输入编码"); $("#txt_Code").focus(); return; }
+            if ($("#txt_Name").val().length < 1) { layer.alert("请输入工艺名称"); $("#txt_Name").focus(); return; }
 
-			$(obj).prop("disabled", true);
-			var url = "./Ajax/EditItem";
-			var data = {
-				data: $("#edit-form").serializeJson(),
-				fingerprint: window.fingerprint
-			}
-			if (data.data["FactoryIds"]) {
-				data.data["FactoryIds"] = data.data["FactoryIds"].join(',');
-			}
+            $(obj).prop("disabled", true);
+            var url = "./Ajax/EditItem";
+            var data = {
+                data: $("#edit-form").serializeJson(),
+                fingerprint: window.fingerprint
+            }
+            if (data.data["FactoryIds"]) {
+                data.data["FactoryIds"] = data.data["FactoryIds"].join(',');
+            }
 
-			$.ajax({
-				type: "POST",
-				url: url,
-				contentType: "application/json;charset=UTF-8",
-				data: JSON.stringify(data),
-				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
-				dataType: "JSON",
-				success: function (data, textStatus, jqXHR) {
-					if (data.state == "SUCCESS") {
-						closeWindowAndReload();
-					} else {
-						$(obj).prop("disabled", false);
-						if (data.message) {
-							layer.msg(data.message);
-						} else {
-							layer.msg("出错了");
-						}
-					}
-				},
-				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
-			});
-		}
-	</script>
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(data),
+                headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+                dataType: "JSON",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.state == "SUCCESS") {
+                        closeWindowAndReload();
+                    } else {
+                        $(obj).prop("disabled", false);
+                        if (data.message) {
+                            layer.msg(data.message);
+                        } else {
+                            layer.msg("出错了");
+                        }
+                    }
+                },
+                error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+            });
+        }
+    </script>
 
 }
