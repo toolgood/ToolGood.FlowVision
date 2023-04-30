@@ -29,44 +29,12 @@
 	</PropertyGroup>
 
 
-	<ItemGroup Condition="'$(Configuration)'=='Win'">
-		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.4" />
-		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
-        <Reference Include="ToolGood.FlowWork.Applications">
-            <HintPath>..\bin\vision\ToolGood.FlowWork.Applications.dll</HintPath>
-        </Reference>
-        <Reference Include="ToolGood.FlowVision.Applications">
-            <HintPath>..\bin\vision\ToolGood.FlowVision.Applications.dll</HintPath>
-        </Reference>
-	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)'=='Linux'">
-		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.4" />
-		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
-        <Reference Include="ToolGood.FlowWork.Applications">
-            <HintPath>..\bin\vision\ToolGood.FlowWork.Applications.dll</HintPath>
-        </Reference>
-        <Reference Include="ToolGood.FlowVision.Applications">
-            <HintPath>..\bin\vision\ToolGood.FlowVision.Applications.dll</HintPath>
-        </Reference>
-	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)'=='Debug'">
-        <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.5" />
-        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
-		<PackageReference Include="MySql.Data" Version="8.0.33" />
-        <ProjectReference Include="..\ToolGood.FlowWork.Applications\ToolGood.FlowWork.Applications.csproj" />
-        <ProjectReference Include="..\ToolGood.FlowVision.Applications\ToolGood.FlowVision.Applications.csproj" />
-    </ItemGroup>
-	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="MySql.Data" Version="8.0.32.1" />
-        <Reference Include="ToolGood.FlowWork.Applications">
-            <HintPath>..\bin\vision\ToolGood.FlowWork.Applications.dll</HintPath>
-        </Reference>
-        <ProjectReference Include="..\ToolGood.FlowVision.Applications\ToolGood.FlowVision.Applications.csproj" />
-    </ItemGroup>
- 
-
 	<ItemGroup>
-		<!--<PackageReference Include="System.Drawing.Common" Version="7.0.0" />-->
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.5" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.4" />
+		<ProjectReference Include="..\ToolGood.FlowWork.Applications\ToolGood.FlowWork.Applications.csproj" />
+		<ProjectReference Include="..\ToolGood.FlowVision.Applications\ToolGood.FlowVision.Applications.csproj" />
+		
 		<PackageReference Include="ToolGood.AntiDuplication" Version="2.0.0.1" />
 		<PackageReference Include="ToolGood.RcxCrypto" Version="1.4.0" />
 		<PackageReference Include="ToolGood.ReadyGo3" Version="4.0.7" />
@@ -85,13 +53,6 @@
 		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<None Include="Pages\FlowProject\Apps\Conds.cshtml" />
 	</ItemGroup>
-
-	<!--<ItemGroup>
-	  <Content Update="wwwroot\_\js\doT.min.js">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	</ItemGroup>-->
 
 
 	<ItemGroup>

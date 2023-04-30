@@ -95,6 +95,37 @@ window.createjsEditor=function (id, outId) {
     editor.getSession().on('change', function (e) { $("#" + outId).val(editor.getValue()); });
     editor.gotoLine(0);
 }
+window.createjsonEditor = function (id, outId) {
+    var editor = ace.edit(id);
+    editor.getSession().setMode('ace/mode/json5');
+    editor.setTheme("ace/theme/crimson_editor");
+
+    editor.setOptions({
+        'showLineNumbers': false,
+        'fontSize': 16,
+        'wrapBehavioursEnabled': false,
+        'enableLiveAutocompletion': true,
+        'indentedSoftWrap': false,
+        'printMargin': false,
+        'showFoldWidgets': false,
+        'dragEnabled': false,
+        'indentedSoftWrap': false,
+        'highlightActiveLine': false,
+        'autoScrollEditorIntoView': true,
+        'enableBasicAutocompletion': true,
+        'enableSnippets': true,
+        'maxLines': 100,
+        'minLines': 1,
+    })
+    editor.setShowPrintMargin(false);
+    editor.renderer.setScrollMargin(5, 6, 5, 9);
+    var session = editor.getSession();
+    session.setUseWrapMode(false);
+
+    editor.setValue($("#" + outId).val());
+    editor.getSession().on('change', function (e) { $("#" + outId).val(editor.getValue()); });
+    editor.gotoLine(0);
+}
 var stringWidth = function (fontSize, content) {
     var $span = $('<span></span>').hide().css('font-size', fontSize).text(content);
     var w = $span.appendTo('body').width();
