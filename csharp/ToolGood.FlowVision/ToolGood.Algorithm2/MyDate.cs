@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using ToolGood.Algorithm2.Internals;
 
@@ -120,75 +121,76 @@ namespace ToolGood.Algorithm2
             }
         }
 
-		/// <summary>
-		/// 字符串转MyDate
-		/// </summary>
-		/// <param name="txt"></param>
-		/// <returns></returns>
-		public static MyDate Parse(String txt)
-		{
-			String t = txt.Trim();
-			var m = Regex.Match(t, "^(\\d{4})-(11|12|0?\\d)-(30|31|[012]?\\d) ([01]\\d?|2[1234]):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
-			if (m.Success) {
-				MyDate date = new MyDate();
-				date.Year = int.Parse(m.Groups[(1)].Value);
-				date.Month = int.Parse(m.Groups[(2)].Value);
-				date.Day = int.Parse(m.Groups[(3)].Value);
-				date.Hour = int.Parse(m.Groups[(4)].Value);
-				date.Minute = int.Parse(m.Groups[(5)].Value);
-				date.Second = int.Parse(m.Groups[(6)].Value);
-				return date;
-			}
-			m = Regex.Match(t, "^(\\d{4})-(11|12|0?\\d)-(30|31|[012]?\\d) ([01]\\d?|2[1234]):([012345]?\\d)$", RegexOptions.Compiled);
-			if (m.Success) {
-				MyDate date = new MyDate();
-				date.Year = int.Parse(m.Groups[(1)].Value);
-				date.Month = int.Parse(m.Groups[(2)].Value);
-				date.Day = int.Parse(m.Groups[(3)].Value);
-				date.Hour = int.Parse(m.Groups[(4)].Value);
-				date.Minute = int.Parse(m.Groups[(5)].Value);
-				return date;
-			}
-			m = Regex.Match(t, "^(\\d{4})-(11|12|0?\\d)-(30|31|[012]?\\d)$");
-			if (m.Success) {
-				MyDate date = new MyDate();
-				date.Year = int.Parse(m.Groups[(1)].Value);
-				date.Month = int.Parse(m.Groups[(2)].Value);
-				date.Day = int.Parse(m.Groups[(3)].Value);
-				return date;
-			}
-			m = Regex.Match(t, "^(\\d+) (2[1234]|[01]?\\d):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
-			if (m.Success) {
-				MyDate date = new MyDate();
-				date.Day = int.Parse(m.Groups[(1)].Value);
-				date.Hour = int.Parse(m.Groups[(2)].Value);
-				date.Minute = int.Parse(m.Groups[(3)].Value);
-				date.Second = int.Parse(m.Groups[(4)].Value);
-				return date;
-			}
-			m = Regex.Match(t, "^(2[1234]|[01]?\\d):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
-			if (m.Success) {
-				MyDate date = new MyDate();
-				date.Hour = int.Parse(m.Groups[(1)].Value);
-				date.Minute = int.Parse(m.Groups[(2)].Value);
-				date.Second = int.Parse(m.Groups[(3)].Value);
-				return date;
-			}
-			m = Regex.Match(t, "^(2[1234]|[01]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
-			if (m.Success) {
-				MyDate date = new MyDate();
-				date.Hour = int.Parse(m.Groups[(1)].Value);
-				date.Minute = int.Parse(m.Groups[(2)].Value);
-				return date;
-			}
-			return null;
-		}
+        /// <summary>
+        /// 字符串转MyDate
+        /// </summary>
+        /// <param name="txt"></param>
+        /// <returns></returns>
+        public static MyDate Parse(String txt)
+        {
+            CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-US");
+            String t = txt.Trim();
+            var m = Regex.Match(t, "^(\\d{4})-(11|12|0?\\d)-(30|31|[012]?\\d) ([01]\\d?|2[1234]):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
+            if (m.Success) {
+                MyDate date = new MyDate();
+                date.Year = int.Parse(m.Groups[(1)].Value, cultureInfo);
+                date.Month = int.Parse(m.Groups[(2)].Value, cultureInfo);
+                date.Day = int.Parse(m.Groups[(3)].Value, cultureInfo);
+                date.Hour = int.Parse(m.Groups[(4)].Value, cultureInfo);
+                date.Minute = int.Parse(m.Groups[(5)].Value, cultureInfo);
+                date.Second = int.Parse(m.Groups[(6)].Value, cultureInfo);
+                return date;
+            }
+            m = Regex.Match(t, "^(\\d{4})-(11|12|0?\\d)-(30|31|[012]?\\d) ([01]\\d?|2[1234]):([012345]?\\d)$", RegexOptions.Compiled);
+            if (m.Success) {
+                MyDate date = new MyDate();
+                date.Year = int.Parse(m.Groups[(1)].Value, cultureInfo);
+                date.Month = int.Parse(m.Groups[(2)].Value, cultureInfo);
+                date.Day = int.Parse(m.Groups[(3)].Value, cultureInfo);
+                date.Hour = int.Parse(m.Groups[(4)].Value, cultureInfo);
+                date.Minute = int.Parse(m.Groups[(5)].Value, cultureInfo);
+                return date;
+            }
+            m = Regex.Match(t, "^(\\d{4})-(11|12|0?\\d)-(30|31|[012]?\\d)$");
+            if (m.Success) {
+                MyDate date = new MyDate();
+                date.Year = int.Parse(m.Groups[(1)].Value, cultureInfo);
+                date.Month = int.Parse(m.Groups[(2)].Value, cultureInfo);
+                date.Day = int.Parse(m.Groups[(3)].Value, cultureInfo);
+                return date;
+            }
+            m = Regex.Match(t, "^(\\d+) (2[1234]|[01]?\\d):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
+            if (m.Success) {
+                MyDate date = new MyDate();
+                date.Day = int.Parse(m.Groups[(1)].Value, cultureInfo);
+                date.Hour = int.Parse(m.Groups[(2)].Value, cultureInfo);
+                date.Minute = int.Parse(m.Groups[(3)].Value, cultureInfo);
+                date.Second = int.Parse(m.Groups[(4)].Value, cultureInfo);
+                return date;
+            }
+            m = Regex.Match(t, "^(2[1234]|[01]?\\d):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
+            if (m.Success) {
+                MyDate date = new MyDate();
+                date.Hour = int.Parse(m.Groups[(1)].Value, cultureInfo);
+                date.Minute = int.Parse(m.Groups[(2)].Value, cultureInfo);
+                date.Second = int.Parse(m.Groups[(3)].Value, cultureInfo);
+                return date;
+            }
+            m = Regex.Match(t, "^(2[1234]|[01]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
+            if (m.Success) {
+                MyDate date = new MyDate();
+                date.Hour = int.Parse(m.Groups[(1)].Value, cultureInfo);
+                date.Minute = int.Parse(m.Groups[(2)].Value, cultureInfo);
+                return date;
+            }
+            return null;
+        }
 
-		/// <summary>
-		/// ToString
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
+        /// <summary>
+        /// ToString
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
 		{
 			ValueStringBuilder stringBuffer = new ValueStringBuilder();
 			if (Year != null) {
