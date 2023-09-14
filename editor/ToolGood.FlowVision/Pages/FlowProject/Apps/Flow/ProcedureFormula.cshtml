@@ -1,0 +1,93 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.ProcedureFormulaModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+        th{font-weight:bold}
+    </style>
+}
+    <table class="layui-table" lay-size="sm">
+        <tr>
+            <th>工艺名</th>
+            <td>
+                <a href="/FlowProject/Factorys/Procedures/Edit?pid=@Model.ProjectId&id=@Model.FactoryProcedure.Id&h=450&w=900" class="openwin" title="编辑">@(Model.FactoryProcedure.Name)</a>
+        </td>
+        <th>编码</th>
+        <td>@(Model.FactoryProcedure.Code)</td>
+        <th>分类</th>
+        <td>@(Model.FactoryProcedure.Category)</td>
+    </tr>
+    <tr>
+        <th>检测公式</th>
+        <td colspan="5">@(Model.FactoryProcedure.CheckFormula)</td>
+    </tr>
+    <tr>
+        <td colspan="6" style="height:5px;"></td>
+    </tr>
+    <tr>
+        <th>厂区</th>
+        <th>工艺名</th>
+        <th>编码</th>
+        <th>分类</th>
+        <th>分类编码</th>
+        <th>备注</th>
+    </tr>
+    @foreach (var item in Model.FactoryProcedureItems) {
+        <tr>
+            <td>
+                <a href="/FlowProject/Factorys/Procedures/Item/Edit?pid=@Model.ProjectId&id=@item.Id&w=650&h=400" class="openwin" title="编辑">@(item.Factory)</a>
+            </td>
+            <td>@(item.Name)</td>
+            <td>@(item.Code)</td>
+            <td>@(item.Category)</td>
+            <td>@(item.CategoryCode)</td>
+            <td>@(item.Comment)</td>
+        </tr>
+    }
+</table>
+@if (Model.FactoryMachines.Count > 0) {
+    <div style="height:10px;"></div>
+    <table class="layui-table" lay-size="sm">
+        @foreach (var item in Model.FactoryMachines) {
+            <tr>
+                <th>厂区</th>
+                <th>机械名称</th>
+                <th>编码</th>
+                <th>分类</th>
+                <th>分类编码</th>
+            </tr>
+            <tr>
+                <td>@(item.Factory) </td>
+                <td>
+                    <a href="/FlowProject/Factorys/Machines/Edit?pid=@Model.ProjectId&id=@item.Id&h=670&w=900" class="openwin" title="编辑">@(item.MachineName)</a>
+                </td>
+                <td>@(item.MachineCode)</td>
+                <td>@(item.MachineCategoryName)</td>
+                <td>@(item.MachineCategoryName)</td>
+            </tr>
+            if (string.IsNullOrEmpty(item.Comment) == false) {
+                <tr>
+                    <td style="font-weight: bold;">备注</td>
+                    <td colspan="4"><pre>@(item.Comment)</pre></td>
+                </tr>
+            }
+            if (string.IsNullOrEmpty(item.CheckFormula) == false) {
+                <tr>
+                    <td style="font-weight: bold;">检测公式</td>
+                    <td colspan="4"><pre>@(item.CheckFormula)</pre></td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5" style="height:5px;"></td>
+            </tr>
+        }
+    </table>
+}
+<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;margin-top:15px;">
+    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+</div>
+<div style="height:10px;"></div>

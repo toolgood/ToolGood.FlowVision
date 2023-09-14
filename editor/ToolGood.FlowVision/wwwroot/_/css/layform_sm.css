@@ -1,0 +1,24 @@
+﻿.layui-input-sm, .layui-select-sm, .layui-textarea-sm { width: 100%; height: 30px; line-height: 1; border-width: 1px; border-style: solid; background-color: #fff; border-radius: 2px; border-color: #e6e6e6; padding-left: 5px; }
+.layui-form-item-sm .layui-input-inline-sm { float: left; width: 100px; margin-right: 5px; }
+.layui-input-inline-sm { display: inline-block; vertical-align: middle; position: relative; }
+.layui-form-label-sm { float: left; display: block; line-height: 28px; padding: 0px 8px; width: 70px; font-weight: 400; text-align: right; position: relative; }
+.layui-card-header-sm { position: relative; line-height: 33px; color: rgb(51, 51, 51); font-size: 14px; padding: 10px 15px; border-bottom: 1px solid rgb(246, 246, 246); border-radius: 2px 2px 0px 0px; }
+
+.layui-input-block-sm .layui-select-title > input { width: 100px; height: 30px; line-height: 1; border-width: 1px; border-style: solid; background-color: #fff; border-radius: 2px; border-color: #e6e6e6; padding-left: 5px; }
+
+.layui-pop-search { cursor: pointer }
+
+.layui-input-block-sm { margin-left: 90px; }
+.layui-form-item-sm { margin-bottom: 8px; clear: both; }
+
+.layui-input-block-sm .layui-select-title { width: 100%; }
+.layui-input-block-sm .layui-layui-unselect { width: 100%; }
+.layui-input-block-sm .layui-select-title > input { width: 100%; }
+
+.layui-input-block-sm > .layui-word-aux { font-size: 13px }
+
+.layui-input-block-sm .layui-form-select dl dd, .layui-input-block-sm .layui-form-select dl dt { line-height: 30px; }
+
+.layui-input-block-sm .layui-form-checkbox[lay-skin="primary"] { margin-top: 3px; }
+
+.layui-input-block-sm hr { margin: 3px 0; }

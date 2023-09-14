@@ -1,0 +1,256 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.JumpNodeEditModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+        .editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+        .ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+        div.layui-input.editor-div { padding: 0; height: initial }
+        div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial }
+    </style>
+}
+<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+    <form id="edit-form" style="height: 100%;">
+        <div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">id</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_id" name="id" readonly>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">标签<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_label" name="label">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">检测条件</label>
+                <div class="layui-input-block-sm">
+                    <input type="hidden" id="txt_checkFormula" name="checkFormula" />
+                    <div class="layui-input editor-div" style="margin-bottom: 3px; ">
+                        <div id="txt_checkFormula-editor" class="editor"> </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">配置公式</label>
+                <div class="layui-input-block-sm" id="settingFormula">
+                    <table id="list" class="layui-table" lay-size="sm">
+                        <thead>
+                            <tr ondrop="onDrop(event)" ondragstart="dragStart(event)" ondragover="onDragOver(event)" draggable="false" ondragenter="dragEnter(event)">
+                                <td>内容</td>
+                                <td width="80">操作</td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <a href="javascript:;" onclick="addCondition()" style="color:blue">增加条件公式</a>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">入量别名</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_inputName" name="inputName">
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">备注</label>
+                <div class="layui-input-block-sm">
+                    <textarea class="layui-textarea" id="txt_comment" name="comment" autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item-sm" id="modifyInfo" style="display:none;">
+                <label class="layui-form-label-sm">编辑于</label>
+                <div class="layui-input-block-sm" style="line-height: 30px;">
+                    <span id="modifyText"></span>
+                </div>
+            </div>
+            <div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+                <button pass-edit="@Model.ButtonPass" type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this,true);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+            </div>
+        </div>
+        <div style="height:5px;"></div>
+    </form>
+</div>
+<script type="text/x-template" id="settingTpl" style="display:none">
+    <tr ondrop="onDrop(event)" ondragover="onDragOver(event)" ondragenter="dragEnter(event)"  draggable="true" ondragstart="dragStart(event)">
+        <td class="formula">
+            变量名: 请输入变量名 [number]<br />
+            默认公式:
+        </td>
+        <td>
+            <input type="hidden" name="settingFormula[]" value="" />
+            <a href="javascript:;" edit onclick="editCondition(this,false)">编辑</a>&nbsp;&nbsp;
+            <span style="color:blue;cursor:all-scroll;"  >拖动</span>&nbsp;&nbsp;
+            <a class="delete" href="javascript:;">删除</a>
+        </td>
+    </tr>
+</script>
+
+@section js{
+    <script src="/_/inputcontrol/toolgood.algorithm.js"></script>
+    <script src="/_/inputcontrol/ace/ace.js"></script>
+    <script src="/_/inputcontrol/ace/ext-language_tools.js"></script>
+    <script src="/_/inputcontrol/AceKeywords.js?pid=@(Model.ProjectId)&appid=@(Model.AppId)"></script>
+    <script src="/_/inputcontrol/my-keywords.js"></script>
+    <script src="/_/inputcontrol/createeditor.js"></script>
+
+    <script>
+        var pid = '@Model.ProjectId';
+        var appid = '@Model.AppId';
+        window.$input = null;
+        window.$input = null;
+        function addCondition() {
+            var data = { name: '', type: 'number', defaultFormula: '', comment: '', conditions: [] };
+            var $input = $($("#settingTpl").html());
+            $input.find("input").val(JSON.stringify(data));
+            editCondition($input.find("input"), true);
+        }
+        function editCondition(obj, isnew) {
+            window.$isnew = isnew;
+            top.window.setSettingFormula = function (data) { setSettingFormulaInfo(window.$input, data); if (window.$isnew) { $("#list").append(window.$input); } }
+            top.window.getSettingFormula = function () { return JSON.parse(window.$input.find("input").val()); }
+            top.window.SettingFormulaSave = function () { save(null, false); }
+
+            window.$input = $(obj).parents("tr");
+            var w = 900; var h = 600;
+            var url = "/FlowProject/Apps/Flow/FormulaEditor?pid=" + pid + "&id=" + appid;
+            if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+            if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+            top.layui.layer.open({ type: 2, title: "编辑公式", shadeClose: false, shade: 0.1, maxmin: true, area: [w + 'px', h + 'px'], content: url });
+        }
+        function setSettingFormulaInfo($input, data) {
+            $input.find("input").val(JSON.stringify(data));
+            html = "变量名: " + data.name + " [" + data.type + "]<br>";
+            if (data.conditions) {
+                for (var i = 0; i < data.conditions.length; i++) {
+                    html += "条件：" + data.conditions[i].condition + "<br>";
+                    html += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=>" + data.conditions[i].formula + "<br>";
+                }
+            }
+            html += "默认公式: " + data.defaultFormula + "<br>";
+            if (data.comment.length > 0) {
+                html += "备注: " + data.comment;
+            }
+            $input.find("td.formula").html(html);
+        }
+        $(document).on("click", ".delete", function (event) {
+            event && event.stopPropagation();
+            $this = $(this);
+            if (top.$("a.layui-layer-btn0").length > 0) {
+                $this.parents("tr").remove();
+                top.layer.close(top.$(".layui-layer-dialog").attr("times"));
+            } else {
+                top.layer.confirm('删除当前的选择项吗?', function (index) {
+                    $this.parents("tr").remove();
+                    top.layer.close(index);
+                })
+            }
+            return false;
+        });
+        $(document).on("dblclick", "tr", function (event) {
+            event && event.stopPropagation();
+            $(this).find("a[edit]").click();
+            return false;
+        });
+    </script>
+
+    <script>
+        $(function () {
+            var node = top.window.getCurrCell();
+            $("#txt_id").val(node.id);
+            $("#txt_label").val(node.attr().text.text);
+            $("#txt_comment").val(node.data.comment);
+            $("#txt_inputName").val(node.data.inputName)
+            $("#txt_checkFormula").val(node.data.checkFormula)
+            if (!node.data.settingFormula) node.data.settingFormula = [];
+
+            for (var k = 0; k < node.data.settingFormula.length; k = k + 1) {
+                var txt = node.data.settingFormula[k];
+                var data = JSON.parse(txt);
+                var $input = $($("#settingTpl").html())
+                setSettingFormulaInfo($input, data);
+                $("#list").append($input);
+            }
+            createEditor("txt_checkFormula-editor", "txt_checkFormula")
+
+            if (node.data && node.data.modifyDate && node.data.modifyUser) {
+                $("#modifyText").text(node.data.modifyDate + ", " + node.data.modifyUser)
+                $("#modifyInfo").show();
+            }
+        })
+        $(window).keydown(function (e) {
+            if (e.keyCode == 83 && e.ctrlKey) {
+                e.preventDefault();
+                save(null, false);
+                top.window.saveGraph();
+                return false;
+            }
+        });
+        function save(obj, isclose) {
+            var data = $("#edit-form").serializeJson();
+            if (data["label"] == "") { top.layer.alert("请输入标签！"); return; }
+            var name = data.inputName.toLowerCase();
+            if (/^[\d].*/ig.test(name)) { layer.alert("入量别名有误"); $("#txt_inputName").focus(); return; }
+            if (/[ \t\+\-\*\/\(\)\\\[\]]/ig.test(name)) { layer.alert("入量别名有误"); $("#txt_inputName").focus(); return; }
+            for (var i = 0; i < ace_keywords2.length; i++) {
+                if (ace_keywords2[i]["key"].toLowerCase() == name) { layer.alert("入量别名有误,不能使用当前变量名"); $("#txt_inputName").focus(); return; }
+            }
+
+            var node = top.window.getCurrCell();
+            node.setLabel(data["label"]);
+            node.data.comment = data.comment;
+            node.data.settingFormula = data.settingFormula;
+            node.data.inputName = data.inputName;
+            node.data.checkFormula = data.checkFormula;
+            var now = new Date();
+            node.data.modifyDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDay() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+            node.data.modifyUser = "@Model.MemberDto.Name";
+
+            top.window.saveGraph();
+            if (isclose) { closeWindow(); }
+        }
+    </script>
+
+    <script>
+        let moveNode = null;
+        function onLeave(event) { }
+        function onDrop(event) {
+            event.preventDefault();
+            moveNode.style.opacity = '1';
+            if ($(event.target).parents("table")[0] != $(moveNode).parents("table")[0]) { return; }
+            if (event.target.parentNode.tagName == "TR") {
+                if (moveNode.tagName == "TR") {
+                    $(event.target.parentNode).after($(moveNode))
+                } else {
+                    $(event.target.parentNode).after($(moveNode).parents("tr"))
+                }
+            }
+        }
+        function onDragEnter(event) { event.preventDefault(); }
+        function onDrag(event) { event.preventDefault(); }
+        function onDragOver(event) { event.preventDefault(); }
+        function dragStart(event) { moveNode = event.target; event.target.style.opacity = '0.5'; }
+        function dragEnter(event) {
+            if ($(event.target).parents("table")[0] != $(moveNode).parents("table")[0]) { return; }
+            if (event.target.parentNode.tagName == "TR") {
+                if (moveNode.tagName == "TR") {
+                    $(event.target.parentNode).after($(moveNode))
+                } else {
+                    $(event.target.parentNode).after($(moveNode).parents("tr"))
+                }
+            } else {
+                event.preventDefault();
+            }
+        }
+    </script>
+}

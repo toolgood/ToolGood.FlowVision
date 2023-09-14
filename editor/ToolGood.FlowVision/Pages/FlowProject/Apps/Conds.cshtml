@@ -1,0 +1,17 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.CondsModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+	<style>
+		.layui-table td, .layui-table th { padding: 3px; }
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+	</style>
+}
+<div style="overflow-x:hidden;background-color:#f3f3f4;">
+
+	@foreach (var item in Model.Conditions) {
+		<pre><code>@item</code></pre>
+	}
+</div>

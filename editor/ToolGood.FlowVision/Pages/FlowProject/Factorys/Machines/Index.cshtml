@@ -1,0 +1,186 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.Factorys.Machines.IndexModel
+@{
+	Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+	<div class="data-header">
+		<div class="search-v2">
+			<form id="search-form">
+				<div class="filter">
+					<label class="label">类型：</label>
+					<select id="sel_Category" name="Category">
+						<option value="" selected>-- 请选择 --</option>
+						@Model.CategoryList.ToOption();
+					</select>
+				</div>
+				<div class="filter">
+					<label class="label">子类型：</label>
+					<select id="sel_SubCategory" name="SubCategory">
+						<option value="" selected>-- 请选择 --</option>
+					</select>
+				</div>
+				<div class="filter">
+					<label class="label">厂区：</label>
+					<select id="sel_Factory" name="Factory">
+						<option value="0">-- 请选择 --</option>
+						@Model.FactoryList.ToOption(q=>q.SimplifyName,q=>q.Id);
+					</select>
+				</div>
+				<div class="filter">
+					<label class="label">名称：</label>
+					<input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+				</div>
+				<div class="filter">
+					<button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+					<button type="button" class="layui-btn layui-btn-xs layui-btn-primary" onclick="pageReload()">&nbsp; 重置 &nbsp; </button>
+				</div>
+				<div pass-edit="@Model.ButtonPass" style="display:inline-block">
+					<div class="filter"> | </div>
+					<div class="filter">
+						<a href="./Edit?h=650&w=900&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-normal openwin" title="新增机械"> &nbsp; 新增机械 &nbsp; </a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="data-content">
+		<table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+	</div>
+</div>
+
+<form id="delete-form" class="hidden">
+	@Html.AntiForgeryToken()
+	<input type="hidden" name="id" value="" />
+	<input type="hidden" name="ProjectId" value="@Model.ProjectId" />
+</form>
+
+<div style="display:none" id="bar">
+	<a pass-edit="@Model.ButtonPass" href="./Edit?h=650&w=900&pid=@Model.ProjectId&id={{ d.id }}" edit class="openwin" title="编辑机械"> 编辑 </a>
+	<span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+	<a pass-delete="@Model.ButtonPass" href="javascript:deleteItem({{ d.id }},'{{ d.name }}');"> 删除 </a>
+</div>
+
+
+@section js{
+	<script>
+		var showBar = '1';
+		 function deleteItem(id, name) {
+            $("#delete-form input[name=id]").val(id);
+            if (top.$("a.layui-layer-btn0").length > 0) {
+                deleteItem2();
+                top.layer.close(top.$(".layui-layer-dialog").attr("times"));
+                return false;
+            }
+			top.layer.confirm('删除厂区机械【' + name + "】吗？", function (index) {
+                deleteItem2();
+                top.layer.close(index);
+            })
+        }
+        function deleteItem2() {
+            var url = "./Ajax/DeleteItem";
+            var data = { data: $("#delete-form").serializeJson(), fingerprint: window.fingerprint }
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(data),
+                headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+                dataType: "JSON",
+				success: function (data, textStatus, jqXHR) { layer.load(2); layui.table.reload("dataList", { where: $("#search-form").serializeJson() }); },
+				error: function (data, textStatus, errorThrown) { layer.msg("出错了"); }
+            });
+        }
+ 
+		layui.use(["layer", "form", "table"], function () {
+			var getListUrl = './Ajax/GetList';
+			var cols = [];
+			//cols.push({ checkbox: true, fixed: true });
+			cols.push({ field: 'id', title: '序号', width: "80", sort: true, });
+			cols.push({ field: 'category', title: '分类', width: "100", sort: true, });
+			cols.push({ field: 'subCategory', title: '子分类', width: "100", sort: true, });
+			cols.push({ field: 'name', title: '名称', width: "150", sort: true, });
+            cols.push({ field: 'factoryId', title: '厂区', width: "80", sort: true, templet: function (d) { return d.factory; } });
+			cols.push({ field: 'machineCode', title: '机械编号', width: "80", });
+			cols.push({ field: 'machineName', title: '机械名称', width: "160", });
+			cols.push({ field: 'machineCategoryCode', title: '分类编号', width: "80", });
+			cols.push({ field: 'machineCategoryName', title: '分类名称', width: "160", });
+			cols.push({ field: 'checkFormula', title: '检测公式', width: "350", });
+			cols.push({ field: 'comment', title: '备注', width: "250", });
+			cols.push({ field: 'modifyTime', title: '修改时间', width: "150", });
+
+			if (showBar == '1') {
+				cols.push({ field: 'right', title: '操作', width: "200", align: 'center', fixed: 'right', toolbar: '#bar' });
+			}
+
+			var tableOptions = {
+				url: getListUrl,
+				autoSort: false,
+				size: 'sm',
+				even: true,
+				method: 'POST',
+				cols: [cols],
+				page: true,
+				limit: 30,
+				limits: [10, 20, 30, 50, 100],
+				response: { statusCode: 1, msgName: 'message' },
+				height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+				done: function () { layer.closeAll('loading'); },
+				request: { pageName: 'pageIndex', limitName: 'pageSize' },
+				text: { none: '<span style="color:red;">暂无记录</span>' },
+				where: { ProjectId: '@Model.ProjectId' }
+			};
+
+			var layer = layui.layer, table = layui.table;
+			layer.load(2);
+			table.init('dataList', tableOptions);
+			table.on('rowDouble(dataList)', function (obj) { $(obj.tr[0]).find("a[edit]").trigger("click"); });
+			table.on('sort(dataList)', function (obj) {
+				layer.load(2);
+				var field = obj.field; order = obj.type;
+				if (obj.type == null) { field = ""; order = ""; }
+				table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+			});
+
+			function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
+			$(".search-btn").click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+			$('select').change(function (event) {
+				event && event.stopPropagation();
+				if ($(this).attr("name") == "Category") {
+					var data={data: $("#search-form").serializeJson()};
+					data.data["ProjectId"] = '@Model.ProjectId';
+					$.ajax({
+						type: "POST",
+						url: "./ajax/GetSubCategoryList",
+						contentType: "application/json;charset=UTF-8",
+						data: JSON.stringify(data),
+						headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+						dataType: "JSON",
+						success: function (res, textStatus, jqXHR) {
+								var html = '<option value="" selected>-- 请选择 --</option>';
+						if(res.code==1){
+							for(var i=0;i<res.data.length;i++){
+								html += '<option value="' + res.data[i] + '">'+res.data[i]+'</option>'
+							}
+						}
+						$("#sel_SubCategory").html(html);
+						tableReload(); return false;
+						},
+						error: function (data, textStatus, errorThrown) { layer.msg("出错了"); }
+					});
+				}else{
+					tableReload(); return false;
+				}
+			});
+			$('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+			$('.filter a').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13 && $(".layui-layer").length > 0) { return false; } })
+
+		});
+		function pageReload() {
+			location.reload();
+		}
+		function reload() {
+			layui.table.reload("dataList");
+		}
+	</script>
+}

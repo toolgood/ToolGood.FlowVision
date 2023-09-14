@@ -1,0 +1,34 @@
+﻿@page
+@model ToolGood.FlowWork.Pages.Analysis.FlowJumpUrlModel
+@{
+}
+<html>
+<head></head>
+<body>
+    <form action="@(Model.URL)" method="post">
+        <input type="text" id="factoryCode" name="factoryCode" />
+        <input type="text" id="appCode" name="appCode" />
+        <input type="text" id="json" name="json" />
+        <input type="text" id="formulas" name="formulas" />
+        <input type="text" id="machineInfos" name="machineInfos" />
+        <input type="text" id="attachData" name="attachData" />
+        <input type="text" id="previous" name="previous" />
+        <input type="text" id="projectCode" name="projectCode" />
+        <button type="submit" id="submit">提交</button>
+    </form>
+    <script src="/_/js/jquery.min.js"></script>
+    <script>
+        $(function(){
+            $("#factoryCode").val(top.window.factoryCode);
+            $("#appCode").val(top.window.appCode);
+            $("#json").val(top.window.json);
+            $("#formulas").val(top.window.formulas);
+            $("#machineInfos").val(top.window.machineInfos);
+            $("#attachData").val(top.window.attachData);
+            $("#previous").val(top.window.previous);
+            $("#projectCode").val(top.window.projectCode);
+            $("#submit").click();
+        })
+    </script>
+</body>
+</html>

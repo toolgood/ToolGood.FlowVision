@@ -1,0 +1,97 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.EdgeEditModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+        .editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+        .ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+        div.layui-input.editor-div { padding: 0; height: initial }
+        div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial }
+    </style>
+}
+
+<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+    <form id="edit-form" style="height: 100%;">
+        <div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">id</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_id" name="id" readonly>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">分组标识<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_group" name="group">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">备注</label>
+                <div class="layui-input-block-sm">
+                    <textarea class="layui-textarea" id="txt_comment" name="comment" autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item-sm" id="modifyInfo" style="display:none;">
+                <label class="layui-form-label-sm">编辑于</label>
+                <div class="layui-input-block-sm" style="line-height: 30px;">
+                    <span id="modifyText"></span>
+                </div>
+            </div>
+            <div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+                <button pass-edit="@Model.ButtonPass" type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this,true);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+            </div>
+        </div>
+    </form>
+</div>
+@section js{
+    <link href="/_/wangeditor/editor.css" rel="stylesheet" />
+    <script src="/_/wangeditor/editor.js"></script>
+
+    <script>
+        $(function () {
+            var edge = top.window.getCurrCell();
+            $("#txt_id").val(edge.id);
+            if (edge.getLabelAt(0)) {
+                $("#txt_group").val(edge.getLabelAt(0).attrs.label.text);
+            } else {
+                $("#txt_group").val("");
+            }
+            if (!edge.data) edge.data = { comment: "" }
+            $("#txt_comment").val(edge.data.comment);
+
+            if (edge.data && edge.data.modifyDate && edge.data.modifyUser) {
+                $("#modifyText").text(edge.data.modifyDate + ", " + edge.data.modifyUser)
+                $("#modifyInfo").show();
+            }
+        })
+        $(window).keydown(function (e) {
+            if (e.keyCode == 83 && e.ctrlKey) {
+                e.preventDefault();
+                save(null, false);
+                top.window.saveGraph();
+                return false;
+            }
+        });
+        function save(obj, isclose) {
+            var data = $("#edit-form").serializeJson();
+            if (data["group"] == "") { top.layer.alert("请输入分组标识！"); return; }
+
+            var edge = top.window.getCurrCell();
+            edge.setLabelAt(0, data["group"], { silent: false });
+            edge.data.comment = data.comment;
+
+            var now = new Date();
+            edge.data.modifyDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDay() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+            edge.data.modifyUser = "@Model.MemberDto.Name";
+
+            top.window.saveGraph();
+            if (isclose) { closeWindow(); }
+        }
+    </script>
+}

@@ -1,0 +1,118 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.SubAccounts.LoginListModel
+@{
+    Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+    <div class="data-header">
+        <div class="search-v2">
+            <form id="search-form">
+                <div class="filter">
+                    <label class="label">账号：</label>
+                    <input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">内容：</label>
+                    <input type="text" class="text" name="message" id="txt_message" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">Ip：</label>
+                    <input type="text" class="text" name="ip" id="txt_ip" autocomplete="off">
+                </div>
+
+
+                <div class="filter">
+                    <label class="label">开始时间：</label>
+                    <input type="text" class="text" name="startTime" id="txt_startTime" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <label class="label">结束时间：</label>
+                    <input type="text" class="text" name="endTime" id="txt_endTime" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary" onclick="pageReload()">&nbsp; 重置 &nbsp; </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="data-content">
+        <table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+    </div>
+</div>
+
+
+@section js{
+    <script>
+        var showBar = '@(Model.ButtonPass.CanEditOrDelete ? "1" : "0")';
+        layui.use(["layer", "form", "table", 'laydate'], function () {
+            var getListUrl = './Ajax/GetLoginList';
+            var cols = [];
+            //cols.push({ checkbox: true, fixed: true });
+            cols.push({ field: 'id', title: '序号', width: "80", sort: true, });
+            cols.push({ field: 'name', title: '账号', width: "90", });
+            cols.push({ field: 'message', title: '内容', width: "250", });
+            cols.push({ field: 'createTime', title: '操作时间', width: "150", });
+            cols.push({ field: 'ip', title: 'Ip地址', width: "150", });
+            cols.push({ field: 'fingerprint', title: '浏览器指纹', width: "250", });
+            cols.push({ field: 'sessionID', title: 'SessionID', width: "270", });
+            cols.push({ field: 'userAgent', title: 'UserAgent', width: "400", });
+
+            var tableOptions = {
+                url: getListUrl,
+                autoSort: false,
+                size: 'sm',
+                even: true,
+                method: 'POST',
+                cols: [cols],
+                page: true,
+                limit: 30,
+                limits: [10, 20, 30, 50, 100],
+                response: { statusCode: 1, msgName: 'message' },
+                height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+                done: function () { layer.closeAll('loading'); },
+                request: { pageName: 'pageIndex', limitName: 'pageSize' },
+                text: { none: '<span style="color:red;">暂无记录</span>' }
+            };
+
+            var layer = layui.layer, table = layui.table;
+            layer.load(2);
+            table.init('dataList', tableOptions);
+            table.on('rowDouble(dataList)', function (obj) { $(obj.tr[0]).find("a[edit]").trigger("click"); });
+            table.on('sort(dataList)', function (obj) {
+                layer.load(2);
+                var field = obj.field; order = obj.type;
+                if (obj.type == null) { field = ""; order = ""; }
+                table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+            });
+
+            function tableReload() {
+                layer.load(2);
+                table.reload("dataList", {
+                    where: {
+                        name: $("#txt_name").val(),
+                        message: $("#txt_message").val(),
+                        ip: $("#txt_ip").val(),
+                        startTime: $("#txt_startTime").val(),
+                        endTime: $("#txt_endTime").val(),
+                    }
+                    , page: { curr: 1 }
+                });
+            }
+            $('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $("select").change(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+            $('.filter a').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13 && $(".layui-layer").length > 0) { return false; } })
+
+            layui.laydate.render({ elem: '#txt_startTime', max: 0 });
+            layui.laydate.render({ elem: '#txt_endTime', max: 0 });
+        });
+        function pageReload() {
+            location.reload();
+        }
+        function reload() {
+            layui.table.reload("dataList");
+        }
+    </script>
+}

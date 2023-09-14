@@ -1,0 +1,633 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.IndexModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowVision流程设计</title>
+    <script src="/_/js/jquery.min.js"></script>
+    <script src="/_/layui/layui.js"></script>
+    <link href="/_/layui/css/layui.css" rel="stylesheet" />
+    <script src="/_/X6/x6.js"></script>
+    <style>
+        #container { display: flex; border: 1px solid #dfe3e8; }
+        #stencil { width: 180px; height: 100%; position: relative; border-right: 1px solid #dfe3e8; }
+        #graph-container { width: calc(100% - 180px); height: 100%; }
+        .x6-widget-stencil { background-color: #fff; }
+        .x6-widget-transform { margin: -1px 0 0 -1px; padding: 0px; border: 1px solid #239edd; }
+        .x6-widget-transform > div { border: 1px solid #239edd; }
+        .x6-widget-transform > div:hover { background-color: #3dafe4; }
+        .x6-widget-transform-active-handle { background-color: #3dafe4; }
+        .x6-widget-transform-resize { border-radius: 0; }
+        .x6-widget-selection-inner { border: 1px solid #239edd; }
+        .x6-widget-selection-box { opacity: 0; }
+
+        .node { display: flex; align-items: center; width: 100%; height: 100%; background-color: #fff; border: 1px solid #c2c8d5; border-left: 4px solid #5F95FF; border-radius: 4px; box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06); }
+        .node img { width: 20px; height: 20px; flex-shrink: 0; margin-left: 8px; }
+        .node .label { display: inline-block; flex-shrink: 0; width: 104px; margin-left: 8px; color: #666; font-size: 11px; }
+        .x6-edge:hover path:nth-child(2) { stroke: #1890ff; stroke-width: 1px; }
+        .x6-edge-selected path:nth-child(2) { stroke: #1890ff; stroke-width: 1.5px !important; }
+
+        .layui-form-label { width: 30px; padding: 5px; }
+        .layui-input-block { margin-left: 40px; }
+        .layui-form { padding-right: 8px; }
+        .x6-widget-stencil-title { display: none; }
+        .x6-widget-stencil-group-title { display: none; }
+        .x6-widget-stencil.collapsable > .x6-widget-stencil-content { top: 0; overflow: hidden; }
+    </style>
+    <link href="/_/layui/css/modules/layer/default/layer.css" rel="stylesheet" />
+</head>
+<body style="height:100%;width: 100%;margin:0 auto;position: fixed;">
+    <div id="container" style="height:100%;width:100%;">
+        <div id="stencil" style="width: 86px;"></div>
+        <div id="graph-container"></div>
+        <div id="data-container" style="min-width:300px;border-left: 1px solid #dfe3e8;">
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" style="margin-left:5px;margin-top:10px;" onclick="saveImage();"> 导出图片 </button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" style="margin-left:5px;margin-top:10px;" onclick="autoLayer();layout2()"> 自动对齐 </button>
+            <button pass-edit="@Model.ButtonPass" type="button" class="layui-btn layui-btn-sm layui-btn-primary" style="margin-left:5px;margin-top:10px;" onclick="batchProcedure();"> 批量工艺 </button>
+            <button pass-edit="@Model.ButtonPass" type="button" class="layui-btn layui-btn-sm" style="margin-left:5px;margin-top:10px;" onclick="save(this);"> 保 存 </button>
+            <hr />
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">ID</label>
+                    <div class="layui-input-block">
+                        <input id="cell-id" type="text" readonly autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标签</label>
+                    <div class="layui-input-block">
+                        <textarea id="cell-label" type="text" readonly autocomplete="off" class="layui-input"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item cell-select" id="item-inputName">
+                    <label class="layui-form-label">入量</label>
+                    <div class="layui-input-block">
+                        <input id="cell-inputName" type="text" readonly autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item cell-select" id="item-checkFormula">
+                    <label class="layui-form-label">条件</label>
+                    <div class="layui-input-block">
+                        <textarea id="cell-checkFormula" class="layui-textarea" readonly autocomplete="off"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item cell-select" id="item-errorMessage">
+                    <label class="layui-form-label">抛错</label>
+                    <div class="layui-input-block">
+                        <input id="cell-errorMessage" type="text" readonly autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <textarea id="cell-comment" class="layui-textarea" readonly autocomplete="off"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var pid = '@Model.ProjectId';
+        var appid = '@Model.AppId';
+        var appCode = '@Model.AppCode';
+        Graph = X6.Graph;
+        Shape = X6.Shape;
+        layui.use(["layer", "form", "element"], function () { layer = layui.layer });
+        // #region 初始化画布
+        Graph.registerEdge('dag-edge', { inherit: 'edge', attrs: { line: { stroke: '#C2C8D5', strokeWidth: 1, } } }, true)
+
+        const graph = new Graph({
+            grid: true,
+            container: document.getElementById('graph-container'),
+            panning: { enabled: true, eventTypes: ['leftMouseDown'] },
+            mousewheel: { enabled: true, modifiers: ['ctrl', 'meta'], factor: 1.1, maxScale: 1, minScale: 0.1 },
+            highlighting: { magnetAdsorbed: { name: 'stroke', args: { attrs: { fill: '#5F95FF', stroke: '#5F95FF', strokeWidth: 4 } } } },
+            connecting: {
+                snap: true,
+                allowBlank: false,
+                allowLoop: false,
+                highlight: true,
+                connectionPoint: 'anchor',
+                anchor: 'center',
+                validateMagnet({ magnet }) { return magnet.getAttribute('port-group') !== 'top' },
+                createEdge() { return graph.createEdge({ shape: 'dag-edge', zIndex: -1 }) },
+            },
+            selecting: { enabled: true, multiple: true, rubberEdge: true, rubberNode: true, modifiers: 'shift', rubberband: true, showNodeSelectionBox: true },
+            keyboard: true,
+            clipboard: true,
+            history: true,
+            resizing: true,
+            rotating: false,
+            snapline: true
+        })
+
+        // 连接判断
+        function findDug(edges) {
+            if (edges.length <= 1) { return false; }
+            var map = {}; var counts = {}
+            for (var i = 0; i < edges.length; i++) {
+                const eg = edges[i];
+                var val = map[eg.source.cell];
+                if (val == undefined) {
+                    map[eg.source.cell] = [eg.target.cell];
+                } else {
+                    val.push(eg.target.cell);
+                }
+                if (counts[eg.source.cell] == undefined) { counts[eg.source.cell] = 0; }
+
+                var val2 = counts[eg.target.cell];
+                if (val2 == undefined) { val2 = 0; }
+                counts[eg.target.cell] = val2 + 1;
+            }
+            var change = true;
+            while (change) {
+                change = false;
+                for (var key in counts) {
+                    if (counts[key] == 0) {
+                        var list = map[key];
+                        if (list) {
+                            for (var i = 0; i < list.length; i++) {
+                                if (counts[list[i]]) { counts[list[i]] = counts[list[i]] - 1; }
+                            }
+                        }
+                        change = true;
+                        delete counts[key];
+                        break;
+                    }
+                }
+            }
+            var c = 0;
+            for (var key in counts) { c++; break; }
+            return c != 0;
+        }
+        graph.on('edge:connected', ({ edge }) => {
+            if (edge.target.port == undefined) { return graph.removeEdge(edge.id) }
+            var edges = graph.getEdges();
+            // 连线不能重复
+            for (var i = 0; i < edges.length; i++) {
+                const eg = edges[i];
+                if (edge.id != eg.id && edge.source.cell == eg.source.cell && edge.target.cell == eg.target.cell) { return graph.removeEdge(edge.id) }
+            }
+            // 保证无环
+            if (findDug(edges)) { return graph.removeEdge(edge.id) }
+
+            const source = graph.getCellById(edge.source.cell);
+            var t = source.getPortsByGroup("top"); // 不允许头部连线
+            if (t != null && t.length > 0 && t[0].id == edge.source.port) { return graph.removeEdge(edge.id) }
+            const target = graph.getCellById(edge.target.cell);
+            t = target.getPortsByGroup("bottom");// 不允许连线到底部
+            if (t != null && t.length > 0 && t[0].id == edge.target.port) { return graph.removeEdge(edge.id) }
+            edge.setLabelAt(0, "1", { silent: false });
+            edge.data = {};
+            var now = new Date();
+            edge.data.modifyDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDay() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+            edge.data.modifyUser = "@Model.MemberDto.Name";
+        })
+        // 控制连接桩显示/隐藏
+        const showPorts = (ports, show) => { for (let i = 0, len = ports.length; i < len; i = i + 1) { ports[i].style.visibility = show ? 'visible' : 'hidden' } }
+        graph.on('node:mouseenter', () => { showPorts(document.getElementById('graph-container').querySelectorAll('.x6-port-body'), true) })
+        graph.on('node:mouseleave', () => { showPorts(document.getElementById('graph-container').querySelectorAll('.x6-port-body'), false) })
+        // 只允许一个开始节点 一个结束节点
+        graph.on('node:added', ({ node, index, options }) => { showPorts(document.getElementById('graph-container').querySelectorAll('.x6-port-body'), false) })
+
+        // 快捷键
+        //graph.bindKey(['meta+c', 'ctrl+c'], () => { const cells = graph.getSelectedCells(); if (cells.length) { graph.copy(cells, { useLocalStorage: true, }) } return false; });
+        graph.bindKey(['meta+z', 'ctrl+z'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; if (graph.history.canUndo()) { graph.history.undo() } return false; });
+        graph.bindKey(['meta+shift+z', 'ctrl+shift+z', 'ctrl+y'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; if (graph.history.canRedo()) { graph.history.redo() } return false });
+        graph.bindKey(['meta+a', 'ctrl+a'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; const nodes = graph.getNodes(); if (nodes) { graph.select(nodes) } });
+        graph.bindKey(['backspace', 'delete'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; const cells = graph.getSelectedCells(); if (cells.length) { graph.removeCells(cells) } });
+        graph.bindKey(['meta+s', 'ctrl+s'], () => { save(null); return false; });
+    </script>
+
+    <script>
+        // 左侧菜单
+        const stencil = new X6.Addon.Stencil({
+            title: '流程图',
+            target: graph,
+            stencilGraphWidth: 80,
+            stencilGraphHeight: 650,
+            collapsable: true,
+            groups: [{ title: '基础流程图', name: 'group1' },],
+            layoutOptions: { columns: 1, columnWidth: 66, rowHeight: 55 },
+        })
+        document.getElementById('stencil').appendChild(stencil.container);
+
+        // #region 初始化图形
+        const ports = { groups: { top: { position: 'left', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF', } } }, bottom: { position: 'right', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF' } } } }, items: [{ group: 'top' }, { group: 'bottom' }] }
+        const endPorts = { groups: { top: { position: 'left', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF', } } } }, items: [{ group: 'top' }] }
+        const startPorts = { groups: { bottom: { position: 'right', attrs: { circle: { r: 4, magnet: true, stroke: '#5F95FF' } } } }, items: [{ group: 'bottom' }] }
+        const noneports = { groups: {}, items: [] }
+
+        Graph.registerNode('start', { inherit: 'rect', width: 66, height: 36, attrs: { body: { rx: 20, ry: 26, strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...startPorts } }, true)
+        Graph.registerNode('end', { inherit: 'circle', width: 36, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...endPorts } }, true)
+        Graph.registerNode('error', { inherit: 'circle', width: 36, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#FFDDFF' }, text: { fontSize: 12 } }, ports: { ...endPorts } }, true)
+        Graph.registerNode('merge', { inherit: 'polygon', width: 66, height: 36, attrs: { body: { refPoints: '0,10 10,0 20,10 10,20', strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('jump', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('procedure', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('custom', { inherit: 'rect', width: 66, height: 36, attrs: { body: { rx: 8, ry: 8, strokeWidth: 1, stroke: '#5F95FF', fill: '#EFF4FF' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+        Graph.registerNode('comment', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#fff', fill: '#fff' }, text: { fontSize: 14 }, label: { refX: 3, refY: 3, textAnchor: 'start', textVerticalAnchor: 'top', fill: '#ff4d4f' }, }, ports: { ...noneports } }, true)
+        Graph.registerNode('status', { inherit: 'rect', width: 66, height: 36, attrs: { body: { strokeWidth: 1, stroke: '#5F95FF', fill: '#faffa4' }, text: { fontSize: 12 } }, ports: { ...ports } }, true)
+
+
+        const r1 = graph.createNode({ shape: 'start', label: '开始' })
+        const r3 = graph.createNode({ shape: 'procedure', label: '机械工艺' })
+        const r4 = graph.createNode({ shape: 'jump', label: '普通工艺' })
+        const r12 = graph.createNode({ shape: 'jump', label: '跳过工艺' })
+        const r9 = graph.createNode({ shape: 'custom', label: '脚本' })
+        const r10 = graph.createNode({ shape: 'status', label: '执行状态' })
+        const r5 = graph.createNode({ shape: 'merge', label: '合并' })
+        const r6 = graph.createNode({ shape: 'end', label: '结束' })
+        const r7 = graph.createNode({ shape: 'error', label: '错误' })
+        const r11 = graph.createNode({ shape: 'comment', label: '文本备注' })
+        stencil.load([r1, r3, r4, r12, r9, r10, r5, r6, r7, r11], 'group1')
+        showPorts(document.getElementById('stencil').querySelectorAll('.x6-port-body'), false)
+
+    </script>
+
+
+    <script>
+        // 自动标记层级
+        function autoLayer() {
+            function setLayer(id, map, layer) {
+                var fs = map[id]; if (fs == undefined) return;
+                for (var i = 0; i < fs.length; i++) {
+                    var fi = graph.getCellById(fs[i]);
+                    if (fi.data["layer"] < layer) { fi.data["layer"] = layer; setLayer(fs[i], map, layer + 1); }
+                }
+            }
+            var edges = graph.getEdges();
+            var nodes = graph.getNodes();
+
+            var map = {}; var list = [];
+            for (var i = 0; i < edges.length; i++) {
+                const eg = edges[i];
+                var val = map[eg.source.cell];
+                if (val == undefined) {
+                    map[eg.source.cell] = [eg.target.cell];
+                    list.push(eg.source.cell);
+                } else {
+                    val.push(eg.target.cell);
+                }
+            }
+            for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].shape == "comment") { continue }
+                if (nodes[i].data == undefined) nodes[i].data = {};
+                nodes[i].data["layer"] = -1;
+            }
+            while (list.length > 0) {
+                var id = list.pop();
+                var fi = graph.getCellById(id);
+                if (fi.data["layer"] < 0) fi.data["layer"] = 0;
+                setLayer(id, map, 1);
+            }
+            for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].shape == "comment") { continue }
+                if (nodes[i].shape == "start") { continue }
+                if (nodes[i].data["layer"] != 0) { continue }
+                var fs = map[nodes[i].id];
+                if (fs == undefined) continue;
+                var min = 999999;
+                for (var j = 0; j < fs.length; j++) {
+                    var fi = graph.getCellById(fs[j]);
+                    if (fi.data["layer"] < min) {
+                        min = fi.data["layer"]
+                    }
+                }
+                nodes[i].data["layer"] = min - 1;
+            }
+            autoOrder(nodes);
+        }
+
+        function autoOrder(nodes) {
+            var map = {};
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.shape == "comment") { continue }
+                var val = map[node.data["layer"]];
+                if (val == undefined) {
+                    map[node.data["layer"]] = [node];
+                } else {
+                    val.push(node);
+                }
+            }
+            for (key in map) {
+                var arr = map[key];
+                var len = arr.length;
+                for (var fraction = Math.floor(len / 2); fraction > 0; fraction = Math.floor(fraction / 2)) {
+                    for (var i = fraction; i < len; i += fraction) {
+                        for (var j = i - fraction; j >= 0 && arr[j].position().y > arr[fraction + j].position().y; j -= fraction) {
+                            var temp = arr[j];
+                            arr[j] = arr[fraction + j];
+                            arr[fraction + j] = temp;
+                        }
+                    }
+                }
+                for (var i = 0; i < arr.length; i++) { arr[i].data["order"] = i + 1; }
+            }
+            return map;
+        }
+    </script>
+
+    <script>
+        // 右侧显示
+        function getCell(cell) {
+            $(".cell-select").hide();
+            if (cell == undefined) {
+                $("#cell-id").val("");
+                $("#cell-label").val("");
+                $("#cell-comment").val("");
+            } else if (cell.shape == "dag-edge") {
+                $("#cell-id").val(cell.id);
+                $("#cell-label").val(cell.getLabelAt(0).attrs.label.text);
+                if (cell.data) {
+                    $("#cell-comment").val(cell.data.comment);
+                } else {
+                    $("#cell-comment").val("");
+                }
+            } else if (cell.shape == "comment") {
+                $("#cell-id").val(cell.id);
+                $("#cell-label").val(cell.attr().text.text);
+                $("#cell-comment").val("");
+            } else {
+                $("#cell-id").val(cell.id);
+                $("#cell-label").val(cell.attr().text.text);
+                $("#cell-comment").val(cell.data.comment);
+                if (cell.data.inputName) {
+                    $("#cell-inputName").val(cell.data.inputName);
+                    $("#item-inputName").show();
+                }
+                if (cell.data.errorMessage) {
+                    $("#cell-errorMessage").val(cell.data.errorMessage);
+                    $("#item-errorMessage").show();
+                }
+                if (cell.data.checkFormula) {
+                    $("#cell-checkFormula").val(cell.data.checkFormula);
+                    $("#item-checkFormula").show();
+                }
+            }
+        }
+
+        graph.on('cell:click', ({ e, x, y, node, view }) => { getCell(node); })
+        graph.on('cell:mouseenter', ({ e, node, view }) => { getCell(view.cell); })
+        graph.on('cell:mouseleave', ({ e, node, view }) => { setTimeout(() => { getCell(graph.getSelectedCells()[0]) }, 100) })
+        graph.on('blank:click', ({ e, blank, view }) => { setTimeout(() => { getCell(graph.getSelectedCells()[0]) }, 100) })
+
+    </script>
+    <script>
+        var closeAddEvent = false;
+        function batchProcedure() {
+            top.window.getGraph = function () { return graph; }
+            top.window.setCloseAddEvent = function (b) { closeAddEvent = b; }
+            top.window.getGraphBox = function () { var box = graph.getContentBBox(); return { x: -box.x, y: -box.y, height: $("#graph-container").height(), width: $("#graph-container").width() }; }
+
+            var w = 900; var h = 600;
+            var url = "/FlowProject/Apps/Flow/ProcedureSelectCreate?pid=" + pid + "&id=" + appid;
+            if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+            if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+            top.layer.open({ type: 2, title: "批量工艺", shadeClose: false, fix: true, shade: 0.4, anim: -1, maxmin: true, scrollbar: true, area: [w + 'px', h + 'px'], content: url });
+        }
+    </script>
+
+    <script>
+        // 双击 打开新窗口
+        var currCell = null;
+        function openCellEdit(cell) {
+            currCell = cell;
+            top.window.getCurrCell = function () { return currCell; }
+            top.window.saveGraph = function () { save(null); }
+            var w = 950; var h = 650;
+            var url = "/FlowProject/Apps/Flow/" + cell.shape + "NodeEdit?pid=" + pid + "&id=" + appid;
+            if (cell.shape == "dag-edge") { url = "/FlowProject/Apps/Flow/edgeEdit?pid=" + pid + "&id=" + appid; w = 600; h = 310; }
+            if (cell.shape == "error") { w = 750; h = 380; }
+            if (cell.shape == "custom") { w = 950; h = 520; }
+            if (cell.shape == "comment") { w = 750; h = 410; }
+
+            if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+            if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+            top.layer.open({ type: 2, title: "编辑", shadeClose: false, fix: true, shade: 0.4, anim: -1, maxmin: true, scrollbar: true, area: [w + 'px', h + 'px'], content: url });
+        }
+        graph.on('node:added', ({ node, index, options }) => {
+            if (closeAddEvent) return;
+            if (node.shape == "start") {
+                var nodes = graph.getNodes()
+                for (var i = 0; i < nodes.length; i++) { if (nodes[i].id != node.id && nodes[i].shape == "start") { return graph.removeEdge(node.id) } }
+            } else if (node.shape == "end") {
+                var nodes = graph.getNodes()
+                for (var i = 0; i < nodes.length; i++) { if (nodes[i].id != node.id && nodes[i].shape == "end") { return graph.removeEdge(node.id) } }
+            }
+
+            if (node.shape == "start") {
+                node.data = { comment: "", settingFormula: [] };
+                return;//跳过
+            } else if (node.shape == "procedure") {
+                node.data = { comment: "", procedure: null, checkFormula: "", checkType: "add", machines: [], machineRequired: false, inputFormula: [], inputName: "", inputNumberType: "original", errorMessage: "", isSubsidiaryCount: false };
+                node.setLabel("请选择工艺");
+                node.resize(120, 36)
+            } else if (node.shape == "custom") {
+                node.data = { comment: "", checkFormula: "", script: "" };
+                node.setLabel("请输入脚本名称");
+                node.resize(120, 36)
+            } else if (node.shape == "jump") {
+                node.data = { comment: "", checkFormula: "", inputName: "", settingFormula: [] };
+                node.resize(120, 36)
+                return;//跳过
+            } else if (node.shape == "status") {
+                node.data = { comment: "", checkFormula: "", status: "", statusCheckFormula: "", settingFormula: [] };
+                node.resize(120, 36)
+            } else if (node.shape == "merge") {
+                node.data = { comment: "", settingFormula: [] };
+                return;//跳过
+            } else if (node.shape == "end") {
+                node.data = { comment: "", settingFormula: [], };
+            } else if (node.shape == "error") {
+                node.data = { comment: "", checkFormula: "", errorMessage: "出错了" };// 错误必须检测 是防止条件跳过
+                return;//跳过
+            }
+            openCellEdit(node);
+        })
+        graph.on('node:dblclick', ({ e, x, y, node, view }) => { openCellEdit(node); })
+        graph.on('edge:dblclick', ({ e, x, y, edge, view }) => { openCellEdit(edge); })
+    </script>
+    <script src="/_/js/fp.umd.min.js"></script>
+    <script>
+        FingerprintJS.load().then(function (fp) { return fp.get() }).then(function (result) { window.fingerprint = result.visitorId; })
+        function save(obj) {
+            if (obj) $(obj).prop("disabled", true);
+            autoLayer();
+            var data = { data: { ProjectId: pid, appId: appid, appCode: appCode, FlowString: JSON.stringify(graph.toJSON()) }, fingerprint: window.fingerprint }
+            $.ajax({
+                type: "POST",
+                url: "./Ajax/EditItem",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.state == "SUCCESS") {
+                        if (obj) $(obj).prop("disabled", false);
+                        layer.msg("保存成功！");
+                    } else {
+                        if (obj) $(obj).prop("disabled", false);
+                        if (data.message) {
+                            layer.msg(data.message);
+                        } else {
+                            layer.msg("出错了");
+                        }
+                    }
+                },
+                error: function (data, textStatus, errorThrown) { if (obj) $(obj).prop("disabled", false); layer.msg("网络连接出错了"); }
+            });
+        }
+        $(function () {
+            var data = { data: { ProjectId: pid, appId: appid }, fingerprint: window.fingerprint };
+            $.ajax({
+                type: "POST",
+                url: "./Ajax/GetItem",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.state == "SUCCESS") {
+                        if (data.data) {
+                            graph.fromJSON(JSON.parse(data.data.flowString), false);
+                        }
+                    } else {
+                        if (data.message) {
+                            layer.msg(data.message);
+                        } else {
+                            layer.msg("出错了");
+                        }
+                    }
+                },
+                error: function (data, textStatus, errorThrown) { layer.msg("网络出错了"); }
+            });
+        })
+    </script>
+        <script src="/_/x6/dagre.min.js"></script>
+        <script>
+            graph.bindKey(['meta+x', 'ctrl+x'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; const cells = graph.getSelectedCells(); if (cells.length) { graph.cut(cells, { useLocalStorage: true, }) } return false; });
+            graph.bindKey(['meta+c', 'ctrl+c'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; const cells = graph.getSelectedCells(); if (cells.length) { localStorage["x6.clipboard.cells2"] = JSON.stringify(cells); graph.copy(cells, { useLocalStorage: true, }) } return false; });
+            graph.bindKey(['meta+v', 'ctrl+v'], () => { if ($(".layui-layer").length > 0) return false; if (top.$(".layui-layer").length > 0) return false; closeAddEvent = true; const cells = graph.paste({ useLocalStorage: true, }); graph.cleanSelection(); graph.select(cells); closeAddEvent = false; return false; });
+            graph.bindKey(['meta+h', 'ctrl+h'], () => {
+                if ($(".layui-layer").length > 0) return false;
+                if (top.$(".layui-layer").length > 0) return false;
+                var cells = JSON.parse(localStorage["x6.clipboard.cells2"]);
+                if (cells.length) {
+                    newcells = [];
+                    closeAddEvent = true;
+                    for (var i = 0; i < cells.length; i++) {
+                        var cell = cells[i];
+                        if (cell.shape != "dag-edge") {
+                            var c = graph.getCellById(cell.id);
+                            if (c == undefined) {
+                                c = graph.addNode(cell);
+                                c.id = cell.id;
+                            }
+                            c.data = cell.data;
+                            newcells.push(c);
+                        }
+                    }
+                    top.layer.msg("覆盖成功！");
+                    closeAddEvent = false;
+                    graph.cleanSelection();
+                    graph.select(newcells);
+                }
+                return false;
+            });
+
+            function getSortNodes() {
+                var map = autoOrder(graph.getNodes());
+                nodes = []
+                for (var layer in map) {
+                    var arr = map[layer];
+                    for (var i = 0; i < arr.length; i++) { nodes.push(arr[i]); }
+                }
+                return nodes;
+            }
+            function getSortEdges(nodes) {
+                var map = {};
+                for (var i = 0; i < nodes.length; i++) { map[nodes[i].id] = nodes[i] }
+                const edges = graph.getEdges();
+                var map2 = {};
+                for (var i = 0; i < edges.length; i++) {
+                    const eg = edges[i];
+                    var val = map2[eg.source.cell];
+                    if (val == undefined) {
+                        map2[eg.source.cell] = [eg];
+                    } else {
+                        val.push(eg);
+                    }
+                }
+                for (var id in map2) {
+                    var arr = map2[id];
+                    var len = arr.length;
+                    for (var fraction = Math.floor(len / 2); fraction > 0; fraction = Math.floor(fraction / 2)) {
+                        for (var i = fraction; i < len; i += fraction) {
+                            for (var j = i - fraction; j >= 0 && map[arr[j].target.cell].position().y > map[arr[fraction + j].target.cell].position().y; j -= fraction) {
+                                var temp = arr[j];
+                                arr[j] = arr[fraction + j];
+                                arr[fraction + j] = temp;
+                            }
+                        }
+                    }
+                }
+                var edges2 = []
+                for (var i = 0; i < nodes.length; i++) {
+                    var arr = map2[nodes[i].id];
+                    if (arr) { for (var j = 0; j < arr.length; j++) { edges2.push(arr[j]); } }
+                }
+                return edges2;
+            }
+
+            function layout2() {
+                const nodes = getSortNodes();
+                const edges = getSortEdges(nodes);
+
+                const g = new dagre.graphlib.Graph()
+                g.setGraph({ rankdir: 'LR', align: 'UL', nodesep: 8, ranksep: 5 })
+                g.setDefaultEdgeLabel(() => ({}))
+                nodes.forEach((node) => { g.setNode(node.id, { width: node.getSize().width + 70, height: node.getSize().height }) })
+                edges.forEach((edge) => { g.setEdge(edge.getSource().cell, edge.getTarget().cell) })
+                dagre.layout(g)
+
+                graph.freeze()
+                g.nodes().forEach((id) => {
+                    const node = graph.getCell(id)
+                    if (node) {
+                        const pos = g.node(id);
+                        node.position(pos.x, pos.y)
+                    }
+                })
+                graph.unfreeze()
+            }
+
+        </script>
+    <script>
+        function saveImage() {
+            function formatDateTime() {
+                var date = new Date();
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                var minute = date.getMinutes();
+                var second = date.getSeconds();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                second = second < 10 ? ('0' + second) : second;
+                return '_' + y + m + d + '_' + h + minute + second;
+            }
+            graph.toPNG((dataUri) => { X6.DataUri.downloadDataUri(dataUri, appCode + formatDateTime() + '.png') }, { padding: { top: 60, right: 60, bottom: 60, left: 60, } })
+        }
+    </script>
+
+</body>
+</html>

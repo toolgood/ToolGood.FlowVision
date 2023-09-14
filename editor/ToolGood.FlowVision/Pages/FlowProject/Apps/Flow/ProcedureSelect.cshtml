@@ -1,0 +1,97 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.ProcedureSelectModel
+@{
+    Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+    <div class="data-header">
+        <div class="search-v2">
+            <form id="search-form">
+                <div class="filter">
+                    <label class="label">类型：</label>
+                    <select id="sel_Category" name="Category">
+                        <option value="">-- 请选择 --</option>
+                        @Model.CategoryList.ToOption();
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">厂区：</label>
+                    <select id="sel_Factory" name="Factory">
+                        <option value="0">-- 请选择 --</option>
+                        @Model.FactoryList.ToOption(q=>q.SimplifyName,q=>q.Id);
+                    </select>
+                </div>
+                <div class="filter">
+                    <label class="label">工艺名：</label>
+                    <input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+                </div>
+                <div class="filter">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="data-content">
+        <table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+    </div>
+</div>
+
+
+
+@section js{
+    <script>
+        layui.use(["layer", "form", "table"], function () {
+            var getListUrl = './Ajax/GetProcedureSelectList';
+            var cols = [];
+            cols.push({ field: 'category', title: '类型', width: "100", sort: true, });
+            cols.push({ field: 'code', title: '编码', width: "150", sort: true, });
+            cols.push({ field: 'name', title: '工艺名称', width: "200", sort: true, });
+            cols.push({ field: 'factorys', title: '适用厂区', width: "200", });
+            cols.push({ field: 'comment', title: '备注', width: "300", });
+
+            var tableOptions = {
+                url: getListUrl,
+                autoSort: false,
+                size: 'sm',
+                even: true,
+                method: 'POST',
+                cols: [cols],
+                page: true,
+                limit: 30,
+                limits: [10, 20, 30, 50, 100],
+                response: { statusCode: 1, msgName: 'message' },
+                height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+                done: function () { layer.closeAll('loading'); },
+                request: { pageName: 'pageIndex', limitName: 'pageSize' },
+                text: { none: '<span style="color:red;">暂无记录</span>' },
+                where: { ProjectId: '@Model.ProjectId' }
+            };
+
+            var layer = layui.layer, table = layui.table;
+            layer.load(2);
+            table.init('dataList', tableOptions);
+            table.on('rowDouble(dataList)', function (obj) {
+                var label = obj.data.name + "\n" + obj.data.factorys;
+                top.window.setProcedure(label, obj.data.code);
+                closeWindow();
+            });
+            table.on('sort(dataList)', function (obj) {
+                layer.load(2);
+                var field = obj.field; order = obj.type;
+                if (obj.type == null) { field = ""; order = ""; }
+                table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+            });
+            function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
+            $('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+            $("select").change(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+           $('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+        });
+        function pageReload() {
+            location.reload();
+        }
+        function reload() {
+            layui.table.reload("dataList");
+        }
+    </script>
+}

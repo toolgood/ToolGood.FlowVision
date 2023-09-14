@@ -1,0 +1,160 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.IndexModel
+@{
+	Layout = "~/Pages/Shared/_Layout_List.cshtml";
+}
+<div style="overflow: hidden;">
+	<div class="data-header">
+		<div class="search-v2">
+			<form id="search-form">
+				<div class="filter">
+					<label class="label">名称：</label>
+					<input type="text" class="text" name="name" id="txt_name" autocomplete="off">
+				</div>
+				<div class="filter">
+					<button type="button" class="layui-btn layui-btn-xs layui-btn-normal search-btn">&nbsp; 搜索 &nbsp; </button>
+					<button type="button" class="layui-btn layui-btn-xs layui-btn-primary" onclick="pageReload()">&nbsp; 重置 &nbsp; </button>
+				</div>
+				<div pass-edit="@Model.ButtonPass" style="display:inline-block">
+					<div class="filter"> | </div>
+					<div class="filter">
+						<a href="./Edit?h=270&w=500&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-normal openwin" title="新增流程"> &nbsp; 新增流程 &nbsp; </a>
+					</div>
+				</div>
+				<div pass-export="@Model.ButtonPass" style="display:inline-block">
+					<div class="filter"> | </div>
+					<div class="filter">
+						<a href="./Exports?h=360&w=550&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-normal openwin" title="生成项目"> &nbsp; 生成项目 &nbsp; </a>
+					</div>
+				</div>
+				<div pass-edit="@Model.ButtonPass" style="display:inline-block">
+					<div class="filter"> | </div>
+					<div class="filter">
+						<a href="./Conds?h=700&w=900&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-primary openwin" title="枚举测试参数"> &nbsp; 枚举测试参数 &nbsp; </a>
+					</div>
+				</div>
+				<div pass-edit="@Model.ButtonPass" style="display:inline-block">
+					<div class="filter"> | </div>
+					<div class="filter">
+						<a href="./toolkits/jsdebug?h=700&w=900&pid=@Model.ProjectId" class="layui-btn layui-btn-xs layui-btn-primary openwin" title="JS脚本调试"> &nbsp; JS脚本调试 &nbsp; </a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="data-content">
+		<table class="layui-hide" id="dataList" lay-filter="dataList"></table>
+	</div>
+</div>
+
+<form id="delete-form" class="hidden">
+	@Html.AntiForgeryToken()
+	<input type="hidden" name="id" value="" />
+	<input type="hidden" name="ProjectId" value="@Model.ProjectId" />
+</form>
+
+<div style="display:none" id="bar">
+	<a href="/FlowProject/Apps/Flow/Index?pid=@Model.ProjectId&id={{ d.id }}" edit class="opentab" title="{{d.name}}-设计"> 开始设计</a>
+	<span>&nbsp; &nbsp;</span>
+	<a pass-edit="@Model.ButtonPass" href="javascript:updateItem({{ d.id }},'{{ d.name }}');">更新相关名称</a>
+	<span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+	<a pass-edit="@Model.ButtonPass" href="./Edit?h=270&w=500&pid=@Model.ProjectId&id={{ d.id }}" class="openwin" title="编辑流程"> 编辑</a>
+	<span pass-edit="@Model.ButtonPass">&nbsp; &nbsp;</span>
+	<a pass-delete="@Model.ButtonPass" href="javascript:deleteItem({{ d.id }},'{{ d.name }}');">删除</a>
+</div>
+
+
+@section js{
+	<script>
+		function updateItem(id) {
+			$("#delete-form input[name=id]").val(id);
+			var data = { data: $("#delete-form").serializeJson(), fingerprint: window.fingerprint }
+			var url = "./Ajax/updateItem";
+			$.ajax({
+				type: "POST",
+				url: url,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(data),
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) { layer.load(2); layui.table.reload("dataList", { where: $("#search-form").serializeJson() }); },
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+		function deleteItem(id, name) {
+			$("#delete-form input[name=id]").val(id);
+			layer.confirm('删除流程【' + name + "】吗？", function (index) {
+				var url = "./Ajax/DeleteItem";
+				var data = { data: $("#delete-form").serializeJson(), fingerprint: window.fingerprint }
+				$.ajax({
+					type: "POST",
+					url: url,
+					contentType: "application/json;charset=UTF-8",
+					data: JSON.stringify(data),
+					headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+					dataType: "JSON",
+					success: function (data, textStatus, jqXHR) { location.reload(); },
+					error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+				});
+				layer.close(index);
+			})
+		}
+
+		layui.use(["layer", "form", "table"], function () {
+			var getListUrl = './Ajax/GetList';
+			var cols = [];
+			//cols.push({ checkbox: true, fixed: true });
+			cols.push({ field: 'id', title: '序号', width: "80", sort: true, });
+			cols.push({ field: 'code', title: '编码', width: "120", sort: true, });
+			cols.push({ field: 'name', title: '名称', width: "120", sort: true, });
+			cols.push({ field: 'comment', title: '备注', width: "400", });
+			cols.push({ field: 'modifyTime', title: '修改时间', width: "150", });
+
+
+			cols.push({ field: 'right', title: '操作', width: "260", align: 'center', fixed: 'right', toolbar: '#bar' });
+
+			var tableOptions = {
+				url: getListUrl,
+				autoSort: false,
+				size: 'sm',
+				even: true,
+				method: 'POST',
+				cols: [cols],
+				page: true,
+				limit: 30,
+				limits: [10, 20, 30, 50, 100],
+				response: { statusCode: 1, msgName: 'message' },
+				height: 'full-' + ($('.data-header').outerHeight(true) + 5),
+				done: function () { layer.closeAll('loading'); },
+				request: { pageName: 'pageIndex', limitName: 'pageSize' },
+				text: { none: '<span style="color:red;">暂无记录</span>' },
+				where: { ProjectId: '@Model.ProjectId' }
+			};
+
+			var layer = layui.layer, table = layui.table;
+			layer.load(2);
+			table.init('dataList', tableOptions);
+			table.on('rowDouble(dataList)', function (obj) { $(obj.tr[0]).find("a[edit]").trigger("click"); });
+			table.on('sort(dataList)', function (obj) {
+				layer.load(2);
+				var field = obj.field; order = obj.type;
+				if (obj.type == null) { field = ""; order = ""; }
+				table.reload("dataList", { where: { Field: field, order: order, }, page: { curr: 1 } });
+			});
+
+			function tableReload() { layer.load(2); table.reload("dataList", { where: $("#search-form").serializeJson(), page: { curr: 1 } }); }
+			$('.search-btn').click(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+			$("select").change(function (event) { event && event.stopPropagation(); tableReload(); return false; });
+			$('.filter input').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13) { tableReload(); return false; } })
+			$('.filter a').keydown(function (event) { event && event.stopPropagation(); if (event.keyCode == 13 && $(".layui-layer").length > 0) { return false; } })
+
+		});
+		function pageReload() {
+			location.reload();
+		}
+		function reload() {
+			layui.table.reload("dataList");
+		}
+	</script>
+}

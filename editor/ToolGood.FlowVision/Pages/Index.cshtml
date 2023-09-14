@@ -1,0 +1,150 @@
+﻿@page
+@model ToolGood.FlowWork.Pages.IndexModel
+@{
+	Layout = "~/Pages/Shared/_Website.cshtml";
+	ViewBag.Title = "首页";
+}
+@section nav{
+	<li class="layui-nav-item layui-this"><a href="/">首页</a></li>
+	<li class="layui-nav-item"><a href="/FlowFormula?projectCode=">计算公式</a></li>
+	<li class="layui-nav-item"><a href="/FlowFormulaDetails?projectCode=">公式步骤</a></li>
+	<li class="layui-nav-item"><a href="/FlowPath?projectCode=">流程路径</a></li>
+	<li class="layui-nav-item"><a href="/FlowDebug?projectCode=">流程调试</a></li>
+	<li class="layui-nav-item"><a href="/FlowProcedure?projectCode=">流程工艺</a></li>
+}
+<div class="layui-container" style="padding-top: 15px;background: #fff;">
+	<button class="btn layui-btn layui-btn-primary layui-btn-xs" onclick="update()"> 刷新缓存 </button>
+	<fieldset class="layui-elem-field layui-field-title site-title">
+		<legend> 计算公式</legend>
+	</fieldset>
+	<h3>接口地址： </h3>
+	<p style="text-indent:2em">
+		<b>url：</b>/api/EvalFormulas
+		<button class="btn layui-btn layui-btn-primary layui-btn-xs" data-clipboard-text="/api/EvalFormulas"> 复制 </button>
+	</p>
+	<p style="text-indent:2em"><b>method：</b> get / post </p>
+	<h3>入参：</h3>
+	<table class="layui-table" lay-size="sm">
+		<thead>
+			<tr><td style="width:160px">名称</td><td style="width:80px">类型</td><td style="width: 50px">必填</td><td>备注</td></tr>
+		</thead>
+		<tr><td>factoryCode</td><td>string</td><td>是</td><td>厂区编号 </td></tr>
+		<tr><td>appCode</td><td>string</td><td>是</td><td>流程编号 </td></tr>
+		<tr><td>json</td><td>string</td><td>是</td><td>参数，【数量】必填</td></tr>
+		<tr><td>attachData</td><td>string</td><td>否</td><td>附加参数，用于脚本计算</td></tr>
+		<tr><td>machineInfos</td><td>string</td><td>否</td><td>机械状态：[{categoryCode:"分类编码",code:"机械编码",isStop:true},,,]</td></tr>
+		<tr><td>previous</td><td>string</td><td>否</td><td>上个流程的参数</td></tr>
+		<tr><td>formulas</td><td>string</td><td>是</td><td>公式string，对象{name:名称,formula:公式} 或 集合[{name:名称,formula:公式},...] </td></tr>
+		<tr><td>projectCode</td><td>string</td><td>否</td><td>项目Code</td></tr>
+	</table>
+
+	<h3>出参：<small>Json格式</small></h3>
+	<table class="layui-table" lay-size="sm">
+		<thead>
+			<tr><td style="width:160px">名称</td><td style="width:80px">类型</td><td style="width: 50px">必填</td><td>备注</td></tr>
+		</thead>
+		<tr><td>code</td><td>int</td><td>是</td><td>返回码：1) 成功，0) 失败 </td></tr>
+		<tr><td>message</td><td>String</td><td>否</td><td>返回码详情描述 </td></tr>
+		<tr><td>data</td><td>list</td><td>否</td><td>结果列表，格式如：{"result":"800"}</td></tr>
+		<tr><td>status</td><td>list</td><td>否</td><td>状态列表，格式如：["END","STEP2","STEP1"]</td></tr>
+	</table>
+
+	<fieldset class="layui-elem-field layui-field-title site-title">
+		<legend> 获取状态</legend>
+	</fieldset>
+	<h3>接口地址： </h3>
+	<p style="text-indent:2em">
+		<b>url：</b>/api/EvalStatus
+		<button class="btn layui-btn layui-btn-primary layui-btn-xs" data-clipboard-text="/api/EvalFormulas"> 复制 </button>
+	</p>
+	<p style="text-indent:2em"><b>method：</b> get / post </p>
+	<h3>入参：</h3>
+	<table class="layui-table" lay-size="sm">
+		<thead>
+			<tr><td style="width:160px">名称</td><td style="width:80px">类型</td><td style="width: 50px">必填</td><td>备注</td></tr>
+		</thead>
+		<tr><td>factoryCode</td><td>string</td><td>是</td><td>厂区编号 </td></tr>
+		<tr><td>appCode</td><td>string</td><td>是</td><td>流程编号 </td></tr>
+		<tr><td>json</td><td>string</td><td>是</td><td>参数，【数量】必填</td></tr>
+		<tr><td>attachData</td><td>string</td><td>否</td><td>附加参数，用于脚本计算</td></tr>
+		<tr><td>machineInfos</td><td>string</td><td>否</td><td>机械状态：[{categoryCode:"分类编码",code:"机械编码",isStop:true},,,]</td></tr>
+		<tr><td>previous</td><td>string</td><td>否</td><td>上个流程的参数</td></tr>
+		<tr><td>projectCode</td><td>string</td><td>否</td><td>项目Code</td></tr>
+	</table>
+
+	<h3>出参：<small>Json格式</small></h3>
+	<table class="layui-table" lay-size="sm">
+		<thead>
+			<tr><td style="width:160px">名称</td><td style="width:80px">类型</td><td style="width: 50px">必填</td><td>备注</td></tr>
+		</thead>
+		<tr><td>code</td><td>int</td><td>是</td><td>返回码：1) 成功，0) 失败 </td></tr>
+		<tr><td>message</td><td>String</td><td>否</td><td>返回码详情描述 </td></tr>
+		<tr><td>data</td><td>list</td><td>否</td><td>状态列表，格式如：["END","STEP2","STEP1"]</td></tr>
+	</table>
+
+	<fieldset class="layui-elem-field layui-field-title site-title">
+		<legend> 页面调试</legend>
+	</fieldset>
+	<h3>页面地址： </h3>
+	<p style="text-indent:2em">
+		<b>公式步骤：</b>/Analysis/FlowFormulaDetailsResult
+		<button class="btn layui-btn layui-btn-primary layui-btn-xs" data-clipboard-text="/Analysis/FlowFormulaDetailsResult"> 复制 </button>
+	</p>
+	<p style="text-indent:2em">
+		<b>流程路径：</b>/Analysis/FlowPathResult
+		<button class="btn layui-btn layui-btn-primary layui-btn-xs" data-clipboard-text="/Analysis/FlowPathResult"> 复制 </button>
+	</p>
+	<p style="text-indent:2em">
+		<b>流程调试：</b>/Analysis/FlowDebugResult
+		<button class="btn layui-btn layui-btn-primary layui-btn-xs" data-clipboard-text="/Analysis/FlowDebugResult"> 复制 </button>
+	</p>
+	<p style="text-indent:2em">
+		<b>流程工艺：</b>/Analysis/FlowProcedureResult
+		<button class="btn layui-btn layui-btn-primary layui-btn-xs" data-clipboard-text="/Analysis/FlowProcedureResult"> 复制 </button>
+	</p>
+	<h3>入参：</h3>
+	<table class="layui-table" lay-size="sm">
+		<thead>
+			<tr><td style="width:160px">名称</td><td style="width:80px">类型</td><td style="width: 110px">必填</td><td>备注</td></tr>
+		</thead>
+		<tr><td>factoryCode</td><td>string</td><td>是</td><td>厂区编号 </td></tr>
+		<tr><td>appCode</td><td>string</td><td>是</td><td>流程编号 </td></tr>
+		<tr><td>json</td><td>string</td><td>是</td><td>参数，【数量】必填</td></tr>
+		<tr><td>attachData</td><td>string</td><td>否</td><td>附加参数，用于脚本计算</td></tr>
+		<tr><td>machineInfos</td><td>string</td><td>否</td><td>机械状态：[{categoryCode:"分类编码",code:"机械编码",isStop:true},,,]</td></tr>
+		<tr><td>previous</td><td>string</td><td>否</td><td>上个流程的参数</td></tr>
+		<tr><td>formulas</td><td>string</td><td>是（流程路径:否）</td><td> 公式string，对象{name:名称,formula:公式} 或 集合[{name:名称,formula:公式},...] </td></tr>
+		<tr><td>projectCode</td><td>string</td><td>否</td><td>项目Code</td></tr>
+	</table>
+	<h3>例：</h3>
+<pre class="layui-code">&lt;html>&lt;body onload="javascript:document.forms[0].submit()">
+&lt;form action="/Analysis/FlowFormulaDetailsResult" method="post" style="display:none">
+	&lt;input type="hidden" name="factoryCode" value="厂区编号" />
+	&lt;input type="hidden" name="appCode" value="流程编号" />
+	&lt;input type="hidden" name="json" value='{"数量":123,参数,,,}' />
+	&lt;input type="hidden" name="attachData" value='' />
+	&lt;input type="hidden" name="machineInfos" value='' />
+	&lt;input type="hidden" name="formulas" value="公式" />
+	&lt;input type="hidden" name="previous" value="" />
+	&lt;button type="submit" >submit&lt;/button>
+&lt;/form>
+&lt;/body>&lt;/html>
+</pre>
+</div>
+@section js{
+	<script src="/_/js/clipboard.min.js"></script>
+	<script src="/_/js/jquery.min.js"></script>
+	<script src="/_/layui/layui.js"></script>
+	<script>
+		layui.use(['element', 'util', 'form', 'layer'], function () {
+			var clipboard = new ClipboardJS('.btn');
+			clipboard.on('success', function (e) {
+				layui.layer.msg("复制成功!", { time: 1000 });
+				e.clearSelection();
+			});
+		});
+		function update() {
+			$.get("/api/UpdateFile", function (r) { layui.layer.msg(r.message); })
+		}
+	</script>
+}

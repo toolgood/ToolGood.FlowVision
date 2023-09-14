@@ -1,0 +1,96 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.IndexModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Index.cshtml";
+}
+<div id="app" class="layui-layout layui-layout-admin">
+    <div class="layui-header header ">
+        <div class="layui-main">
+            <div class="logo">
+                <a href="/" target="_blank">
+                <span class="logo-lg" style="font-size: 24px;color:white;font-weight:bold"> FlowVision </span>
+                </a>
+            </div>
+            <ul class="layui-nav" pc="" id="top_Menu">
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" class="layui-icon pack pack-left" title="收起左侧菜单"></a>
+                </li>
+                @foreach (var item in Model.TopMenus) {
+                    if (string.IsNullOrEmpty(item.Url)) {
+                        <li class="layui-nav-item"><a href="/members/?code=@item.Code" data-id="@item.Id" @Model.GetMenuClass(item)>@item.Name</a></li>
+                    } else {
+                        <li class="layui-nav-item"><a href="@item.Url" data-id="@item.Id" @Model.GetMenuClass(item)>@item.Name</a></li>
+                    }
+                }
+            </ul>
+
+            <ul class="layui-nav useroption" style="left:auto;right:0">
+                <li class="layui-nav-item">
+                    <a href="javascript:;" style="color:white;"> 你好！@Model.MemberDto.TrueName</a>
+                    <dl class="layui-nav-child" style="top: 45px;">
+                        <dd><a href="/members/User/Info?w=500&h=300" style="color:black;" class="openwin" title="用户信息">修改信息</a></dd>
+                        <dd><a href="/members/User/ChangePassword?h=290&w=470" style="color:black;" class="openwin" title="修改登录密码">修改登录密码</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="/members/logout" title="退出登录">退出</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            @if (Model.TreeMenuDto != null) {
+                <ul class="layui-nav layui-nav-tree" lay-filter="demo">
+                    @for (int i = 0; i < Model.TreeMenuDto.Items.Count; i++) {
+                        var treeMenu = Model.TreeMenuDto.Items[i];
+                        if(string.IsNullOrEmpty(treeMenu.Url)){
+                            <li class="layui-nav-item @(i==0?"layui-nav-itemed":"") ">
+                                <a href="javascript:;">@treeMenu.Name<span class="layui-nav-more"></span></a>
+                                <dl class="layui-nav-child">
+                                    @foreach (var item in treeMenu.Items) {
+                                        if (item.Items.Count == 0) {
+                                            <dd><a class="J_menuItem" href="@item.Url" data-index="@item.Id">@item.Name</a></dd>
+                                        } else {
+                                            <dd class="layui-nav-item">
+                                                <a href="javascript:;" data-index="@item.Id">@item.Name <span class="layui-nav-more"></span></a>
+                                                <dl class="layui-nav-child">
+                                                    @foreach (var item2 in item.Items) {
+                                                        <dd><a class="J_menuItem" href="@item2.Url" data-index="@item2.Id" style="text-indent:15px;">@item2.Name</a></dd>
+                                                    }
+                                                </dl>
+                                            </dd>
+                                        }
+                                    }
+                                </dl>
+                            </li>
+                        }else{
+                            <li class="layui-nav-item @(i==0?"layui-nav-itemed":"") ">
+                                <a class="J_menuItem" href="@treeMenu.Url">@treeMenu.Name</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+    <div class="layui-body" style="bottom:0; ">
+        <div class="row content-tabs">
+            <button class="roll-nav roll-left layui-icon J_tabLeft"> &#xe65a; </button>
+            <nav class="page-tabs J_menuTabs"><div class="page-tabs-content"></div></nav>
+            <button class="roll-nav roll-right layui-icon J_tabRight"> &#xe65b; </button>
+            <ul class="layui-nav btn-group roll-nav roll-right more-opt">
+                <li class="layui-nav-item">
+                    <a class="dropdown J_tabClose" data-toggle="dropdown">操作</a>
+                    <dl class="layui-nav-child">
+                        <dd class="J_tabShowActive"><a>定位当前选项卡</a></dd>
+                        <dd class="J_tabCloseAll"><a>关闭全部选项卡</a></dd>
+                        <dd class="J_tabCloseOther"><a>关闭其他选项卡</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+        <div class="content-main">
+        </div>
+    </div>
+</div>

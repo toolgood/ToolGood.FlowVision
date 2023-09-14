@@ -1,0 +1,454 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.Flow.ProcedureNodeEditModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+        .editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+        .ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+        div.layui-input.editor-div { padding: 0; height: initial; min-height: 30px; }
+        div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial; min-height: 30px; }
+        .layui-input-block-sm .layui-form-checkbox[lay-skin="primary"] { margin-top: 0; }
+    </style>
+}
+<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+    <form id="edit-form" style="height: 100%;">
+        <div class="layui-form layui-form-sm" lay-filter="form" style="padding: 15px 30px 0 0;">
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">id</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_id" name="id" readonly>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">工艺名称<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <input type="hidden" id="txt_procedure" name="procedure" />
+                    <textarea class="layui-input layui-input-sm" id="txt_label" name="label" readonly onclick="itemSelect()" style="height: 40px;line-height: 18px;}"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">检测条件</label>
+                <div class="layui-input-block-sm">
+                    <input type="hidden" id="txt_checkFormula" name="checkFormula" />
+                    <div class="layui-input layui-input-sm editor-div" style="margin-bottom: 3px; ">
+                        <div id="txt_checkFormula-editor" class="editor"> </div>
+                    </div>
+                    <input type="checkbox" name="checkType" lay-skin="primary" id="type-add" value="add" title="附加" lay-filter="checkType" />
+                    <input type="checkbox" name="checkType" lay-skin="primary" id="type-replace" value="replace" title="重写" lay-filter="checkType" />
+                    <a href="javascript:;" onclick="lookCheckFormula()" style="margin-top: 2px;" class="layui-btn layui-btn-xs layui-btn-primary"> &nbsp; 查看工艺检测条件 &nbsp; </a>
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">机械</label>
+                <div class="layui-input-block-sm">
+                    <table id="list3" class="layui-table" lay-size="sm">
+                        <thead>
+                            <tr ondrop="onDrop(event)" ondragstart="dragStart(event)" ondragover="onDragOver(event)" draggable="false" ondragenter="dragEnter(event)">
+                                <td>内容</td>
+                                <td width="40">操作</td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <a href="javascript:;" onclick="addMachine()" style="color:blue">增加机械</a>&nbsp;&nbsp;
+                    <input type="checkbox" name="machineRequired" id="machineRequired" lay-skin="primary" value="true" title="机械必选" />
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">入量公式<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <table id="list2" class="layui-table" lay-size="sm">
+                        <thead>
+                            <tr ondrop="onDrop(event)" ondragstart="dragStart(event)" ondragover="onDragOver(event)" draggable="false" ondragenter="dragEnter(event)">
+                                <td>内容</td>
+                                <td width="40">操作</td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <a href="javascript:;" onclick="addCondition2()" style="color:blue">增加条件公式</a>&nbsp;&nbsp;
+                    <input type="checkbox" id="txt_isSubsidiaryCount" name="isSubsidiaryCount" lay-skin="primary" value="true" title="辅料入量" />
+                    别名：<input type="text" class="layui-input layui-input-sm" style="width: 140px;display: inline-block;" id="txt_inputName" name="inputName" autocomplete="off">
+                    小数点：
+                    <div class="layui-input-inline" style="width: 150px;">
+                        <select id="txt_inputNumberType" name="inputNumberType">
+                            <option value="original">原值</option>
+                            <option value="ceil">整数，向上取值</option>
+                            <option value="floor">整数，向下取值</option>
+                            <option value="round0">整数，四舍五入</option>
+                            <option value="round1">1位，四舍五入</option>
+                            <option value="round2">2位，四舍五入</option>
+                            <option value="round3">3位，四舍五入</option>
+                            <option value="round4">4位，四舍五入</option>
+                            <option value="round5">5位，四舍五入</option>
+                            <option value="round6">6位，四舍五入</option>
+                            <option value="round7">7位，四舍五入</option>
+                            <option value="round8">8位，四舍五入</option>
+                        </select>
+                    </div>
+                    <br />
+                    <span style="color:red"> 注：【出量】为后续工序【入量】的最大值，不包括【辅料入量】,默认当前【入量】=【出量】。</span>
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">配置公式</label>
+                <div class="layui-input-block-sm" id="settingFormula">
+                    <table id="list" class="layui-table" lay-size="sm">
+                        <thead>
+                            <tr ondrop="onDrop(event)" ondragstart="dragStart(event)" ondragover="onDragOver(event)" draggable="false" ondragenter="dragEnter(event)">
+                                <td>内容</td>
+                                <td width="80">操作</td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <a href="javascript:;" onclick="addCondition()" style="color:blue">增加条件公式</a>
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">备注</label>
+                <div class="layui-input-block-sm">
+                    <textarea class="layui-textarea" id="txt_comment" name="comment" autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item-sm" id="modifyInfo" style="display:none;">
+                <label class="layui-form-label-sm">编辑于</label>
+                <div class="layui-input-block-sm" style="line-height: 30px;">
+                    <span id="modifyText"></span>
+                </div>
+            </div>
+            <div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+                <button pass-edit="@Model.ButtonPass" type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this,true);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+            </div>
+        </div>
+        <div style="height:5px;"></div>
+    </form>
+</div>
+
+<script type="text/x-template" id="settingTpl" style="display:none">
+    <tr ondrop="onDrop(event)" ondragover="onDragOver(event)" ondragenter="dragEnter(event)"  draggable="true" ondragstart="dragStart(event)">
+        <td class="formula">
+            变量名: 请输入变量名 [number]<br />
+            默认公式:
+        </td>
+        <td>
+            <input type="hidden" name="settingFormula[]" value="" />
+            <a href="javascript:;" edit onclick="editCondition(this,false)">编辑</a>&nbsp;&nbsp;
+            <span style="color:blue;cursor:all-scroll;"  >拖动</span>&nbsp;&nbsp;
+            <a class="delete" href="javascript:;">删除</a>
+        </td>
+    </tr>
+</script>
+<script type="text/x-template" id="tpl" style="display:none">
+    <tr ondrop="onDrop(event)" ondragover="onDragOver(event)" ondragenter="dragEnter(event)"  draggable="true" ondragstart="dragStart(event)">
+        <td>
+            <label style="top: 15px;">条件：</label>
+            <input type="hidden" id="txt_conditionXXXX" name="inputFormula[XXXX].condition" value="true" />
+            <div class="layui-input editor-div2">
+                <div id="txt_condition-editorXXXX" class="editor"> </div>
+            </div><br />
+            <label style="top: 58px;">公式：</label>
+            <input type="hidden" id="txt_formulaXXXX" name="inputFormula[XXXX].formula" />
+            <div class="layui-input editor-div2">
+                <div id="txt_formula-editorXXXX" class="editor"> </div>
+            </div>
+        </td>
+        <td>
+            <span style="color:blue;cursor:all-scroll;"  >拖动</span><br style="margin-bottom: 5px;" />
+            <a class="delete" href="javascript:;">删除</a>
+        </td>
+    </tr>
+</script>
+<script type="text/x-template" id="machine-tpl" style="display:none">
+    <tr ondrop="onDrop(event)" ondragover="onDragOver(event)" ondragenter="dragEnter(event)"  draggable="true" ondragstart="dragStart(event)">
+        <td>
+            <label style="top: 15px;">条件：</label>
+            <input type="hidden" id="txt_condition{{= it.guid}}" name="machines[{{= it.guid}}].condition" value="{{= it.condition||''  }}" />
+            <div class="layui-input editor-div2">
+                <div id="txt_condition-editor{{= it.guid}}" class="editor"> </div>
+            </div><br />
+            <input type="checkbox" name="machines[{{= it.guid}}].checkType" lay-skin="primary" value="add" title="附加" lay-filter="checkType" {{= it.checkType=='add'?"checked":""  }} />
+            <input type="checkbox" name="machines[{{= it.guid}}].checkType" lay-skin="primary" value="replace" title="重写" lay-filter="checkType" {{= it.checkType=='replace'?"checked":"" }} />
+            <input type="hidden" name="machines[{{= it.guid}}].name" value="{{= it.name}}" />
+            <input type="hidden" name="machines[{{= it.guid}}].factory" value="{{= it.factory}}" />
+            <input type="hidden" name="machines[{{= it.guid}}].factoryCode" value="{{= it.factoryCode}}" />
+            <input type="hidden" name="machines[{{= it.guid}}].machineName" value="{{= it.machineName}}" />
+            <input type="hidden" name="machines[{{= it.guid}}].machineCategoryName" value="{{= it.machineCategoryName||'' }}" />
+           <span style="font-size: 14px;line-height: 18px;"> 厂区：{{= it.factory}} &nbsp;&nbsp;机械：{{= it.machineName}} &nbsp;&nbsp;分类：{{= it.machineCategoryName||""}}</span>
+        </td>
+        <td>
+            <span style="color:blue;cursor:all-scroll;"  >拖动</span><br style="margin-bottom: 5px;" />
+            <a class="delete" href="javascript:;">删除</a>
+        </td>
+    </tr>
+</script>
+
+@section js{
+    <script src="/_/inputcontrol/toolgood.algorithm.js"></script>
+    <script src="/_/inputcontrol/ace/ace.js"></script>
+    <script src="/_/inputcontrol/ace/ext-language_tools.js"></script>
+    <script src="/_/inputcontrol/AceKeywords.js?pid=@(Model.ProjectId)&appid=@(Model.AppId)"></script>
+    <script src="/_/inputcontrol/my-keywords.js"></script>
+    <script src="/_/inputcontrol/createeditor.js"></script>
+    <script src="/_/js/dot.min.js"></script>
+
+    <script>
+        var pid = '@Model.ProjectId';
+        var appid = '@Model.AppId';
+        function lookCheckFormula() {
+            var pid = '@Model.ProjectId';
+            var data = $("#edit-form").serializeJson();
+            if (data.procedure) {
+                var w = 900; var h = 600;
+                var url = "/FlowProject/Apps/Flow/ProcedureFormula?pid=" + pid + "&code=" + encodeURIComponent(data.procedure);
+                if (data.machines) {
+                    url += "&machines="
+                    for (var i = 0; i < data.machines.length; i++) {
+                        if (i > 0) { url += ',' }
+                        url += data.machines[i].name;
+                    }
+                }
+
+                if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+                if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+                top.layer.open({ type: 2, title: "查看工艺检测条件", shadeClose: true, fix: true, shade: 0.4, anim: -1, maxmin: true, scrollbar: true, area: [w + 'px', h + 'px'], content: url });
+            } else {
+                layer.msg("请先选择工艺！")
+            }
+        }
+
+        layui.use(['element', 'form'], function () {
+            var form = layui.form;
+            form.on('checkbox(checkType)', function (data) {
+                var name = $(this).attr("name")
+                $("input[name='" + name + "']").prop("checked", false);
+                $(this).prop("checked", true);
+                form.render('checkbox');
+            });
+            form.render('checkbox');
+        });
+        function itemSelect() {
+            top.window.setProcedure = function (label, data) { $("#txt_label").val(label); $("#txt_procedure").val(data); }
+            var w = 900; var h = 600;
+            var url = "/FlowProject/Apps/Flow/procedureSelect?pid=" + pid + "&id=" + appid;
+            if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+            if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+            top.layui.layer.open({ type: 2, title: "选择工艺，双击行", shadeClose: true, shade: 0.1, maxmin: true, area: [w + 'px', h + 'px'], content: url });
+        }
+    </script>
+    <script>
+        function addMachine() {
+            top.window.addMachineInfos = function (datas) {
+                for (var data in datas) { addMachineInfo(datas[data]) }
+                form.render('checkbox');
+            }
+            var w = 1000; var h = 700;
+            var url = "/FlowProject/Apps/Flow/MachineSelectCreate?pid=" + pid + "&id=" + appid;
+            if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+            if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+            top.layui.layer.open({ type: 2, title: "选择机器", shadeClose: true, shade: 0.1, maxmin: true, area: [w + 'px', h + 'px'], content: url });
+        }
+        function addMachineInfo(data) {
+            data.guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
+            var tpl = doT.template($("#machine-tpl").text());
+            var html = $(tpl(data));
+            if (!data.checkType) {
+                html.find("input:checkbox[value=add]").prop("checked", true)
+            }
+            $("#list3").append(html);
+            createEditor("txt_condition-editor" + data.guid, "txt_condition" + data.guid)
+        }
+    </script>
+
+    <script>
+        window.$input = null;
+        function addCondition() {
+            var data = { name: '', type: 'number', defaultFormula: '', comment: '', conditions: [] };
+            var $input = $($("#settingTpl").html());
+            $input.find("input").val(JSON.stringify(data));
+            editCondition($input.find("input"), true);
+        }
+        function addCondition2() {
+            var html = $("#tpl").html();
+            var t = new Date().valueOf();
+            html = html.replace(/XXXX/ig, t);
+            $("#list2").append($(html));
+            createEditor("txt_condition-editor" + t, "txt_condition" + t)
+            createEditor("txt_formula-editor" + t, "txt_formula" + t)
+        }
+        function editCondition(obj, isnew) {
+            window.$isnew = isnew;
+            top.window.setSettingFormula = function (data) { setSettingFormulaInfo(window.$input, data); if (window.$isnew) { $("#list").append(window.$input); } }
+            top.window.getSettingFormula = function () { return JSON.parse(window.$input.find("input").val()); }
+            top.window.SettingFormulaSave = function () { save(null, false); }
+
+            window.$input = $(obj).parents("tr");
+            var w = 1000; var h = 700;
+            var url = "/FlowProject/Apps/Flow/FormulaEditor?pid=" + pid + "&id=" + appid;
+            if (top.$('body').width() * 0.95 < w) { w = top.$('body').width() * 0.95; }
+            if (top.$('body').height() * 0.95 < h) { h = top.$('body').height() * 0.95; }
+            top.layui.layer.open({ type: 2, title: "编辑公式", shadeClose: false, shade: 0.1, maxmin: true, area: [w + 'px', h + 'px'], content: url });
+        }
+        function setSettingFormulaInfo($input, data) {
+            $input.find("input").val(JSON.stringify(data));
+            html = "变量名: " + data.name + " [" + data.type + "]<br>";
+            if (data.conditions) {
+                for (var i = 0; i < data.conditions.length; i++) {
+                    html += "条件：" + data.conditions[i].condition + "<br>";
+                    html += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=>" + data.conditions[i].formula + "<br>";
+                }
+            }
+            html += "默认公式: " + data.defaultFormula + "<br>";
+            if (data.comment.length > 0) {
+                html += "备注: " + data.comment;
+            }
+            $input.find("td.formula").html(html);
+        }
+        $(document).on("click", ".delete", function (event) {
+            event && event.stopPropagation();
+            $this = $(this);
+            if (top.$("a.layui-layer-btn0").length > 0) {
+                $this.parents("tr").remove();
+                top.layer.close(top.$(".layui-layer-dialog").attr("times"));
+            } else {
+                top.layer.confirm('删除当前的选择项吗?', function (index) {
+                    $this.parents("tr").remove();
+                    top.layer.close(index);
+                })
+            }
+            return false;
+        });
+        $(document).on("dblclick", "tr", function (event) {
+            event && event.stopPropagation();
+            $(this).find("a[edit]").click();
+            return false;
+        });
+    </script>
+
+    <script>
+        $(function () {
+            var node = top.window.getCurrCell();
+            $("#txt_id").val(node.id);
+            $("#txt_label").val(node.attr().text.text);
+            if (!node.data.settingFormula) node.data.settingFormula = []
+            if (!node.data.inputFormula) node.data.inputFormula = []
+            if (!node.data.machines) node.data.machines = []
+            $("#txt_comment").val(node.data.comment);
+            $("#txt_inputName").val(node.data.inputName)
+            $("#txt_checkFormula").val(node.data.checkFormula)
+            $("#txt_procedure").val(node.data.procedure)
+            $("#txt_inputNumberType").val(node.data.inputNumberType)
+
+            if (node.data.isSubsidiaryCount) $("#txt_isSubsidiaryCount").prop("checked", node.data.isSubsidiaryCount);
+
+            $("#type-" + node.data.checkType).prop("checked", true);
+            if (node.data.machineRequired) $("#machineRequired").prop("checked", node.data.machineRequired);
+
+            for (var k = 0; k < node.data.settingFormula.length; k = k + 1) {
+                var txt = node.data.settingFormula[k];
+                var data = JSON.parse(txt);
+                var $input = $($("#settingTpl").html())
+                setSettingFormulaInfo($input, data);
+                $("#list").append($input);
+            }
+
+            for (var i = 0; i < node.data.inputFormula.length; i++) {
+                var html = $("#tpl").html();
+                var t = new Date().valueOf();
+                html = html.replace(/XXXX/ig, i);
+                $("#list2").append($(html));
+                $("#txt_condition" + i).val(node.data.inputFormula[i].condition.trim());
+                $("#txt_formula" + i).val(node.data.inputFormula[i].formula.trim());
+                createEditor("txt_condition-editor" + i, "txt_condition" + i)
+                createEditor("txt_formula-editor" + i, "txt_formula" + i)
+            }
+            for (var i = 0; i < node.data.machines.length; i++) {
+                var machine = node.data.machines[i];
+                addMachineInfo(machine);
+            }
+
+            createEditor("txt_checkFormula-editor", "txt_checkFormula")
+            layui.use(["form"], function () { layui.form.render('checkbox'); layui.form.render('select'); });
+
+            if (node.data && node.data.modifyDate && node.data.modifyUser) {
+                $("#modifyText").text(node.data.modifyDate + ", " + node.data.modifyUser)
+                $("#modifyInfo").show();
+            }
+        })
+        $(window).keydown(function (e) {
+            if (e.keyCode == 83 && e.ctrlKey) {
+                e.preventDefault();
+                save(null, false);
+                top.window.saveGraph();
+                return false;
+            }
+        });
+        function save(obj, isclose) {
+            var data = $("#edit-form").serializeJson();
+            if (data["label"] == "") { top.layer.alert("请输入标签！"); return; }
+
+            var name = data.inputName.toLowerCase();
+            if (/^[\d].*/ig.test(name)) { layer.alert("入量别名有误"); $("#txt_inputName").focus(); return; }
+            if (/[ \t\+\-\*\/\(\)\\\[\]]/ig.test(name)) { layer.alert("入量别名有误"); $("#txt_inputName").focus(); return; }
+            for (var i = 0; i < ace_keywords2.length; i++) {
+                if (ace_keywords2[i]["key"].toLowerCase() == name) { layer.alert("入量别名有误,不能使用当前变量名"); $("#txt_inputName").focus(); return; }
+            }
+
+            var node = top.window.getCurrCell();
+            node.setLabel(data["label"]);
+            node.data.comment = data.comment;
+            node.data.inputFormula = data.inputFormula;
+            node.data.settingFormula = data.settingFormula;
+            node.data.inputName = data.inputName;
+            node.data.checkFormula = data.checkFormula;
+            node.data.checkType = data.checkType;
+            node.data.isSubsidiaryCount = data.isSubsidiaryCount;
+            node.data.procedure = data.procedure;
+            node.data.machines = data.machines;
+            node.data.machineRequired = data.machineRequired;
+            node.data.inputNumberType = data.inputNumberType;
+            var now = new Date();
+            node.data.modifyDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-"+now.getDay() + " " + now.getHours() + ":"+now.getMinutes() + ":" + now.getSeconds();
+            node.data.modifyUser = "@Model.MemberDto.Name";
+
+            top.window.saveGraph();
+            if (isclose) { closeWindow(); }
+        }
+    </script>
+
+    <script>
+        let moveNode = null;
+        function onLeave(event) { }
+        function onDrop(event) {
+            event.preventDefault();
+            moveNode.style.opacity = '1';
+            if ($(event.target).parents("table")[0] != $(moveNode).parents("table")[0]) { return; }
+            if (event.target.parentNode.tagName == "TR") {
+                if (moveNode.tagName == "TR") {
+                    $(event.target.parentNode).after($(moveNode))
+                } else {
+                    $(event.target.parentNode).after($(moveNode).parents("tr"))
+                }
+            }
+        }
+        function onDragEnter(event) { event.preventDefault(); }
+        function onDrag(event) { event.preventDefault(); }
+        function onDragOver(event) { event.preventDefault(); }
+        function dragStart(event) { moveNode = event.target; event.target.style.opacity = '0.5'; }
+        function dragEnter(event) {
+            if ($(event.target).parents("table")[0] != $(moveNode).parents("table")[0]) { return; }
+            if (event.target.parentNode.tagName == "TR") {
+                if (moveNode.tagName == "TR") {
+                    $(event.target.parentNode).after($(moveNode))
+                } else {
+                    $(event.target.parentNode).after($(moveNode).parents("tr"))
+                }
+            } else {
+                event.preventDefault();
+            }
+        }
+    </script>
+}

@@ -1,0 +1,134 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.SubAccounts.AddModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+    <style>
+        .layui-table td, .layui-table th { padding: 3px; }
+        .layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+    </style>
+}
+
+    <div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+        <form id="edit-form" style="height: 100%;">
+            <input type="hidden" name="id" value="@Model.Dto.Id" />
+            @Html.AntiForgeryToken()
+            <div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+
+                <div class="layui-form-item-sm">
+                    <label class="layui-form-label-sm">账号<span class="red"> *</span></label>
+                    <div class="layui-input-block-sm">
+                        <input type="text" class="layui-input layui-input-sm" id="txt_name" name="name" value="@Model.Dto.Name" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-form-item-sm">
+                    <label class="layui-form-label-sm">密码<span class="red"> *</span></label>
+                    <div class="layui-input-block-sm">
+                        <input type="password" class="layui-input layui-input-sm" id="txt_Password" name="Password" value="@Model.Dto.Password" autocomplete="off">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item-sm">
+                    <label class="layui-form-label-sm">角色<span class="red"> *</span></label>
+                    <div class="layui-input-block-sm">
+                        <select id="txt_GroupId" name="GroupId">
+                            <option value="0">--- 请选择角色 ---</option>
+                        @foreach (var item in Model.Groups) {
+                            <option value="@(item.Id)" @Model.Dto.GroupId.ToSelectedWhenIs(item.Id)>@(item.Name)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">姓名<span class="red"> *</span></label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_TrueName" name="TrueName" value="@Model.Dto.TrueName" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">部门</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Department" name="Department" value="@Model.Dto.Department" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">工号</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_JobNo" name="JobNo" value="@Model.Dto.JobNo" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">手机号</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Phone" name="Phone" value="@Model.Dto.Phone" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">邮箱</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Email" name="Email" value="@Model.Dto.Email" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">项目</label>
+                <div class="layui-input-block-sm">
+                    @foreach (var item in Model.Projects) {
+                        <input type="checkbox" name="ProjectIds[]" lay-skin="primary" value="@item.Id" title="@item.Name" @(Model.ProjectIds.Contains(item.Id).ToChecked()) />
+                    }
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm">
+                <label class="layui-form-label-sm">备注</label>
+                <div class="layui-input-block-sm">
+                    <input type="text" class="layui-input layui-input-sm" id="txt_Comment" name="Comment" value="@Model.Dto.Comment" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+            </div>
+        </div>
+    </form>
+</div>
+@section js{
+    <script>
+        function save(obj) {
+            if ($("#txt_GroupId").val() == "0") { layer.alert("请输入角色"); $("#txt_GroupId").focus(); return; }
+            if ($("#txt_TrueName").val().length < 1) { layer.alert("请输入姓名"); $("#txt_TrueName").focus(); return; }
+
+            $(obj).prop("disabled", true);
+            var url = "./Ajax/EditItem";
+            var data = {
+                data: $("#edit-form").serializeJson(),
+                fingerprint: window.fingerprint
+            }
+            data.data["ProjectIds"] = data.data["ProjectIds"].join(',');
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(data),
+                headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+                dataType: "JSON",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.state == "SUCCESS") {
+                        closeWindowAndReload();
+                    } else {
+                        $(obj).prop("disabled", false);
+                        if (data.message) {
+                            layer.msg(data.message);
+                        } else {
+                            layer.msg("出错了");
+                        }
+                    }
+                },
+                error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+            });
+        }
+    </script>
+}

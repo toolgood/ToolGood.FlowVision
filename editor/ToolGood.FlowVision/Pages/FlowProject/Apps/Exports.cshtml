@@ -1,0 +1,33 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.ExportsModel
+@{
+	Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+	<style>
+		.layui-table td, .layui-table th { padding: 3px; }
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+	</style>
+}
+<div style="overflow-x:hidden;background-color:#f3f3f4;">
+	<h2 style="text-align:center ">项目生成说明</h2>
+	<p style="text-indent:2em;margin-top:8px;">
+		1、点击【生成项目文件】按钮，如果生成失败，本页面会显示失败原因。
+	</p>
+	<p style="text-indent:2em;margin-top:8px;">
+		2、订阅服务后，程序会检测【规则公式】，优化项目，导出项目文件。
+	</p>
+	<p></p>
+	<p style="text-align:center;margin-top:15px;">
+		<a id="upbtn" class="layui-btn" style="text-indent:0" href="./Ajax/Build?ProjectId=@Model.ProjectId"> 生成项目文件 </a>
+	</p>
+		<p style="text-align:center;margin-top:15px;">
+		<a id="upbtn" class="layui-btn" style="text-indent:0" href="./Ajax/BuildRefresh?ProjectId=@Model.ProjectId"> 生成项目文件并更新缓存 </a>
+	</p>
+	<p style="text-align:center;margin-top:15px;">
+		<a id="upbtn" class="layui-btn" style="text-indent:0" href="./Ajax/Exports?ProjectId=@Model.ProjectId"> 导出项目文件 </a>
+	</p>
+	<p style="text-align:center;margin-top:15px;">
+		<a id="upbtn" class="layui-btn" style="text-indent:0" href="./Ajax/ExportsUseRsa?ProjectId=@Model.ProjectId"> 导出项目文件（加密） </a>
+	</p>
+</div>

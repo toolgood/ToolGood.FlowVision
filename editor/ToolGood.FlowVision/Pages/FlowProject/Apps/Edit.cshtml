@@ -1,0 +1,81 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Apps.EditModel
+@{
+	Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+	<style>
+		.layui-table td, .layui-table th { padding: 3px; }
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+	</style>
+}
+	<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+		<form id="edit-form" style="height: 100%;">
+			<input type="hidden" name="id" value="@Model.Dto.Id" />
+			<input type="hidden" name="ProjectId" value="@Model.Dto.ProjectId" />
+			@Html.AntiForgeryToken()
+			<div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">编码<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<input type="text" class="layui-input layui-input-sm" id="txt_Code" name="Code" value="@Model.Dto.Code" autocomplete="off">
+					</div>
+				</div>
+
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">名称<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Name" value="@Model.Dto.Name" autocomplete="off">
+					</div>
+				</div>
+
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">备注</label>
+					<div class="layui-input-block-sm">
+						<textarea class="layui-textarea layui-textarea-sm" id="txt_Comment" name="Comment">@(Model.Dto.Comment.ToHtml())</textarea>
+				</div>
+			</div>
+
+			<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+			</div>
+		</div>
+	</form>
+</div>
+@section js{
+	<script>
+		function save(obj) {
+			if ($("#txt_Code").val().length < 1) { layer.alert("请输入编码"); $("#txt_Code").focus(); return; }
+			if ($("#txt_Name").val().length < 1) { layer.alert("请输入名称"); $("#txt_Name").focus(); return; }
+
+			$(obj).prop("disabled", true);
+			var url = "./Ajax/EditItem";
+			var data = {
+				data: $("#edit-form").serializeJson(),
+				fingerprint: window.fingerprint
+			}
+			$.ajax({
+				type: "POST",
+				url: url,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(data),
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) {
+					if (data.state == "SUCCESS") {
+						closeWindowAndReload();
+					} else {
+						$(obj).prop("disabled", false);
+						if (data.message) {
+							layer.msg(data.message);
+						} else {
+							layer.msg("出错了");
+						}
+					}
+				},
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+	</script>
+}

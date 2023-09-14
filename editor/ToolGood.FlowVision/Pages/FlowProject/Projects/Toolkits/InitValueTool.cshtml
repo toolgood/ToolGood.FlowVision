@@ -1,0 +1,31 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.FlowProject.Projects.Toolkits.InitValueToolModel
+@{
+    Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+    <div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+        <form id="edit-form"   method="post">
+		@Html.AntiForgeryToken()
+			<div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">备注</label>
+					<div class="layui-input-block-sm">
+						<textarea class="layui-textarea layui-textarea-sm" id="" name="txt"></textarea>
+				</div>
+			</div>
+
+			<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+				<button type="submit" class="layui-btn layui-btn-sm layui-btn-normal"> 初始值bool类型生成 </button>
+			</div>
+		</div>
+	</form>
+
+	<table class="layui-table" lay-size="sm">
+		<thead>
+			<tr><td>变量名称</td><td>值类型</td><td>检测公式</td><td>公式</td></tr>
+		</thead>
+		@foreach (var item in Model.Table) {
+			<tr><td>@(item.Item1)</td><td>bool</td><td>1</td><td>@(item.Item2)</td></tr>
+		}
+	</table>
+</div>

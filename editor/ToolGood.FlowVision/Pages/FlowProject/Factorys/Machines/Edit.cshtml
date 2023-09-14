@@ -1,0 +1,167 @@
+﻿@page
+@model ToolGood.FlowVision.Pages.Members.Factorys.Machines.EditModel
+@{
+	Layout = "~/Pages/Shared/_Layout_Edit.cshtml";
+}
+@section css{
+	<style>
+		.layui-table td, .layui-table th { padding: 3px; }
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] { margin-top: 5px; margin-bottom: 5px; }
+		.editor { top: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
+		.ace_text-layer .ace_rightAlignedText .ace-cjk { font-size: 12px !important; }
+		div.layui-input.editor-div { padding: 0; height: initial }
+		div.layui-input.editor-div2 { padding: 0; display: inline-block; width: calc(100% - 38px); height: initial }
+	</style>
+}
+
+	<div style="overflow-x:hidden;background-color:#f3f3f4;height: 100%;">
+		<form id="edit-form" style="height: 100%;">
+			<input type="hidden" name="id" value="@Model.Dto.Id" />
+			<input type="hidden" name="ProjectId" value="@Model.Dto.ProjectId" />
+			@Html.AntiForgeryToken()
+			<div class="layui-form  layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+
+
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">分类<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<input type="text" class="layui-input layui-input-sm" id="txt_Category" name="Category" value="@Model.Dto.Category" autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">子分类<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<input type="text" class="layui-input layui-input-sm" id="txt_SubCategory" name="SubCategory" value="@Model.Dto.SubCategory" autocomplete="off">
+					</div>
+				</div>
+
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">名称<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+						<input type="text" class="layui-input layui-input-sm" id="txt_Name" name="Name" value="@Model.Dto.Name" autocomplete="off">
+						<div class="layui-form-mid layui-word-aux">
+							添加后，请不要修改。
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item-sm">
+					<label class="layui-form-label-sm">适用厂区<span class="red"> *</span></label>
+					<div class="layui-input-block-sm">
+					@foreach (var item in Model.FactoryList) {
+						<input type="checkbox" name="FactoryId" lay-skin="primary" value="@item.Id" title="@item.SimplifyName" @((Model.Dto.FactoryId==item.Id).ToChecked()) lay-filter="type" />
+					}
+				</div>
+			</div>
+
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">机械编码<span class="red"> *</span></label>
+				<div class="layui-input-block-sm">
+					<input type="text" class="layui-input layui-input-sm" id="txt_MachineCode" name="MachineCode" value="@Model.Dto.MachineCode" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">机械名称<span class="red"> *</span></label>
+				<div class="layui-input-block-sm">
+					<input type="text" class="layui-input layui-input-sm" id="txt_MachineName" name="MachineName" value="@Model.Dto.MachineName" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">分类编码</label>
+				<div class="layui-input-block-sm">
+					<input type="text" class="layui-input layui-input-sm" id="txt_MachineCategoryCode" name="MachineCategoryCode" value="@Model.Dto.MachineCategoryCode" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">分类名称</label>
+				<div class="layui-input-block-sm">
+					<input type="text" class="layui-input layui-input-sm" id="txt_MachineCategoryName" name="MachineCategoryName" value="@Model.Dto.MachineCategoryName" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">排序值</label>
+				<div class="layui-input-block-sm">
+					<input type="text" class="layui-input layui-input-sm" id="txt_OrderNum" name="OrderNum" value="@Model.Dto.OrderNum" autocomplete="off">
+				</div>
+			</div>
+
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">检测公式</label>
+				<div class="layui-input-block-sm">
+					<input type="hidden" id="txt_CheckFormula" name="CheckFormula" value="@Model.Dto.CheckFormula" />
+					<div class="layui-input editor-div">
+						<div id="txt_CheckFormula-editor" class="editor"> </div>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item-sm">
+				<label class="layui-form-label-sm">备注</label>
+				<div class="layui-input-block-sm">
+					<textarea class="layui-textarea layui-textarea-sm" id="txt_Comment" name="Comment">@(Model.Dto.Comment.ToHtml())</textarea>
+				</div>
+			</div>
+
+			<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+				<button pass-edit="@Model.ButtonPass" type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="save(this);"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="closeWindow();"> &nbsp;&nbsp; 关 闭 &nbsp;&nbsp; </button>
+			</div>
+		</div>
+	</form>
+</div>
+@section js{
+	<script src="/_/inputcontrol/toolgood.algorithm.js"></script>
+	<script src="/_/inputcontrol/ace/ace.js"></script>
+	<script src="/_/inputcontrol/ace/ext-language_tools.js"></script>
+	<script src="/_/inputcontrol/AceKeywords.js?pid=@(Model.Dto.ProjectId)"></script>
+	<script src="/_/inputcontrol/createeditor.js"></script>
+	<script>
+		layui.use(['element', 'form'], function () {
+			var form = layui.form;
+			form.on('checkbox(type)', function (data) {
+				$("input[name='FactoryId']").prop("checked", false);
+				$(this).prop("checked", true);
+				form.render('checkbox');
+			});
+			form.render('checkbox');
+		});
+	</script>
+	<script>
+		$(function () {
+			createEditor("txt_CheckFormula-editor", "txt_CheckFormula")
+		})
+		function save(obj) {
+			if ($("#txt_Category").val().length < 1) { layer.alert("请输入分类"); $("#txt_Category").focus(); return; }
+			if ($("#txt_SubCategory").val().length < 1) { layer.alert("请输入子分类"); $("#txt_SubCategory").focus(); return; }
+			if ($("#txt_Name").val().length < 1) { layer.alert("请输入名称"); $("#txt_Name").focus(); return; }
+
+
+			$(obj).prop("disabled", true);
+			var url = "./Ajax/EditItem";
+			var data = {
+				data: $("#edit-form").serializeJson(),
+				fingerprint: window.fingerprint
+			}
+			$.ajax({
+				type: "POST",
+				url: url,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(data),
+				headers: { __RequestVerificationToken: data.data["__RequestVerificationToken"] },
+				dataType: "JSON",
+				success: function (data, textStatus, jqXHR) {
+					if (data.state == "SUCCESS") {
+						closeWindowAndReload();
+					} else {
+						$(obj).prop("disabled", false);
+						if (data.message) {
+							layer.msg(data.message);
+						} else {
+							layer.msg("出错了");
+						}
+					}
+				},
+				error: function (data, textStatus, errorThrown) { $(obj).prop("disabled", false); layer.msg("出错了"); }
+			});
+		}
+	</script>
+}

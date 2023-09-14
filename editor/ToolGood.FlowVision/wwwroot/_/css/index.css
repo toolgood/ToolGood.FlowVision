@@ -1,0 +1,29 @@
+﻿@charset "UTF-8";
+
+body { background-color: #f3f3f3; word-wrap: normal; color: #333; position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 0; font-family: Microsoft YaHei; }
+input { outline: medium none; }
+p { margin: 0; }
+a, a:visited, a:hover, a:active, a:focus { color: #333; text-decoration: none; }
+/* 去掉列表前的标识，li 会继承 */
+ol, ul, li { list-style: none; margin: 0; padding: 0; }
+/* 清除浮动 */
+.ks-clear:after { content: '\20'; display: block; height: 0; clear: both; }
+.ks-clear { *zoom: 1; }
+.ks-fRight { float: right; }
+.ks-fLeft { float: left; }
+.wrapper { width: 1100px; margin: 0 auto; }
+.pbody { color: #4681BE; }
+.header { position: relative; border-bottom: 1px solid #ccc; height: 100px; }
+.header .title { font-size: 28px; line-height: 60px; }
+.header .notes { position: absolute; font-size: 14px; line-height: 30px; bottom: 0; right: 0; }
+.content { margin-top: 15px; min-height: 500px; }
+.content .content_left { float: left; width: 150px; padding: 15px 15px 15px 0; height: 100%; }
+.content .content_left .mianNav .Nav_title { height: 30px; font-size: 20px; border-bottom: 1px solid #ccc; }
+.content .content_left .mianNav .Nav_title span { position: absolute; display: inline; line-height: 1; padding: 5px 0; border-bottom: 2px solid #4681BE; }
+.content .content_left .mianNav .nav_content { margin: 15px 0; }
+.content .content_right { float: left; padding: 15px 0 15px 15px; border-left: 1px solid #ccc; height: 100%; width: 919px; }
+.content .content_right .module_temp .module_title { height: 30px; font-size: 20px; border-bottom: 1px solid #ccc; }
+.content .content_right .module_temp .module_title span { position: absolute; display: inline; line-height: 1; padding: 5px 0; border-bottom: 2px solid #4681BE; }
+.content .content_right .module_temp .module_content { margin: 15px 0; }
+.content .content_right .module_temp .module_content a { float: left; display: block; width: 20%; height: 50px; line-height: 50px; font-size: 14px; text-align: center; color: #333; border-radius: 5px; }
+.content .content_right .module_temp .module_content a:hover { color: #4681BE; background: #DBE6F2; }

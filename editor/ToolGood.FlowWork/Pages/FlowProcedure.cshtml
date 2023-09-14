@@ -1,0 +1,120 @@
+﻿@page
+@model ToolGood.FlowWork.Pages.FlowProcedureModel
+@{
+	Layout = "~/Pages/Shared/_Website.cshtml";
+	ViewBag.Title = "流程工艺";
+}
+@section nav{
+	<li class="layui-nav-item"><a href="/">首页</a></li>
+	<li class="layui-nav-item"><a href="/FlowFormula">计算公式</a></li>
+	<li class="layui-nav-item"><a href="/FlowFormulaDetails">公式步骤</a></li>
+	<li class="layui-nav-item"><a href="/FlowPath">流程路径</a></li>
+	<li class="layui-nav-item"><a href="/FlowDebug">流程调试</a></li>
+	<li class="layui-nav-item layui-this"><a href="/FlowProcedure">流程工艺</a></li>
+}
+<div class="layui-container" style="background: #fff;">
+	<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+		<ul class="layui-tab-title">
+			<li class="layui-this">调试页面</li>
+		</ul>
+		<div class="layui-tab-content" style="min-height: 100px;">
+			<div class="layui-tab-item layui-show">
+				<form action="/Analysis/FlowProcedureResult" method="post" target="_blank">
+					<div class="layui-form layui-form-sm" lay-filter="form" style="padding: 20px 30px 0 0;">
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">厂区<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<select name="factoryCode" lay-filter="factoryCode">
+									@foreach (var item in Model.ProjectWork.FactoryList) {
+										<option value="@(item.Value.Code)">@(item.Value.Name) @(item.Value.Code)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">流程<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<select name="appCode" lay-filter="appCode">
+									@foreach (var appwork in Model.AppWorks) {
+										<option value="@(appwork.Code)">@(appwork.Name) @(appwork.Code)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">参数<span class="red"> *</span></label>
+							<div class="layui-input-block-sm">
+								<textarea placeholder="请输入参数！" name="json" class="layui-textarea" rows="8"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								匹配公式名
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="formulas" class="layui-textarea" style="min-height: 100px;">[
+{"name":"费用", match:[{"text":"费用", "type":"in"}]},
+{"name":"数量", match:[{"text":"数量", "type":"in"}]}
+]</textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								机械状态
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="machineInfos" class="layui-textarea" style="min-height: 60px;"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								附加参数
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="attachData" class="layui-textarea" style="min-height: 60px;"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm">
+							<label class="layui-form-label-sm">
+								上个流程参数
+							</label>
+							<div class="layui-input-block-sm">
+								<textarea name="previous" class="layui-textarea" style="min-height: 60px;"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item-sm" style="text-align:center;padding-left: 30px;">
+							<button type="submit" class="layui-btn layui-btn-sm layui-btn-primary"> &nbsp;&nbsp; 提 交 &nbsp;&nbsp; </button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+@section js{
+	<script src="/_/js/jquery.min.js"></script>
+	<script src="/_/layui/layui.js"></script>
+	<script src="/_/js/global.js"></script>
+	<script>
+		layui.use(["layer", 'element', "form"], function () {
+			var value = window.sessionStorage["factoryCode"]
+			if (value) { $("[name=factoryCode]").val(value); }
+			value = window.sessionStorage["appCode"]
+			if (value) { $("[name=appCode]").val(value); }
+			value = window.sessionStorage["json"]
+			if (value) { $("[name=json]").val(value); }
+
+			value = window.sessionStorage["machineInfos"]
+			if (value) { $("[name=machineInfos]").val(value); }
+			value = window.sessionStorage["attachData"]
+			if (value) { $("[name=attachData]").val(value); }
+			value = window.sessionStorage["previous"]
+			if (value) { $("[name=previous]").val(value); }
+			layui.form.render("select");
+
+			layui.form.on('select(factoryCode)', function (data) { window.sessionStorage["factoryCode"] = data.value; });
+			layui.form.on('select(appCode)', function (data) { window.sessionStorage["appCode"] = data.value; });
+			$("textarea").change(function () { if ($(this).attr("name") == "formulas") return; window.sessionStorage[$(this).attr("name")] = $(this).val(); })
+		});
+	</script>
+}
