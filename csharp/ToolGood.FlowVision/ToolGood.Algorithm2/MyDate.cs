@@ -128,7 +128,7 @@ namespace ToolGood.Algorithm2
 		public static MyDate Parse(String txt)
 		{
 			String t = txt.Trim();
-			var m = Regex.Match(t, "^(\\d{4})-(1[012]|0?\\d)-(30|31|[012]?\\d) ([01]\\d?|2[0123]):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
+			var m = Regex.Match(t, "^(\\d{4})-(1[012]|0?\\d)-(30|31|[012]?\\d) ([01]?\\d|2[0123]):([012345]?\\d):([012345]?\\d)$", RegexOptions.Compiled);
 			if (m.Success) {
 				MyDate date = new MyDate();
 				date.Year = int.Parse(m.Groups[(1)].Value);
@@ -139,7 +139,7 @@ namespace ToolGood.Algorithm2
 				date.Second = int.Parse(m.Groups[(6)].Value);
 				return date;
 			}
-			m = Regex.Match(t, "^(\\d{4})-(1[012]|0?\\d)-(30|31|[012]?\\d) ([01]\\d?|2[0123]):([012345]?\\d)$", RegexOptions.Compiled);
+			m = Regex.Match(t, "^(\\d{4})-(1[012]|0?\\d)-(30|31|[012]?\\d) ([01]?\\d|2[0123]):([012345]?\\d)$", RegexOptions.Compiled);
 			if (m.Success) {
 				MyDate date = new MyDate();
 				date.Year = int.Parse(m.Groups[(1)].Value);
