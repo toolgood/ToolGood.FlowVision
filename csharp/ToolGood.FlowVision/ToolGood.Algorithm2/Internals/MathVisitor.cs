@@ -1137,8 +1137,8 @@ namespace ToolGood.Algorithm2.Internals
         public Operand VisitEXACT_fun(mathParser.EXACT_funContext context)
         {
             var exprs = context.expr();
-            var args1 = this.Visit(exprs[0]); if (args1.Type != OperandType.NUMBER) { args1 = args1.ToNumber("Function EXACT parameter 1 is error!"); if (args1.IsError) { return args1; } }
-            var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.NUMBER) { args2 = args2.ToNumber("Function EXACT parameter 2 is error!"); if (args2.IsError) { return args2; } }
+            var args1 = this.Visit(exprs[0]); if (args1.Type != OperandType.TEXT) { args1 = args1.ToText("Function EXACT parameter 1 is error!"); if (args1.IsError) { return args1; } }
+            var args2 = this.Visit(exprs[1]); if (args2.Type != OperandType.TEXT) { args2 = args2.ToText("Function EXACT parameter 2 is error!"); if (args2.IsError) { return args2; } }
 
             return Operand.Create(args1.TextValue == args2.TextValue);
         }
