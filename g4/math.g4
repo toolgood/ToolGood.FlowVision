@@ -37,7 +37,7 @@ expr:
 	| expr '.' TRIM '(' ')'										# TRIM_fun
 	| expr '.' UPPER '(' ')'									# UPPER_fun
 	| expr '.' VALUE '(' ')'									# VALUE_fun
-	| expr '.' DATEVALUE '(' ')'								# DATEVALUE_fun
+	| expr '.' DATEVALUE '(' expr? ')'							# DATEVALUE_fun
 	| expr '.' TIMEVALUE '(' ')'								# TIMEVALUE_fun
 	| expr '.' YEAR ('(' ')')?									# YEAR_fun
 	| expr '.' MONTH ('(' ')')?									# MONTH_fun
@@ -68,6 +68,7 @@ expr:
 	| expr '.' ADDHOURS '(' expr ')'							# ADDHOURS_fun
 	| expr '.' ADDMINUTES '(' expr ')'							# ADDMINUTES_fun
 	| expr '.' ADDSECONDS '(' expr ')'							# ADDSECONDS_fun
+	| expr '.' TIMESTAMP '(' expr? ')'							# TIMESTAMP_fun
 	| expr '.' IN '(' expr ')'									# IN_fun
 	| expr '.' HAS '(' expr ')'									# HAS_fun
 	| expr '[' expr ']'											# GetJsonValue_fun
@@ -175,7 +176,7 @@ expr:
 	| TRIM '(' expr ')'										# TRIM_fun
 	| UPPER '(' expr ')'									# UPPER_fun
 	| VALUE '(' expr ')'									# VALUE_fun
-	| DATEVALUE '(' expr ')'								# DATEVALUE_fun
+	| DATEVALUE '(' expr (',' expr)? ')'					# DATEVALUE_fun
 	| TIMEVALUE '(' expr ')'								# TIMEVALUE_fun
 	| DATE '(' expr ',' expr ',' expr (
 		',' expr (',' expr (',' expr)?)?
@@ -268,6 +269,7 @@ expr:
 	| ADDHOURS '(' expr ',' expr ')'							# ADDHOURS_fun
 	| ADDMINUTES '(' expr ',' expr ')'							# ADDMINUTES_fun
 	| ADDSECONDS '(' expr ',' expr ')'							# ADDSECONDS_fun
+	| TIMESTAMP '(' expr (',' expr)? ')'						# TIMESTAMP_fun
 	| '{' arrayJson (',' arrayJson)* ','* '}'					# ArrayJson_fun
 	| '[' PARAMETER ']'											# PARAMETER_fun
 	| '[' expr ']'												# PARAMETER_fun
@@ -468,6 +470,7 @@ parameter2:
 	| ADDHOURS
 	| ADDMINUTES
 	| ADDSECONDS
+	| TIMESTAMP
 	| PARAMETER;
 
 SUB: '-';
@@ -690,6 +693,7 @@ ADDDAYS: 'ADDDAYS';
 ADDHOURS: 'ADDHOURS';
 ADDMINUTES: 'ADDMINUTES';
 ADDSECONDS: 'ADDSECONDS';
+TIMESTAMP:'TIMESTAMP';
 
 PARAMETER: ([A-Z_] | FullWidthLetter) (
 		[A-Z0-9_]
