@@ -6,10 +6,11 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ToolGood.Algorithm2;
-using ToolGood.Algorithm2.Internals;
+using ToolGood.Algorithm;
+using ToolGood.Algorithm.Internals;
+using ToolGood.Algorithm.math;
 using ToolGood.FlowVision.Common;
-using static ToolGood.Algorithm2.mathParser;
+using static ToolGood.Algorithm.math.mathParser;
 
 namespace ToolGood.FlowVision.Flows
 {

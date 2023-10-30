@@ -27,8 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.12.0" />
-        <PackageReference Include="Jint" Version="3.0.0-beta-2048" />
+        <PackageReference Include="Jint" Version="3.0.0-beta-2053" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="ToolGood.Algorithm" Version="3.6.0.1" />
     </ItemGroup>
 
 

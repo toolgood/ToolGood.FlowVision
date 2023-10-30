@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using ToolGood.Algorithm2;
+using ToolGood.Algorithm;
 using ToolGood.FlowVision.Engines;
 
 namespace ToolGood.FlowVision.Flows

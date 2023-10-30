@@ -1,23 +1,23 @@
 ﻿using Antlr4.Runtime;
 using Jint;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ToolGood.Algorithm2;
-using ToolGood.Algorithm2.Enums;
-using ToolGood.Algorithm2.Internals;
-using ToolGood.Algorithm2.LitJson;
+using ToolGood.Algorithm;
+using ToolGood.Algorithm.Enums;
+using ToolGood.Algorithm.Internals;
+using ToolGood.Algorithm.math;
 using ToolGood.FlowVision.Engines.OutDatas;
 using ToolGood.FlowVision.Engines.Parameters;
 using ToolGood.FlowVision.Flows;
-using UnitConversion;
-using static ToolGood.Algorithm2.mathParser;
+using static ToolGood.Algorithm.math.mathParser;
 
 namespace ToolGood.FlowVision.Engines
 {
-	public sealed class FlowEngine : IDisposable
+    public sealed class FlowEngine : IDisposable
 	{
 		internal ProjectWork Project;//{ get; private set; }
 		internal Dictionary<string, Setting_Machine> MachineSetting;// { get; private set; }
@@ -89,77 +89,77 @@ namespace ToolGood.FlowVision.Engines
 				throw new Exception("[数量]必填！");
 			}
 
-			#endregion 数量
+            #endregion 数量
 
-			#region 输入值检验
+            #region 输入值检验
 
-			for (int i = 0; i < app.InputList.Count; i++) {
-				var item = app.InputList[i];
-				if (jlist.inst_object.ContainsKey(item.InputName) == false) {
-					if (item.IsRequired) { throw new Exception($"[{item.InputName}]必填！"); }
-					if (item.UseDefaultValue) {
-						if (item.InputTypeNum == (int)InputType.Number) {
-							_inputDict[item.InputName] = Operand.Create(decimal.Parse(item.DefaultValue));
-						} else if (item.InputTypeNum == (int)InputType.String) {
-							_inputDict[item.InputName] = Operand.Create(item.DefaultValue);
-						} else if (item.InputTypeNum == (int)InputType.Bool) {
-							_inputDict[item.InputName] = Operand.Create(bool.Parse(item.DefaultValue));
-						} else if (item.InputTypeNum == (int)InputType.Date) {
-							_inputDict[item.InputName] = Operand.Create(DateTime.Parse(item.DefaultValue));
-						} else if (item.InputTypeNum == (int)InputType.List) {
-							_inputDict[item.InputName] = Operand.Create(item.DefaultValue.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries));
-						}
-					}
-				} else {
-					if (item.InputTypeNum == (int)InputType.Number) {
-						if (_tempdict[item.InputName].Type == OperandType.TEXT && string.IsNullOrEmpty(_tempdict[item.InputName].TextValue)) {
-							if (item.IsRequired) { throw new Exception($"[{item.InputName}]必填！"); }
-							if (item.UseDefaultValue) {
-								_inputDict[item.InputName] = Operand.Create(decimal.Parse(item.DefaultValue));
-							}
-							continue;
-						} else {
-							_inputDict[item.InputName] = TextToNumber(item, _tempdict[item.InputName]);
-						}
-					} else if (item.InputTypeNum == (int)InputType.String) {
-						_inputDict[item.InputName] = _tempdict[item.InputName].ToText();
-					} else if (item.InputTypeNum == (int)InputType.Bool) {
-						_inputDict[item.InputName] = _tempdict[item.InputName].ToBoolean();
-					} else if (item.InputTypeNum == (int)InputType.Date) {
-						_inputDict[item.InputName] = _tempdict[item.InputName].ToMyDate();
-					} else if (item.InputTypeNum == (int)InputType.List) {
-						_inputDict[item.InputName] = Operand.Create(_tempdict[item.InputName].ToText().TextValue.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries));
-					}
-				}
-				if (item.IsRequired) {
-					if (_inputDict[item.InputName].IsError) { throw new Exception($"[{item.InputName}]类型错误！"); }
-					if (_inputDict[item.InputName].Type == OperandType.TEXT && string.IsNullOrEmpty(_inputDict[item.InputName].TextValue)) {
-						throw new Exception($"[{item.InputName}]类型必填！");
-					}
-				} else {
-					if (_inputDict.ContainsKey(item.InputName)) {
-						if (_inputDict[item.InputName].IsError) { throw new Exception($"[{item.InputName}]类型错误！"); }
-					}
-				}
-			}
-			for (int i = 0; i < app.InputList.Count; i++) {
-				var item = app.InputList[i];
-				if (_inputDict.ContainsKey(item.InputName) && item.Check(this) == false) {
-					if (item.ErrorMessage == null) {
-						throw new Exception($"[{item.InputName}]有误！");
-					} else {
-						throw new Exception(item.ErrorMessage);
-					}
-				}
-			}
-			jlist = null;
-			_tempdict.Clear();
+            for (int i = 0; i < app.InputList.Count; i++) {
+                var item = app.InputList[i];
+                if (jlist.ContainsKey(item.InputName) == false) {
+                    if (item.IsRequired) { throw new Exception($"[{item.InputName}]必填！"); }
+                    if (item.UseDefaultValue) {
+                        if (item.InputTypeNum == (int)InputType.Number) {
+                            _inputDict[item.InputName] = Operand.Create(decimal.Parse(item.DefaultValue));
+                        } else if (item.InputTypeNum == (int)InputType.String) {
+                            _inputDict[item.InputName] = Operand.Create(item.DefaultValue);
+                        } else if (item.InputTypeNum == (int)InputType.Bool) {
+                            _inputDict[item.InputName] = Operand.Create(bool.Parse(item.DefaultValue));
+                        } else if (item.InputTypeNum == (int)InputType.Date) {
+                            _inputDict[item.InputName] = Operand.Create(DateTime.Parse(item.DefaultValue));
+                        } else if (item.InputTypeNum == (int)InputType.List) {
+                            _inputDict[item.InputName] = Operand.Create(item.DefaultValue.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries));
+                        }
+                    }
+                } else {
+                    if (item.InputTypeNum == (int)InputType.Number) {
+                        if (_tempdict[item.InputName].Type == OperandType.TEXT && string.IsNullOrEmpty(_tempdict[item.InputName].TextValue)) {
+                            if (item.IsRequired) { throw new Exception($"[{item.InputName}]必填！"); }
+                            if (item.UseDefaultValue) {
+                                _inputDict[item.InputName] = Operand.Create(decimal.Parse(item.DefaultValue));
+                            }
+                            continue;
+                        } else {
+                            _inputDict[item.InputName] = TextToNumber(item, _tempdict[item.InputName]);
+                        }
+                    } else if (item.InputTypeNum == (int)InputType.String) {
+                        _inputDict[item.InputName] = _tempdict[item.InputName].ToText();
+                    } else if (item.InputTypeNum == (int)InputType.Bool) {
+                        _inputDict[item.InputName] = _tempdict[item.InputName].ToBoolean();
+                    } else if (item.InputTypeNum == (int)InputType.Date) {
+                        _inputDict[item.InputName] = _tempdict[item.InputName].ToMyDate();
+                    } else if (item.InputTypeNum == (int)InputType.List) {
+                        _inputDict[item.InputName] = Operand.Create(_tempdict[item.InputName].ToText().TextValue.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries));
+                    }
+                }
+                if (item.IsRequired) {
+                    if (_inputDict[item.InputName].IsError) { throw new Exception($"[{item.InputName}]类型错误！"); }
+                    if (_inputDict[item.InputName].Type == OperandType.TEXT && string.IsNullOrEmpty(_inputDict[item.InputName].TextValue)) {
+                        throw new Exception($"[{item.InputName}]类型必填！");
+                    }
+                } else {
+                    if (_inputDict.ContainsKey(item.InputName)) {
+                        if (_inputDict[item.InputName].IsError) { throw new Exception($"[{item.InputName}]类型错误！"); }
+                    }
+                }
+            }
+            for (int i = 0; i < app.InputList.Count; i++) {
+                var item = app.InputList[i];
+                if (_inputDict.ContainsKey(item.InputName) && item.Check(this) == false) {
+                    if (item.ErrorMessage == null) {
+                        throw new Exception($"[{item.InputName}]有误！");
+                    } else {
+                        throw new Exception(item.ErrorMessage);
+                    }
+                }
+            }
+            jlist = null;
+            _tempdict.Clear();
 
-			#endregion 输入值检验
+            #endregion 输入值检验
 
-			#region 初始值 检验  初始值可以替换 输入值
+            #region 初始值 检验  初始值可以替换 输入值
 
-			for (int i = 0; i < app.InitValueList.Count; i++) {
+            for (int i = 0; i < app.InitValueList.Count; i++) {
 				var initValue = app.InitValueList[i];
 				bool check = false;
 				for (int j = 0; j < initValue.Conditions.Count; j++) {
@@ -186,33 +186,37 @@ namespace ToolGood.FlowVision.Engines
 			return app;
 		}
 
-		private JsonData AddParameterFromJson(string json)
-		{
-			try {
-				var jo = JsonMapper.ToObject(json);
-				if (jo.IsObject) {
-					foreach (var item in jo.inst_object) {
-						var v = item.Value;
-						if (v.IsString)
-							_tempdict[item.Key] = Operand.Create(v.StringValue);
-						else if (v.IsBoolean)
-							_tempdict[item.Key] = Operand.Create(v.BooleanValue);
-						else if (v.IsDouble)
-							_tempdict[item.Key] = Operand.Create(v.NumberValue);
-						else if (v.IsObject)
-							_tempdict[item.Key] = Operand.Create(v);
-						else if (v.IsArray)
-							_tempdict[item.Key] = Operand.Create(v);
-						else if (v.IsNull)
-							_tempdict[item.Key] = Operand.CreateNull();
-					}
-					return jo;
-				}
-			} catch (Exception) { }
-			throw new Exception("json is error.");
-		}
+        private JObject AddParameterFromJson(string json)
+        {
+            try {
+                JObject j = JObject.Parse(json);
+                foreach (var item in j.Properties()) {
+                    if (item.Value.Type == JTokenType.String) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<string>());
+                    } else if (item.Value.Type == JTokenType.Uri) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<string>());
+                    } else if (item.Value.Type == JTokenType.Boolean) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<bool>());
+                    } else if (item.Value.Type == JTokenType.Integer) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<int>());
+                    } else if (item.Value.Type == JTokenType.Float) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<double>());
+                    } else if (item.Value.Type == JTokenType.TimeSpan) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<TimeSpan>());
+                    } else if (item.Value.Type == JTokenType.Date) {
+                        _tempdict[item.Name] = Operand.Create(item.Value.Value<DateTime>());
+                    } else if (item.Value.Type == JTokenType.Undefined) {
+                        _tempdict[item.Name] = Operand.CreateNull();
+                    } else if (item.Value.Type == JTokenType.Null) {
+                        _tempdict[item.Name] = Operand.CreateNull();
+                    }
+                }
+                return j;
+            } catch (Exception) { }
+            throw new Exception("json is error.");
+        }
 
-		private static readonly Regex numRegex = new Regex(@"^(\d[0-9\.]*)([^\d][\S\s]*)$", RegexOptions.Compiled);
+        private static readonly Regex numRegex = new Regex(@"^(\d[0-9\.]*)([^\d][\S\s]*)$", RegexOptions.Compiled);
 		private static readonly CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-US");
 
 		private Operand TextToNumber(AppInputWork appInput, Operand operand)
@@ -223,40 +227,12 @@ namespace ToolGood.FlowVision.Engines
 				var m = numRegex.Match(operand.TextValue);
 				if (m.Success) {
 					if (decimal.TryParse(m.Groups[1].Value, NumberStyles.Any, cultureInfo, out decimal d)) {
-						var r = UnitConversion(d, m.Groups[2].Value.Trim(), appInput.Unit, appInput.InputName);
+						var r = AlgorithmEngineHelper.UnitConversion(d, m.Groups[2].Value.Trim(), appInput.Unit, appInput.InputName);
 						return Operand.Create(r);
 					}
 				}
 			}
 			return result;
-		}
-
-		private static readonly Regex unitRegex = new Regex(@"[\s \(\)（）\[\]<>]", RegexOptions.Compiled);
-
-		private decimal UnitConversion(decimal src, string oldSrcUnit, string oldTarUnit, string name)
-		{
-			if (string.IsNullOrWhiteSpace(oldSrcUnit)) { return src; }
-			if (string.IsNullOrWhiteSpace(oldTarUnit)) { throw new Exception($"输入项[{name}]单位不同，无法从[{oldSrcUnit}]转成[{oldTarUnit}]"); }
-			oldSrcUnit = unitRegex.Replace(oldSrcUnit, "");
-			if (oldSrcUnit == oldTarUnit) { return src; }
-
-			if (DistanceConverter.Exists(oldSrcUnit, oldTarUnit)) {
-				var c = new DistanceConverter(oldSrcUnit, oldTarUnit);
-				return c.LeftToRight(src);
-			}
-			if (MassConverter.Exists(oldSrcUnit, oldTarUnit)) {
-				var c = new MassConverter(oldSrcUnit, oldTarUnit);
-				return c.LeftToRight(src);
-			}
-			if (AreaConverter.Exists(oldSrcUnit, oldTarUnit)) {
-				var c = new AreaConverter(oldSrcUnit, oldTarUnit);
-				return c.LeftToRight(src);
-			}
-			if (VolumeConverter.Exists(oldSrcUnit, oldTarUnit)) {
-				var c = new VolumeConverter(oldSrcUnit, oldTarUnit);
-				return c.LeftToRight(src);
-			}
-			throw new Exception($"输入项[{name}]单位不同，无法从[{oldSrcUnit}]转成[{oldTarUnit}]");
 		}
 
 		#endregion BindingJson
