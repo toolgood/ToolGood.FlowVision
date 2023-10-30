@@ -1,6 +1,6 @@
-﻿using ToolGood.Algorithm2;
-using ToolGood.Algorithm2.Enums;
-using ToolGood.Algorithm2.Internals;
+﻿using ToolGood.Algorithm;
+using ToolGood.Algorithm.Enums;
+using ToolGood.Algorithm.Internals;
 using ToolGood.FlowWork.Applications.Engines.OutDatas;
 using ToolGood.FlowWork.Applications.Engines.Parameters;
 using ToolGood.FlowWork.Flows;

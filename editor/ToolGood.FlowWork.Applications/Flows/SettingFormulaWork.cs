@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using ToolGood.Algorithm2;
+using ToolGood.Algorithm;
 using ToolGood.FlowWork.Applications.Engines;
 
 namespace ToolGood.FlowWork.Flows

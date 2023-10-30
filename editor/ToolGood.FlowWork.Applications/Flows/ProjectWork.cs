@@ -3,16 +3,15 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ToolGood.Algorithm2;
-using ToolGood.Algorithm2.Enums;
-using ToolGood.Algorithm2.Internals;
+using ToolGood.Algorithm.Internals;
+using ToolGood.Algorithm.math;
 using ToolGood.FlowWork.Applications.Flows.Common;
 using ToolGood.FlowWork.Commons;
-using static ToolGood.Algorithm2.mathParser;
+using static ToolGood.Algorithm.math.mathParser;
 
 namespace ToolGood.FlowWork.Flows
 {
-	public sealed class ProjectWork
+    public sealed class ProjectWork
 	{
 		/// <summary>
 		/// 名称
@@ -39,6 +38,7 @@ namespace ToolGood.FlowWork.Flows
 		internal ProgContext CreateProgContext(string exp)
 		{
 			if (string.IsNullOrWhiteSpace(exp)) { return null; }
+			
 			var stream = new AntlrCharStream(new AntlrInputStream(exp));
 			var lexer = new mathLexer(stream);
 			var tokens = new CommonTokenStream(lexer);

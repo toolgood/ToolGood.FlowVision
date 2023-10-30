@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Jint" Version="3.0.0-beta-2048" />
     <PackageReference Include="WebMarkupMin.MsAjax" Version="2.12.0" />
-    <PackageReference Include="WebMarkupMin.NUglify" Version="2.13.6" />
+    <PackageReference Include="WebMarkupMin.NUglify" Version="2.15.1" />
     <PackageReference Include="WebMarkupMin.Yui" Version="2.12.0" />
   </ItemGroup>
 
