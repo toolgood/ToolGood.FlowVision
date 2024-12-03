@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.ResponseCompression;
+ï»¿using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -10,7 +10,7 @@ using ToolGood.FlowVision.Commons.Extensions;
 using ToolGood.FlowVision.Commons.Jsons;
 using ToolGood.FlowVision.Commons.My;
 using WebMarkupMin.AspNet.Common.Compressors;
-using WebMarkupMin.AspNetCore7;
+using WebMarkupMin.AspNetCore8;
 using WebMarkupMin.Core;
 using WebMarkupMin.NUglify;
 
@@ -52,12 +52,12 @@ namespace ToolGood.FlowVision
 					options.Cookie.IsEssential = true;
 					options.Cookie.HttpOnly = true;
 					options.Cookie.Path = "/";
-					//options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None; //ÁÔ±ªä¯ÀÀÆ÷ ajax ÇëÇóÎŞĞ§
+					//options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None; //çŒè±¹æµè§ˆå™¨ ajax è¯·æ±‚æ— æ•ˆ
 					//options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
 				});
 				builder.Services.Configure<CookiePolicyOptions>(options => {
 					options.CheckConsentNeeded = context => false;
-					//options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None; //ÁÔ±ªä¯ÀÀÆ÷ ajax ÇëÇóÎŞĞ§
+					//options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None; //çŒè±¹æµè§ˆå™¨ ajax è¯·æ±‚æ— æ•ˆ
 					//options.Secure = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
 				});
 				builder.Services.AddHttpContextAccessor();
@@ -70,17 +70,17 @@ namespace ToolGood.FlowVision
 				}).AddJsonOptions(options => {
 					//options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; // ºöÂÔÑ­»·ÒıÓÃ
-                    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping; //¹Ø±Õ×Ö·û×ªÒå
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss")); // Ê±¼ä×Ô¶¨Òå×ª»»Æ÷
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; // å¿½ç•¥å¾ªç¯å¼•ç”¨
+                    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping; //å…³é—­å­—ç¬¦è½¬ä¹‰
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss")); // æ—¶é—´è‡ªå®šä¹‰è½¬æ¢å™¨
                     options.JsonSerializerOptions.Converters.Add(new BoolJsonConverter());
-                    options.JsonSerializerOptions.AllowTrailingCommas = true; // Î²Ëæ¶ººÅ
-                    options.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;// ÔÊĞí×¢ÊÍ
-                    options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;// ´øÒıºÅÊı×Ö
-                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; // ÍÕ·åÃüÃû
-                    options.JsonSerializerOptions.WriteIndented = false; // ÎŞËõ½ø
-                    options.JsonSerializerOptions.IncludeFields = false;// ²»Ö§³Ö×Ö¶Î(Field)
-                    options.JsonSerializerOptions.IgnoreReadOnlyProperties = false;//ºöÂÔËùÓĞÖ»¶ÁÊôĞÔ
+                    options.JsonSerializerOptions.AllowTrailingCommas = true; // å°¾éšé€—å·
+                    options.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;// å…è®¸æ³¨é‡Š
+                    options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;// å¸¦å¼•å·æ•°å­—
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; // é©¼å³°å‘½å
+                    options.JsonSerializerOptions.WriteIndented = false; // æ— ç¼©è¿›
+                    options.JsonSerializerOptions.IncludeFields = false;// ä¸æ”¯æŒå­—æ®µ(Field)
+                    options.JsonSerializerOptions.IgnoreReadOnlyProperties = false;//å¿½ç•¥æ‰€æœ‰åªè¯»å±æ€§
                 });
 #if DEBUG
 				builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
@@ -140,7 +140,7 @@ namespace ToolGood.FlowVision
 				app.MapRazorPages();
 				app.Run();
 			} else {
-				Console.WriteLine("³ÌĞòÒÑÆô¶¯,ÎŞĞèÔÙÆô¶¯!");
+				Console.WriteLine("ç¨‹åºå·²å¯åŠ¨,æ— éœ€å†å¯åŠ¨!");
 			}
 		}
 	}

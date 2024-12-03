@@ -1,7 +1,7 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Text.RegularExpressions;
-using ToolGood.Algorithm2;
+using ToolGood.Algorithm;
 using ToolGood.FlowVision.Applications.Members.Impl;
 using ToolGood.FlowVision.Commons;
 using ToolGood.FlowVision.Commons.Utils;

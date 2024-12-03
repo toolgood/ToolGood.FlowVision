@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using ToolGood.Algorithm2;
-using ToolGood.Algorithm2.Internals;
+using ToolGood.Algorithm;
+using ToolGood.Algorithm.Internals;
 using ToolGood.FlowVision.Applications.Members.Impl;
 using ToolGood.FlowVision.Commons;
 using ToolGood.FlowVision.Commons.Utils;
@@ -1317,13 +1317,13 @@ namespace ToolGood.FlowVision.Applications.Projects.Impl
 		}
 		private void AddTree(ConditionTree tree, string names, List<AppTestJsonDto> appTestJsons)
 		{
-			if (tree.Type == Algorithm2.Enums.ConditionTreeType.And) {
+			if (tree.Type == Algorithm.Enums.ConditionTreeType.And) {
 				AddTree(tree.Nodes[0], names, appTestJsons);
 				AddTree(tree.Nodes[1], names, appTestJsons);
-			} else if (tree.Type == Algorithm2.Enums.ConditionTreeType.Or) {
+			} else if (tree.Type == Algorithm.Enums.ConditionTreeType.Or) {
 				AddTree(tree.Nodes[0], names, appTestJsons);
 				AddTree(tree.Nodes[1], names, appTestJsons);
-			} else if (tree.Type == Algorithm2.Enums.ConditionTreeType.String) {
+			} else if (tree.Type == Algorithm.Enums.ConditionTreeType.String) {
 				ExtractFeature(tree.ConditionString, names, appTestJsons);
 			}
 		}
