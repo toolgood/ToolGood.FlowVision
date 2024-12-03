@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<Configurations>Debug;Release;Win;Linux</Configurations>
@@ -17,8 +17,10 @@
 
 
 	<ItemGroup>
+		<PackageReference Include="Jint" Version="4.1.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="ToolGood.ReadyGo3" Version="4.0.9" />
+		<PackageReference Include="NPOI" Version="2.7.2" />
+		<PackageReference Include="ToolGood.ReadyGo3" Version="4.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>

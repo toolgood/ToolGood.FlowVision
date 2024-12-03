@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <Configurations>Debug;Release;Win;Linux</Configurations>
@@ -37,9 +37,9 @@
     <ItemGroup>
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
 	  <PackageReference Include="IronSoftware.System.Drawing" Version="2023.3.1" />
-	  <PackageReference Include="NPOI" Version="2.6.2" />
+	  <PackageReference Include="NPOI" Version="2.7.2" />
 	  <PackageReference Include="ToolGood.RcxCrypto" Version="1.4.0" />
-	  <PackageReference Include="ToolGood.ReadyGo3" Version="4.0.9" />
+	  <PackageReference Include="ToolGood.ReadyGo3" Version="4.1.2" />
   </ItemGroup>
 	
 </Project>

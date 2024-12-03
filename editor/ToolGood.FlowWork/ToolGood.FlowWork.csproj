@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AssemblyName>FlowWork</AssemblyName>
@@ -41,11 +41,12 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\ToolGood.FlowWork.Applications\ToolGood.FlowWork.Applications.csproj" />
+		<PackageReference Include="Jint" Version="4.1.0" />
 
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="WebMarkupMin.AspNet.Common" Version="2.14.0" />
-		<PackageReference Include="WebMarkupMin.AspNetCore7" Version="2.15.1" />
-		<PackageReference Include="WebMarkupMin.NUglify" Version="2.15.1" />
+		<PackageReference Include="WebMarkupMin.AspNet.Common" Version="2.18.0" />
+		<PackageReference Include="WebMarkupMin.AspNetCore8" Version="2.18.0" />
+		<PackageReference Include="WebMarkupMin.NUglify" Version="2.18.0" />
 	</ItemGroup>
 
 	<ItemGroup>
