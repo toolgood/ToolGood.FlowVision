@@ -36,7 +36,7 @@
 
     <ItemGroup>
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
-	  <PackageReference Include="IronSoftware.System.Drawing" Version="2023.3.1" />
+	  <PackageReference Include="IronSoftware.System.Drawing" Version="2024.12.3" />
 	  <PackageReference Include="NPOI" Version="2.7.2" />
 	  <PackageReference Include="ToolGood.RcxCrypto" Version="1.4.0" />
 	  <PackageReference Include="ToolGood.ReadyGo3" Version="4.1.2" />

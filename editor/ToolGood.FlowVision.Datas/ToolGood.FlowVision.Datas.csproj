@@ -17,6 +17,7 @@
 	
 
   <ItemGroup>
+    <PackageReference Include="IronSoftware.System.Drawing" Version="2024.12.3" />
     <PackageReference Include="Jint" Version="4.1.0" />
     <PackageReference Include="NPOI" Version="2.7.2" />
     <PackageReference Include="ToolGood.ReadyGo3" Version="4.1.2" />
